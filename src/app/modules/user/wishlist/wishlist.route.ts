@@ -1,0 +1,10 @@
+import express from 'express';
+import auth from '../../../middlewares/auth';
+import { USER_ROLES } from '../../../../enums/user';
+import { EventWishListRoutes } from './event/event.route';
+import { JobWishListRoutes } from './job/job.route';
+const router = express.Router();
+const rolesOfAccess = Object.values(USER_ROLES);
+router.use('/event', auth(...rolesOfAccess), EventWishListRoutes);
+router.use('/job', auth(...rolesOfAccess), JobWishListRoutes);
+export const WishlistRoutes = router;
