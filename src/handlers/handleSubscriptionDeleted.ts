@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import stripe from '../config/stripe';
+import { stripe } from '../config/stripe';
 import { Subscription } from '../app/modules/subscription/subscription.model';
 import { User } from '../app/modules/user/user.model';
 import ApiError from '../errors/ApiError';
@@ -9,7 +9,7 @@ export const handleSubscriptionDeleted = async (data: Stripe.Subscription) => {
   try {
     // Use a single query to find and update the subscription
     const isExistSubscription = await Subscription.findOne({
-      stripeSubscriptionId: data.id,
+      subscriptionId: data.id,
     });
     if (!isExistSubscription) {
       return {
@@ -19,7 +19,7 @@ export const handleSubscriptionDeleted = async (data: Stripe.Subscription) => {
     }
     const updatedSubscription = await Subscription.findOneAndUpdate(
       {
-        stripeSubscriptionId: data.id,
+        subscriptionId: data.id,
         status: 'active',
       },
       { status: data.status },
@@ -36,7 +36,7 @@ export const handleSubscriptionDeleted = async (data: Stripe.Subscription) => {
 
     // Use a single query to find and update the user
     const updatedUser = await User.findByIdAndUpdate(
-      updatedSubscription.providerId,
+      updatedSubscription.user,
       {
         isSubscribed: false,
       },
@@ -46,7 +46,7 @@ export const handleSubscriptionDeleted = async (data: Stripe.Subscription) => {
     if (!updatedUser) {
       throw new ApiError(
         StatusCodes.NOT_FOUND,
-        `User with ID: ${updatedSubscription.providerId} not found.`
+        `User with ID: ${updatedSubscription.user} not found.`
       );
     }
 
