@@ -8,7 +8,7 @@ export const handleSubscriptionUpdated = async (data: Stripe.Subscription) => {
   try {
     // Use a single query to find and update the subscription
     const isExistSubscription = await Subscription.findOne({
-      stripeSubscriptionId: data.id,
+      subscriptionId: data.id,
     });
     if (!isExistSubscription) {
       return {
@@ -18,7 +18,7 @@ export const handleSubscriptionUpdated = async (data: Stripe.Subscription) => {
     }
     const updatedSubscription = await Subscription.findOneAndUpdate(
       {
-        stripeSubscriptionId: data.id,
+        subscriptionId: data.id,
         status: 'active',
       },
       { status: data.status },
@@ -35,7 +35,7 @@ export const handleSubscriptionUpdated = async (data: Stripe.Subscription) => {
 
     // Use a single query to find and update the user
     const updatedUser = await User.findByIdAndUpdate(
-      updatedSubscription.providerId,
+      updatedSubscription.user,
       {
         isSubscribed: data.status === 'active' || data.status === 'incomplete',
       },
@@ -45,7 +45,7 @@ export const handleSubscriptionUpdated = async (data: Stripe.Subscription) => {
     if (!updatedUser) {
       throw new ApiError(
         StatusCodes.NOT_FOUND,
-        `User with ID: ${updatedSubscription.providerId} not found.`
+        `User with ID: ${updatedSubscription.user} not found.`
       );
     }
 
