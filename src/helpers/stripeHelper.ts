@@ -28,7 +28,7 @@ export const createSubscriptionPackage = async (payload: any) => {
     after_completion: {
       type: 'redirect',
       redirect: {
-        url: 'http://medspaceconnect.com',
+        url: 'https://itzel.com',
       },
     },
   });

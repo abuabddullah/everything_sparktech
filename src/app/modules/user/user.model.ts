@@ -58,6 +58,14 @@ const userSchema = new Schema<IUser, UserModal>(
       type: Boolean,
       default: false,
     },
+    allowedEventPost: {
+      type: Number,
+      default: 0,
+    },
+    allowedJobPost: {
+      type: Number,
+      default: 0,
+    },
     isSubscribed: {
       type: Boolean,
       default: false,

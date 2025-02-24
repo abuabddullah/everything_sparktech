@@ -14,6 +14,8 @@ export type IUser = {
   jobWishList: Array<Types.ObjectId>;
   verified: boolean;
   isSubscribed: boolean;
+  allowedEventPost: number;
+  allowedJobPost: number;
   stripeAccountInfo?: {
     stripeCustomerId?: string;
     loginUrl?: string;

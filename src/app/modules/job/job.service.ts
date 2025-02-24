@@ -6,6 +6,8 @@ import { IJob } from './job.interface';
 import unlinkFile from '../../../shared/unlinkFile';
 import { User } from '../user/user.model';
 import { Applicant } from '../applicant/applicant.model';
+import { Subscription } from '../subscription/subscription.model';
+import { Event } from '../event/event.model';
 
 const createJob = async (payload: IJob): Promise<IJob> => {
   if (typeof payload.questions === 'string')
@@ -16,7 +18,43 @@ const createJob = async (payload: IJob): Promise<IJob> => {
     payload.experience = JSON.parse(payload.experience);
   if (typeof payload.additionalRequirement === 'string')
     payload.additionalRequirement = JSON.parse(payload.additionalRequirement);
+  const creator = await User.findById(payload.postedBy);
+  if (!creator) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Creator not found!');
+  }
+  const subscription = await Subscription.findOne({
+    user: creator._id,
+  });
+  if (!subscription) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Subscription not found!');
+  }
+  const subscriptionStartDate = new Date(subscription.createdAt);
+  const now = new Date();
+  const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
 
+  let periodStartDate = new Date(subscriptionStartDate.getTime());
+  let periodEndDate = new Date(
+    periodStartDate.getTime() + thirtyDaysInMilliseconds
+  );
+
+  while (periodEndDate <= now) {
+    periodStartDate = new Date(periodEndDate.getTime());
+    periodEndDate = new Date(
+      periodStartDate.getTime() + thirtyDaysInMilliseconds
+    );
+  }
+
+  const eventsWithinPeriod = await Job.find({
+    postedBy: payload.postedBy,
+    createdAt: { $gte: periodStartDate, $lt: periodEndDate },
+  });
+
+  if (Number(eventsWithinPeriod) > Number(creator.allowedJobPost)) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'You have reached the limit of jobs for this period'
+    );
+  }
   const result = await Job.create(payload);
   if (!result) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create job!');

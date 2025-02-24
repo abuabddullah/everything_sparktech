@@ -7,6 +7,8 @@ export type ISubscription = {
   subscriptionId: string;
   trxId: string;
   status: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type SubscriptionModel = Model<ISubscription>;

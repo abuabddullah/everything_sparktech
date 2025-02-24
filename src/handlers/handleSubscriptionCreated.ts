@@ -69,6 +69,8 @@ export const handleSubscriptionCreated = async (data: Stripe.Subscription) => {
               subscription: newSubscription._id,
               isSubscribed: subscription.status === 'active',
               'stripeAccountInfo.stripeCustomerId': customer.id,
+              allowedEventPost: pricingPlan.allowedEventPost,
+              allowedJobPost: pricingPlan.allowedJobPost,
             },
             { new: true }
           );

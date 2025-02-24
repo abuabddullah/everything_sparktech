@@ -7,9 +7,47 @@ import { Group } from '../group/group.model';
 import { IGroup } from '../group/group.interface';
 import { User } from '../user/user.model';
 import { IUser } from '../user/user.interface';
+import { Subscription } from '../subscription/subscription.model';
+import { ISubscription } from '../subscription/subscription.interface';
 
 const createEvent = async (payload: IEvent): Promise<IEvent> => {
-  console.log(payload);
+  const creator = await User.findById(payload.creator);
+  if (!creator) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Creator not found!');
+  }
+  const subscription = await Subscription.findOne({
+    user: creator._id,
+  });
+  if (!subscription) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Subscription not found!');
+  }
+  const subscriptionStartDate = new Date(subscription.createdAt);
+  const now = new Date();
+  const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+
+  let periodStartDate = new Date(subscriptionStartDate.getTime());
+  let periodEndDate = new Date(
+    periodStartDate.getTime() + thirtyDaysInMilliseconds
+  );
+
+  while (periodEndDate <= now) {
+    periodStartDate = new Date(periodEndDate.getTime());
+    periodEndDate = new Date(
+      periodStartDate.getTime() + thirtyDaysInMilliseconds
+    );
+  }
+
+  const eventsWithinPeriod = await Event.find({
+    creator: payload.creator,
+    createdAt: { $gte: periodStartDate, $lt: periodEndDate },
+  });
+
+  if (Number(eventsWithinPeriod) > Number(creator.allowedEventPost)) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'You have reached the limit of events for this period'
+    );
+  }
   // await EventValidation.createEventZodSchema.parseAsync(payload);
   if (typeof payload.tags === 'string') payload.tags = JSON.parse(payload.tags);
   console.log(payload.location);
@@ -26,6 +64,7 @@ const createEvent = async (payload: IEvent): Promise<IEvent> => {
   });
   if (!createGroup)
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create group!');
+
   return result;
 };
 
