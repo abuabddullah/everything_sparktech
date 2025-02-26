@@ -15,6 +15,9 @@ const createEvent = async (payload: IEvent): Promise<IEvent> => {
   if (!creator) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Creator not found!');
   }
+  if (!creator.accountInformation?.stripeAccountId) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Please set up payment');
+  }
   const subscription = await Subscription.findOne({
     user: creator._id,
   });

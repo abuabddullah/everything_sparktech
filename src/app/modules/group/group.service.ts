@@ -5,6 +5,8 @@ import { IGroup } from './group.interface';
 import { stripe } from '../../../config/stripe';
 import Stripe from 'stripe';
 import { Event } from '../event/event.model';
+import { User } from '../user/user.model';
+import { IUser } from '../user/user.interface';
 
 const createGroup = async (payload: IGroup): Promise<IGroup> => {
   const result = await Group.create(payload);
@@ -117,9 +119,22 @@ const joinGroup = async (payload: any, id: string) => {
       'Failed to join group. Please try again!'
     );
   }
+
   if (!isExistTransaction) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to join group!');
   }
+  const creator = await User.findById(payload.creator);
+  const stripeInfo = creator?.accountInformation?.stripeAccountId;
+  if (stripeInfo) {
+    await stripe.transfers.create({
+      amount: Math.round(payload.amount * 0.9 * 100),
+      currency: 'usd',
+      destination: stripeInfo?.toString(),
+      source_transaction: payload.transactionId,
+      transfer_group: `${payload.event}_${payload.transactionId}`,
+    });
+  }
+
   return result;
 };
 

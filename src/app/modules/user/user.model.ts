@@ -80,6 +80,25 @@ const userSchema = new Schema<IUser, UserModal>(
         required: false,
       },
     },
+    accountInformation: {
+      bankAccountNumber: {
+        type: String,
+        default: null,
+        required: false,
+      },
+      stripeAccountId: {
+        type: String,
+        default: null,
+      },
+      externalAccountId: {
+        type: String,
+        default: null,
+      },
+      status: {
+        type: String,
+        default: 'active',
+      },
+    },
     authentication: {
       type: {
         isResetPassword: {
