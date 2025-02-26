@@ -33,6 +33,9 @@ const fileUploadHandler = () => {
         case 'images':
           uploadDir = path.join(baseUploadDir, 'images');
           break;
+        case 'KYC':
+          uploadDir = path.join(baseUploadDir, 'KYCs');
+          break;
         case 'thumbnailImage':
           uploadDir = path.join(baseUploadDir, 'images');
           break;
@@ -104,6 +107,8 @@ const fileUploadHandler = () => {
       } else {
         cb(new ApiError(StatusCodes.BAD_REQUEST, 'Only pdf supported'));
       }
+    } else if (file.fieldname === 'KYC') {
+      cb(null, true);
     } else {
       cb(new ApiError(StatusCodes.BAD_REQUEST, 'This file is not supported'));
     }
@@ -120,6 +125,7 @@ const fileUploadHandler = () => {
     { name: 'introMedia', maxCount: 3 },
     { name: 'images', maxCount: 10 },
     { name: 'profile', maxCount: 10 },
+    { name: 'KYC', maxCount: 10 },
   ]);
   return upload;
 };

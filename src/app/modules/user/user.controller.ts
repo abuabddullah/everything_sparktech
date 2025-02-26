@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { UserService } from './user.service';
+import ApiError from '../../../errors/ApiError';
 
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -64,9 +65,41 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const setUpCreatorPayment = catchAsync(async (req: Request, res: Response) => {
+  const data = req.body.data;
+  let paths: any[] = [];
+
+  // const paths: any[] = [];
+  const ip = req.ip || '0.0.0.0';
+  if (req.files && 'KYC' in req.files && req.files.KYC) {
+    for (const file of req.files.KYC) {
+      paths.push(`/KYCs/${file.filename}`);
+    }
+  }
+  console.log(data);
+  const user = req.user;
+  if (!req.user.email) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+  const result = await UserService.createCreatorStripeAccount(
+    data,
+    req.files,
+    user,
+    paths,
+    ip
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Connected account created successfully',
+    data: result,
+  });
+});
 export const UserController = {
   createUser,
   getUserProfile,
   updateProfile,
   deleteUser,
+  setUpCreatorPayment,
 };

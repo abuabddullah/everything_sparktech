@@ -7,6 +7,7 @@ import { UserController } from './user.controller';
 import { UserValidation } from './user.validation';
 import { WishlistRoutes } from './wishlist/wishlist.route';
 import { StatusRoutes } from './status/status.route';
+import { UserService } from './user.service';
 
 const router = express.Router();
 
@@ -15,7 +16,12 @@ router.get(
   auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.CREATOR),
   UserController.getUserProfile
 );
-
+router.post(
+  '/payment-account-setup',
+  auth(USER_ROLES.CREATOR),
+  fileUploadHandler(),
+  UserController.setUpCreatorPayment
+);
 router
   .route('/')
   .post(

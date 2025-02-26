@@ -16,6 +16,12 @@ export type IUser = {
   isSubscribed: boolean;
   allowedEventPost: number;
   allowedJobPost: number;
+  accountInformation?: {
+    bankAccountNumber?: string;
+    stripeAccountId?: string;
+    externalAccountId?: string;
+    status?: string;
+  };
   stripeAccountInfo?: {
     stripeCustomerId?: string;
     loginUrl?: string;
