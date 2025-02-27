@@ -96,10 +96,23 @@ const setUpCreatorPayment = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+const getCreatorStatus = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const result = await UserService.getCreatorStatus(user);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Creator status fetched successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getUserProfile,
   updateProfile,
   deleteUser,
   setUpCreatorPayment,
+  getCreatorStatus,
 };

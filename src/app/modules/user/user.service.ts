@@ -12,6 +12,8 @@ import path from 'path';
 import { stripe } from '../../../config/stripe';
 import fs from 'fs';
 import config from '../../../config';
+import { Event } from '../event/event.model';
+import { Group } from '../group/group.model';
 
 const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   //set role
@@ -269,10 +271,44 @@ const createCreatorStripeAccount = async (
   return accountLink.url;
 };
 
+const getCreatorStatus = async (user: any) => {
+  const totalEvent = await Event.find({ creator: user.id }).countDocuments();
+
+  const allEvents = await Event.find({ creator: user.id });
+  const eventsWithGroups = await Promise.all(
+    allEvents.map(async (event: any) => {
+      const group = await Group.findOne({ event: event._id });
+      return { event, group };
+    })
+  );
+  const totalParticipants = eventsWithGroups.reduce(
+    (acc: number, { group }) => {
+      return acc + (group?.members?.length || 0);
+    },
+    0
+  );
+  const totalEarning = eventsWithGroups.reduce(
+    (acc: number, { event, group }) => {
+      const eventEarning = (group?.members?.length || 0) * event.price;
+      return acc + eventEarning * 0.9;
+    },
+    0
+  );
+
+  const finalResult = {
+    totalEvent,
+    totalParticipants,
+    totalEarning,
+  };
+
+  return finalResult;
+};
+
 export const UserService = {
   createUserToDB,
   getUserProfileFromDB,
   updateProfileToDB,
   deleteUserFromDB,
   createCreatorStripeAccount,
+  getCreatorStatus,
 };
