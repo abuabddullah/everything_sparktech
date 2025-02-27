@@ -108,6 +108,17 @@ const getCreatorStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getEventStatus = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const result = await UserService.getEventStatus(user);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Event status fetched successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getUserProfile,
@@ -115,4 +126,5 @@ export const UserController = {
   deleteUser,
   setUpCreatorPayment,
   getCreatorStatus,
+  getEventStatus,
 };

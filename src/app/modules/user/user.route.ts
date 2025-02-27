@@ -21,6 +21,11 @@ router.get(
   auth(USER_ROLES.CREATOR),
   UserController.getCreatorStatus
 );
+router.get(
+  '/events',
+  auth(...Object.values(USER_ROLES)),
+  UserController.getEventStatus
+);
 router.post(
   '/payment-account-setup',
   auth(USER_ROLES.CREATOR),

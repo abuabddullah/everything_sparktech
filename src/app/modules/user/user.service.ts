@@ -304,6 +304,22 @@ const getCreatorStatus = async (user: any) => {
   return finalResult;
 };
 
+const getEventStatus = async (user: any) => {
+  const upcommingEvents = await Group.find({
+    members: { $in: [user.id] },
+  })
+    .sort({ createdAt: -1 })
+    .populate('event')
+    .select('event')
+    .lean();
+  const selectEvent = await Promise.all(
+    upcommingEvents.map(event => {
+      return event.event;
+    })
+  );
+  return { upcommingEvents: selectEvent, eventHistory: selectEvent };
+};
+
 export const UserService = {
   createUserToDB,
   getUserProfileFromDB,
@@ -311,4 +327,5 @@ export const UserService = {
   deleteUserFromDB,
   createCreatorStripeAccount,
   getCreatorStatus,
+  getEventStatus,
 };
