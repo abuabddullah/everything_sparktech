@@ -212,7 +212,7 @@ const getEventStatusAll = async (id: string): Promise<any> => {
       );
       return {
         ...event.toObject(),
-        totalEarning,
+        totalEarning: (totalEarning || 0) * 0.9,
         ticketSold: group?.members?.length,
       };
     }),
