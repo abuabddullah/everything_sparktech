@@ -26,6 +26,11 @@ router.get(
   auth(...Object.values(USER_ROLES)),
   UserController.getEventStatus
 );
+router.get(
+  '/earnings',
+  auth(USER_ROLES.CREATOR),
+  UserController.getEarningStatus
+);
 router.post(
   '/payment-account-setup',
   auth(USER_ROLES.CREATOR),

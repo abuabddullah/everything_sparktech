@@ -119,6 +119,17 @@ const getEventStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getEarningStatus = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const year = req.query.year || new Date().getFullYear();
+  const result = await UserService.getEarningStatus(user, Number(year));
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Earning status fetched successfully',
+    data: result,
+  });
+});
 export const UserController = {
   createUser,
   getUserProfile,
@@ -127,4 +138,5 @@ export const UserController = {
   setUpCreatorPayment,
   getCreatorStatus,
   getEventStatus,
+  getEarningStatus,
 };

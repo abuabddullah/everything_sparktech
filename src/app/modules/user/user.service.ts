@@ -320,6 +320,50 @@ const getEventStatus = async (user: any) => {
   return { upcommingEvents: selectEvent, eventHistory: selectEvent };
 };
 
+const getEarningStatus = async (user: any, year: number) => {
+  const result: any = {};
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  for (let month = 0; month < 12; month++) {
+    const events = await Event.find({
+      creator: user.id,
+      time: {
+        $gte: new Date(year, month, 1),
+        $lte: new Date(year, month + 1, 0),
+      },
+    });
+    const eventsWithGroups = await Promise.all(
+      events.map(async (event: any) => {
+        const group = await Group.findOne({ event: event._id });
+        return { event, group };
+      })
+    );
+    const totalEarning = eventsWithGroups.reduce(
+      (acc: number, { event, group }) => {
+        const eventEarning = (group?.members?.length || 0) * event.price;
+        return acc + eventEarning * 0.9;
+      },
+      0
+    );
+    result[months[month]] = totalEarning;
+  }
+  return Object.keys(result).map(month => {
+    return { month, totalEarning: result[month] };
+  });
+};
+
 export const UserService = {
   createUserToDB,
   getUserProfileFromDB,
@@ -328,4 +372,5 @@ export const UserService = {
   createCreatorStripeAccount,
   getCreatorStatus,
   getEventStatus,
+  getEarningStatus,
 };
