@@ -11,6 +11,8 @@ import { JobRoutes } from '../app/modules/job/job.route';
 import { ApplicantRoutes } from '../app/modules/applicant/applicant.route';
 import { PackageRoutes } from '../app/modules/package/package.route';
 import { SubscriptionRoutes } from '../app/modules/subscription/subscription.route';
+import { FaqRoutes } from '../app/modules/faq/faq.route';
+import { TermsAndConditionsRoutes } from '../app/modules/termsAndConditions/termsAndConditions.route';
 
 const router = express.Router();
 
@@ -62,6 +64,14 @@ const apiRoutes = [
   {
     path: '/subscription',
     route: SubscriptionRoutes,
+  },
+  {
+    path: '/faq',
+    route: FaqRoutes,
+  },
+  {
+    path: '/termsAndConditions',
+    route: TermsAndConditionsRoutes,
   },
 ];
 
