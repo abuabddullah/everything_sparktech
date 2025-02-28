@@ -138,6 +138,18 @@ const joinGroup = async (payload: any, id: string) => {
   return result;
 };
 
+const createGroupIndividual = async (payload: any) => {
+  const isExistGroup = await Group.findOne({ members: payload.members });
+  if (isExistGroup) {
+    return isExistGroup;
+  }
+  const result = await Group.create(payload);
+  if (!result) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create group!');
+  }
+  return result;
+};
+
 export const GroupService = {
   createGroup,
   getAllGroups,
@@ -147,4 +159,5 @@ export const GroupService = {
   getMyGroupFromDB,
   createPaymentIntent,
   joinGroup,
+  createGroupIndividual,
 };

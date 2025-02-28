@@ -14,7 +14,12 @@ router.post(
   validateRequest(GroupValidation.createGroupZodSchema),
   GroupController.createGroup
 );
-
+router.post(
+  '/individual',
+  auth(...rolesOfAccess),
+  validateRequest(GroupValidation.createGroupZodSchema),
+  GroupController.createGroupIndividual
+);
 router.get('/', auth(USER_ROLES.ADMIN), GroupController.getAllGroups);
 router.get(
   '/my',

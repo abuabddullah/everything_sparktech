@@ -34,7 +34,10 @@ const getAllMessages = async (
   delete queryFields.search;
   delete queryFields.page;
   delete queryFields.limit;
-  queryBuilder.find(queryFields);
+  queryBuilder.find(queryFields).populate({
+    path: 'from to',
+    select: 'name email profile',
+  });
   return await queryBuilder;
 };
 

@@ -86,6 +86,18 @@ const joinGroup = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const createGroupIndividual = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await GroupService.createGroupIndividual(req.body);
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'Group created successfully',
+      data: result,
+    });
+  }
+);
+
 export const GroupController = {
   createGroup,
   getAllGroups,
@@ -95,4 +107,5 @@ export const GroupController = {
   getMyGroup,
   createPaymentIntent,
   joinGroup,
+  createGroupIndividual,
 };
