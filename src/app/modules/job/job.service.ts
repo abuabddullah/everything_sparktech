@@ -168,9 +168,10 @@ const getJobStatus = async (userId: string): Promise<any> => {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Job not found!');
   }
   const totalApplicant = await Applicant.countDocuments({ job: result._id });
-  const allApplicants = await Applicant.find({ job: result._id }).populate(
-    'user'
-  );
+  const allApplicants = await Applicant.find({ job: result._id }).populate({
+    path: 'user',
+    select: 'name email profile',
+  });
   const finalResult = {
     ...result.toObject(),
     totalApplicant,
@@ -187,9 +188,10 @@ const getAllJobStatus = async (id: string): Promise<any> => {
   const finalResult = await Promise.all(
     result.map(async (job: any) => {
       const totalApplicant = await Applicant.countDocuments({ job: job._id });
-      const allApplicants = await Applicant.find({ job: job._id }).populate(
-        'user'
-      );
+      const allApplicants = await Applicant.find({ job: job._id }).populate({
+        path: 'user',
+        select: 'name email profile',
+      });
       return {
         ...job.toObject(),
         totalApplicant,
