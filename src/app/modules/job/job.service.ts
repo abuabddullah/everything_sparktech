@@ -170,7 +170,7 @@ const getJobStatus = async (userId: string): Promise<any> => {
   const totalApplicant = await Applicant.countDocuments({ job: result._id });
   const allApplicants = await Applicant.find({ job: result._id }).populate({
     path: 'user',
-    select: 'name email profile',
+    select: '-accountInformation',
   });
   const finalResult = {
     ...result.toObject(),
@@ -190,7 +190,7 @@ const getAllJobStatus = async (id: string): Promise<any> => {
       const totalApplicant = await Applicant.countDocuments({ job: job._id });
       const allApplicants = await Applicant.find({ job: job._id }).populate({
         path: 'user',
-        select: 'name email profile',
+        select: '-accountInformation',
       });
       return {
         ...job.toObject(),
