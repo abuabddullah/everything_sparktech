@@ -8,6 +8,7 @@ const groupSchema = new Schema<IGroup, GroupModel>(
       type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
       required: false,
     },
+    is2Message: { type: Boolean, required: false },
     event: { type: Schema.Types.ObjectId, ref: 'Event', required: false },
   },
   { timestamps: true }

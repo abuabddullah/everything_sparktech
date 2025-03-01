@@ -73,7 +73,10 @@ const deleteGroup = async (id: string): Promise<IGroup | null> => {
 };
 
 const getMyGroupFromDB = async (userId: string): Promise<IGroup[]> => {
-  const result = await Group.find({ members: { $in: [userId] } });
+  const result = await Group.find({ members: { $in: [userId] } }).populate({
+    path: 'members',
+    select: 'name email profile',
+  });
   return result;
 };
 
