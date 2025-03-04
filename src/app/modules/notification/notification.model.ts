@@ -9,7 +9,8 @@ const notificationSchema = new Schema<INotification, NotificationModel>(
     status: {
       type: String,
       enum: ['read', 'unread'],
-      required: true,
+      default: 'unread',
+      required: false,
     },
   },
   { timestamps: true }
