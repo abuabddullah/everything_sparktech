@@ -46,10 +46,12 @@ const getAllNotifications = async (
   delete queryFields.search;
   delete queryFields.page;
   delete queryFields.limit;
-  queryBuilder.find({
-    ...queryFields,
-    ...(user.role === USER_ROLES.ADMIN ? {} : { user: user.id }),
-  });
+  queryBuilder
+    .find({
+      ...queryFields,
+      ...(user.role === USER_ROLES.ADMIN ? {} : { user: user.id }),
+    })
+    .sort({ createdAt: -1 });
   await Notification.updateMany(
     {
       ...queryFields,
