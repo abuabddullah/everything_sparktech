@@ -13,7 +13,11 @@ router.post(
   validateRequest(NotificationValidation.createNotificationZodSchema),
   NotificationController.createNotification
 );
-router.get('/', NotificationController.getAllNotifications);
+router.get(
+  '/',
+  auth(...rolesOfAccess, USER_ROLES.USER, USER_ROLES.CREATOR),
+  NotificationController.getAllNotifications
+);
 router.get('/:id', NotificationController.getNotificationById);
 router.patch(
   '/:id',

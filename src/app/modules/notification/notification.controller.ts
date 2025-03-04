@@ -16,7 +16,8 @@ const createNotification = catchAsync(async (req: Request, res: Response) => {
 
 const getAllNotifications = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
-  const result = await NotificationService.getAllNotifications(query);
+  const user = req.user;
+  const result = await NotificationService.getAllNotifications(query, user);
   sendResponse(res, {
     pagination: {
       limit: Number(query.limit) || 10,

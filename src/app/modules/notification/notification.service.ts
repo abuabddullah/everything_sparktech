@@ -2,6 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../../errors/ApiError';
 import { Notification } from './notification.model';
 import { INotification } from './notification.interface';
+import { UserController } from '../user/user.controller';
+import { USER_ROLES } from '../../../enums/user';
 
 const createNotification = async (
   payload: INotification
@@ -20,7 +22,8 @@ const createNotification = async (
 };
 
 const getAllNotifications = async (
-  queryFields: Record<string, any>
+  queryFields: Record<string, any>,
+  user: any
 ): Promise<INotification[]> => {
   const { search, page, limit } = queryFields;
   const query = search
@@ -41,7 +44,10 @@ const getAllNotifications = async (
   delete queryFields.search;
   delete queryFields.page;
   delete queryFields.limit;
-  queryBuilder.find(queryFields);
+  queryBuilder.find({
+    ...queryFields,
+    ...(user.role === USER_ROLES.ADMIN ? {} : { user: user.id }),
+  });
   return await queryBuilder;
 };
 
