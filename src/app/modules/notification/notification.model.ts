@@ -6,6 +6,11 @@ const notificationSchema = new Schema<INotification, NotificationModel>(
     user: { type: Schema.Types.ObjectId, ref: 'User', required: false },
     description: { type: String, required: true },
     title: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ['read', 'unread'],
+      required: true,
+    },
   },
   { timestamps: true }
 );

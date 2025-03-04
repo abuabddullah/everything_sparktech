@@ -18,6 +18,11 @@ router.get(
   auth(...rolesOfAccess, USER_ROLES.USER, USER_ROLES.CREATOR),
   NotificationController.getAllNotifications
 );
+router.get(
+  '/count',
+  auth(...rolesOfAccess, USER_ROLES.USER, USER_ROLES.CREATOR),
+  NotificationController.getNotificationCount
+);
 router.get('/:id', NotificationController.getNotificationById);
 router.patch(
   '/:id',

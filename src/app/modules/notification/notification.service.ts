@@ -48,6 +48,13 @@ const getAllNotifications = async (
     ...queryFields,
     ...(user.role === USER_ROLES.ADMIN ? {} : { user: user.id }),
   });
+  await Notification.updateMany(
+    {
+      ...queryFields,
+      ...(user.role === USER_ROLES.ADMIN ? {} : { user: user.id }),
+    },
+    { $set: { status: 'read' } }
+  );
   return await queryBuilder;
 };
 
@@ -100,10 +107,19 @@ const deleteNotification = async (
   return result;
 };
 
+const getNotificationCount = async (user: any): Promise<number> => {
+  const result = await Notification.countDocuments({
+    ...(user.role === USER_ROLES.ADMIN ? {} : { user: user.id }),
+    status: 'unread',
+  });
+  return result;
+};
+
 export const NotificationService = {
   createNotification,
   getAllNotifications,
   getNotificationById,
   updateNotification,
   deleteNotification,
+  getNotificationCount,
 };
