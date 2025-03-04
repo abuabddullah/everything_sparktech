@@ -13,6 +13,7 @@ import { PackageRoutes } from '../app/modules/package/package.route';
 import { SubscriptionRoutes } from '../app/modules/subscription/subscription.route';
 import { FaqRoutes } from '../app/modules/faq/faq.route';
 import { TermsAndConditionsRoutes } from '../app/modules/termsAndConditions/termsAndConditions.route';
+import { ReviewRoutes } from '../app/modules/review/review.route';
 
 const router = express.Router();
 
@@ -72,6 +73,10 @@ const apiRoutes = [
   {
     path: '/termsAndConditions',
     route: TermsAndConditionsRoutes,
+  },
+  {
+    path: '/review',
+    route: ReviewRoutes,
   },
 ];
 

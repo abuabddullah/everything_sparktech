@@ -12,7 +12,6 @@ router.post(
   auth(...rolesOfAccess),
   fileUploadHandler(),
   validateRequestZFD(OrganizationsValidation.createOrganizationsZodSchema),
-
   OrganizationsController.createOrganizations
 );
 router.get('/', OrganizationsController.getAllOrganizationss);

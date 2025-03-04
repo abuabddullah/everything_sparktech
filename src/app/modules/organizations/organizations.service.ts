@@ -4,6 +4,7 @@ import { Organizations } from './organizations.model';
 import { IOrganizations } from './organizations.interface';
 
 import unlinkFile from '../../../shared/unlinkFile';
+import { Review } from '../review/review.model';
 
 const createOrganizations = async (
   payload: IOrganizations
@@ -20,7 +21,7 @@ const createOrganizations = async (
 
 const getAllOrganizationss = async (
   queryFields: Record<string, any>
-): Promise<IOrganizations[]> => {
+): Promise<any[]> => {
   const { search, page, limit } = queryFields;
   const query = search
     ? {
@@ -41,8 +42,25 @@ const getAllOrganizationss = async (
   delete queryFields.search;
   delete queryFields.page;
   delete queryFields.limit;
-  queryBuilder.find(queryFields);
-  return await queryBuilder;
+
+  const result = await queryBuilder.find(queryFields).lean();
+
+  const finalResult = await Promise.all(
+    result.map(async organization => {
+      const reviews = await Review.find({ organization: organization._id })
+        .populate({
+          path: 'user',
+          select: 'name email profile',
+        })
+        .lean();
+      return {
+        ...organization,
+        reviews,
+      };
+    })
+  );
+
+  return finalResult;
 };
 
 const getOrganizationsById = async (
