@@ -15,21 +15,19 @@ const createNotification = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllNotifications = catchAsync(async (req: Request, res: Response) => {
-  const query = req.query;
+  const { ...query } = req.query;
+  console.log(query);
   const user = req.user;
   const result = await NotificationService.getAllNotifications(query, user);
   sendResponse(res, {
     pagination: {
-      limit: Number(query.limit) || 10,
-      page: Number(query.page) || 1,
-      total: result.length,
-      totalPage: Math.ceil(result.length / (Number(query.limit) || 10)),
+      ...result.meta,
     },
 
     statusCode: StatusCodes.OK,
     success: true,
     message: 'Notifications fetched successfully',
-    data: result,
+    data: result.result,
   });
 });
 

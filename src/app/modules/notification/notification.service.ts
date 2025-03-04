@@ -24,7 +24,7 @@ const createNotification = async (
 const getAllNotifications = async (
   queryFields: Record<string, any>,
   user: any
-): Promise<INotification[]> => {
+): Promise<any> => {
   const { search, page, limit } = queryFields;
   const query = search
     ? {
@@ -37,7 +37,9 @@ const getAllNotifications = async (
   let queryBuilder = Notification.find(query);
 
   if (page && limit) {
-    queryBuilder = queryBuilder.skip((page - 1) * limit).limit(limit);
+    queryBuilder = queryBuilder
+      .skip((Number(page) - 1) * Number(limit))
+      .limit(Number(limit));
   } else {
     queryBuilder = queryBuilder.skip(0).limit(10);
   }
@@ -55,7 +57,17 @@ const getAllNotifications = async (
     },
     { $set: { status: 'read' } }
   );
-  return await queryBuilder;
+  const result = await queryBuilder;
+  const totalNotification = await Notification.countDocuments(query);
+  return {
+    result,
+    meta: {
+      limit: Number(limit) || 10,
+      page: Number(page) || 1,
+      total: result.length,
+      totalPage: totalNotification / limit,
+    },
+  };
 };
 
 const getNotificationById = async (
