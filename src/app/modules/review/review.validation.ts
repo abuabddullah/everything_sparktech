@@ -10,6 +10,11 @@ const createReviewZodSchema = z.object({
       required_error: 'description is required',
       invalid_type_error: 'description should be type string',
     }),
+    replyTo: z
+      .string({
+        invalid_type_error: 'replyTo should be type objectID or string',
+      })
+      .optional(),
     star: z.number({
       required_error: 'star is required',
       invalid_type_error: 'star should be type number',

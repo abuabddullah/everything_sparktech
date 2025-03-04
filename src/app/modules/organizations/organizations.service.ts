@@ -47,7 +47,10 @@ const getAllOrganizationss = async (
 
   const finalResult = await Promise.all(
     result.map(async organization => {
-      const reviews = await Review.find({ organization: organization._id })
+      const reviews = await Review.find({
+        organization: organization._id,
+        replyTo: null,
+      })
         .populate({
           path: 'user',
           select: 'name email profile',

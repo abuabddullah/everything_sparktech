@@ -1,0 +1,103 @@
+import { StatusCodes } from 'http-status-codes';
+import ApiError from '../../../errors/ApiError';
+import { Notification } from './notification.model';
+import { INotification } from './notification.interface';
+
+const createNotification = async (
+  payload: INotification
+): Promise<INotification> => {
+  const result = await Notification.create(payload);
+  if (!result) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'Failed to create notification!'
+    );
+  }
+  //@ts-ignore
+  const io = global.io;
+  await io?.emit(`NEW_NOTIFICATION::${payload.user?.toString()}`, result);
+  return result;
+};
+
+const getAllNotifications = async (
+  queryFields: Record<string, any>
+): Promise<INotification[]> => {
+  const { search, page, limit } = queryFields;
+  const query = search
+    ? {
+        $or: [
+          { description: { $regex: search, $options: 'i' } },
+          { title: { $regex: search, $options: 'i' } },
+        ],
+      }
+    : {};
+  let queryBuilder = Notification.find(query);
+
+  if (page && limit) {
+    queryBuilder = queryBuilder.skip((page - 1) * limit).limit(limit);
+  } else {
+    queryBuilder = queryBuilder.skip(0).limit(10);
+  }
+  delete queryFields.search;
+  delete queryFields.page;
+  delete queryFields.limit;
+  queryBuilder.find(queryFields);
+  return await queryBuilder;
+};
+
+const getNotificationById = async (
+  id: string
+): Promise<INotification | null> => {
+  const result = await Notification.findById(id);
+  if (!result) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Notification not found!');
+  }
+  return result;
+};
+
+const updateNotification = async (
+  id: string,
+  payload: INotification
+): Promise<INotification | null> => {
+  const isExistNotification = await getNotificationById(id);
+  if (!isExistNotification) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Notification not found!');
+  }
+
+  const result = await Notification.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  if (!result) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'Failed to update notification!'
+    );
+  }
+  return result;
+};
+
+const deleteNotification = async (
+  id: string
+): Promise<INotification | null> => {
+  const isExistNotification = await getNotificationById(id);
+  if (!isExistNotification) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Notification not found!');
+  }
+
+  const result = await Notification.findByIdAndDelete(id);
+  if (!result) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'Failed to delete notification!'
+    );
+  }
+  return result;
+};
+
+export const NotificationService = {
+  createNotification,
+  getAllNotifications,
+  getNotificationById,
+  updateNotification,
+  deleteNotification,
+};
