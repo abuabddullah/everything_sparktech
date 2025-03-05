@@ -142,6 +142,16 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getOneUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getOneUser(req.params.id);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'User fetched successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getUserProfile,
@@ -152,4 +162,5 @@ export const UserController = {
   getEventStatus,
   getEarningStatus,
   getAllUsers,
+  getOneUser,
 };

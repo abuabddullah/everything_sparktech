@@ -38,6 +38,7 @@ router.post(
   fileUploadHandler(),
   UserController.setUpCreatorPayment
 );
+router.get('/:id', auth(USER_ROLES.ADMIN), UserController.getOneUser);
 
 router
   .route('/')

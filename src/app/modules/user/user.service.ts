@@ -419,6 +419,12 @@ const getAllUsers = async (queryFields: any) => {
   );
   return finalResult;
 };
+const getOneUser = async (id: string) => {
+  const result = await User.findById(id).select(
+    '-password -stripeAccountInfo -accountInformation -authentication'
+  );
+  return result;
+};
 
 export const UserService = {
   createUserToDB,
@@ -429,5 +435,6 @@ export const UserService = {
   getCreatorStatus,
   getEventStatus,
   getEarningStatus,
+  getOneUser,
   getAllUsers,
 };
