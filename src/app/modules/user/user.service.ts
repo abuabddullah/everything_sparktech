@@ -14,6 +14,8 @@ import fs from 'fs';
 import config from '../../../config';
 import { Event } from '../event/event.model';
 import { Group } from '../group/group.model';
+import { Job } from '../job/job.model';
+import { Applicant } from '../applicant/applicant.model';
 
 const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   //set role
@@ -387,7 +389,35 @@ const getAllUsers = async (queryFields: any) => {
   }
 
   const result = await queryBuilder;
-  return result;
+  const finalResult = await Promise.all(
+    result.map(async (user: any) => {
+      if (user.role === USER_ROLES.CREATOR) {
+        const totalEvent = await Event.find({
+          creator: user.id,
+        }).countDocuments();
+        const totalJobs = await Job.find({ creator: user.id }).countDocuments();
+        return {
+          ...user._doc,
+          totalEvent,
+          totalJobs,
+          role: user.role,
+        };
+      } else if (user.role === USER_ROLES.USER) {
+        const totalEvent = await Group.find({
+          members: user.id,
+        }).countDocuments();
+        const totalAppliedJobs = await Applicant.find({
+          user: user.id,
+        }).countDocuments();
+        return {
+          ...user._doc,
+          totalEvent,
+          totalAppliedJobs,
+        };
+      }
+    })
+  );
+  return finalResult;
 };
 
 export const UserService = {
