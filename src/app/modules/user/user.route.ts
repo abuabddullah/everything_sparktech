@@ -26,6 +26,7 @@ router.get(
   auth(...Object.values(USER_ROLES)),
   UserController.getEventStatus
 );
+router.get('/all', auth(USER_ROLES.ADMIN), UserController.getAllUsers);
 router.get(
   '/earnings',
   auth(USER_ROLES.CREATOR),

@@ -222,7 +222,7 @@ const createCreatorStripeAccount = async (
     business_profile: {
       mcc: '5734',
       name: `${isExistUser.name}`,
-      url: 'https://medspaceconnect.com',
+      url: 'https://itzel.com',
     },
     external_account: {
       object: 'bank_account',
@@ -364,6 +364,32 @@ const getEarningStatus = async (user: any, year: number) => {
   });
 };
 
+const getAllUsers = async (queryFields: any) => {
+  console.log(queryFields);
+  const { search, page, limit, ...restQuery } = queryFields;
+  const query = search
+    ? {
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
+          { phone: { $regex: search, $options: 'i' } },
+        ],
+      }
+    : {};
+  let queryBuilder = User.find({
+    ...query,
+    ...restQuery,
+    role: queryFields.role ? queryFields.role : { $ne: USER_ROLES.ADMIN },
+  }).select('-password -stripeAccountInfo -accountInformation -authentication');
+
+  if (page && limit) {
+    queryBuilder = queryBuilder.skip((page - 1) * limit).limit(limit);
+  }
+
+  const result = await queryBuilder;
+  return result;
+};
+
 export const UserService = {
   createUserToDB,
   getUserProfileFromDB,
@@ -373,4 +399,5 @@ export const UserService = {
   getCreatorStatus,
   getEventStatus,
   getEarningStatus,
+  getAllUsers,
 };

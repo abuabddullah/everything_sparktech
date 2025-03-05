@@ -130,6 +130,18 @@ const getEarningStatus = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+  const query = req.query;
+  const result = await UserService.getAllUsers(query);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'All Users fetched successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getUserProfile,
@@ -139,4 +151,5 @@ export const UserController = {
   getCreatorStatus,
   getEventStatus,
   getEarningStatus,
+  getAllUsers,
 };
