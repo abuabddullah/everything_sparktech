@@ -75,6 +75,7 @@ const getAllEvents = async (
   queryFields: Record<string, any>,
   user?: any
 ): Promise<IEvent[]> => {
+  console.log(queryFields);
   const { search, page, limit } = queryFields;
   const query = search
     ? {
@@ -88,8 +89,18 @@ const getAllEvents = async (
         ],
       }
     : {};
-  let queryBuilder = Event.find(query);
-
+  let queryBuilder = Event.find({
+    ...query,
+  });
+  if (queryFields.time) {
+    queryFields.time = {
+      $gte: new Date(new Date(queryFields.time).toISOString().split('T')[0]),
+      $lte: new Date(
+        new Date(queryFields.time).toISOString().split('T')[0] +
+          'T23:59:59.999Z'
+      ),
+    };
+  }
   if (page && limit) {
     queryBuilder = queryBuilder.skip((page - 1) * limit).limit(limit);
   }
@@ -102,8 +113,6 @@ const getAllEvents = async (
     const result = await Promise.all(
       finalResult.map(async (event: any) => {
         const existUser = await User.findById(user.id);
-        console.log(existUser);
-        console.log(existUser?.eventWishList);
         const isFavourite = existUser?.eventWishList.includes(event._id);
         return { ...event.toObject(), isFavourite };
       })
