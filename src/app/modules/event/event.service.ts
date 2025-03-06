@@ -107,7 +107,9 @@ const getAllEvents = async (
   delete queryFields.search;
   delete queryFields.page;
   delete queryFields.limit;
-  queryBuilder.find(queryFields);
+  queryBuilder
+    .find(queryFields)
+    .populate({ path: 'creator', select: 'name email profile' });
   if (user) {
     const finalResult = await queryBuilder;
     const result = await Promise.all(
