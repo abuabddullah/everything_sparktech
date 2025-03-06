@@ -66,7 +66,7 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const setUpCreatorPayment = catchAsync(async (req: Request, res: Response) => {
-  const data = req.body.data;
+  const { ...data } = req.body;
   let paths: any[] = [];
 
   // const paths: any[] = [];

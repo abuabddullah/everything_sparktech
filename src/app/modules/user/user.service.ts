@@ -147,8 +147,6 @@ const createCreatorStripeAccount = async (
   paths: any,
   ip: string
 ): Promise<string> => {
-  const values = await JSON.parse(data);
-
   const isExistUser = await User.findOne({ email: user?.email });
   if (!isExistUser) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
@@ -156,7 +154,7 @@ const createCreatorStripeAccount = async (
   if (isExistUser.email !== user.email) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Email doesn't match");
   }
-  const dob = new Date(values.dateOfBirth);
+  const dob = new Date(data.dateOfBirth);
 
   // Process KYC
   const KYCFiles = files;
@@ -182,25 +180,25 @@ const createCreatorStripeAccount = async (
           month: dob.getMonth() + 1,
           year: dob.getFullYear(),
         },
-        id_number: values.idNumber,
+        id_number: data.idNumber,
         first_name:
-          values.name.split(' ')[0] ||
+          data.name.split(' ')[0] ||
           isExistUser.name.split(' ')[0] ||
           isExistUser.name,
         last_name:
-          values.name.split(' ')[1] ||
+          data.name.split(' ')[1] ||
           isExistUser.name.split(' ')[1] ||
           isExistUser.name,
         email: user.email,
-        phone: values.phoneNumber,
+        phone: data.phoneNumber,
         address: {
-          city: values.address.city,
-          country: values.address.country,
-          line1: values.address.line1,
-          state: values.address.state,
-          postal_code: values.address.postal_code,
+          city: data.city,
+          country: data.country,
+          line1: data.line1,
+          state: data.state,
+          postal_code: data.postal_code,
         },
-        ...(values.idNumber && { ssn_last_4: values.idNumber.slice(-4) }),
+        ...(data.idNumber && { ssn_last_4: data.idNumber.slice(-4) }),
         verification: {
           document: {
             front: frontFileId,
@@ -215,8 +213,8 @@ const createCreatorStripeAccount = async (
   // Create account
   const account = await stripe.accounts.create({
     type: 'custom',
-    country: values.address.country,
-    email: values.email || isExistUser.email,
+    country: data.country,
+    email: data.email || isExistUser.email,
     capabilities: {
       card_payments: { requested: true },
       transfers: { requested: true },
@@ -228,12 +226,12 @@ const createCreatorStripeAccount = async (
     },
     external_account: {
       object: 'bank_account',
-      account_number: values.bank_info.account_number,
-      country: values.bank_info.country,
-      currency: values.bank_info.currency,
-      account_holder_name: values.bank_info.account_holder_name,
-      account_holder_type: values.bank_info.account_holder_type,
-      routing_number: values.bank_info.routing_number,
+      account_number: data.account_number,
+      country: data.country,
+      currency: data.currency,
+      account_holder_name: data.account_holder_name,
+      account_holder_type: data.account_holder_type,
+      routing_number: data.routing_number,
     },
     tos_acceptance: {
       date: Math.floor(Date.now() / 1000),
@@ -251,8 +249,7 @@ const createCreatorStripeAccount = async (
     //@ts-ignore
     isExistUser?.accountInformation?.stripeAccountId = account.id;
     //@ts-ignore
-    isExistUser?.accountInformation?.bankAccountNumber =
-      values.bank_info.account_number;
+    isExistUser?.accountInformation?.bankAccountNumber = data.account_number;
     //@ts-ignore
     isExistUser?.accountInformation?.externalAccountId =
       account.external_accounts.data[0].id;

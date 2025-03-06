@@ -9,7 +9,7 @@ const eventSchema = new Schema<IEvent, EventModel>(
     time: { type: Date, required: true },
     description: { type: String, required: true },
     tags: { type: [String], required: true },
-    price: { type: Number, required: true },
+    price: { type: Number, required: false },
     creator: {
       type: Schema.Types.ObjectId,
       ref: 'User',
