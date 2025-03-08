@@ -152,6 +152,16 @@ const getOneUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAdminStatus = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getAdminStatus();
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Admin status fetched successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getUserProfile,
@@ -163,4 +173,5 @@ export const UserController = {
   getEarningStatus,
   getAllUsers,
   getOneUser,
+  getAdminStatus,
 };

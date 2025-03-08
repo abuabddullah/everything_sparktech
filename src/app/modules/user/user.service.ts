@@ -423,6 +423,28 @@ const getOneUser = async (id: string) => {
   return result;
 };
 
+const getAdminStatus = async () => {
+  const allEvent = await Event.find();
+  const totalEarning = await Promise.all(
+    allEvent.map(async event => {
+      const groups = await Group.find({ event: event._id });
+      const totalEarning = groups.reduce((acc, group: any) => {
+        const eventEarning = (group.members.length || 0) * event.price;
+        return acc + eventEarning * 0.1;
+      }, 0);
+      return totalEarning;
+    })
+  ).then(sum => sum.reduce((acc, curr) => acc + curr, 0));
+  const [totalUsers, totalCreator, totalEvent, totalJobs] = await Promise.all([
+    User.countDocuments({ role: USER_ROLES.USER }),
+    User.countDocuments({ role: USER_ROLES.CREATOR }),
+    Event.countDocuments(),
+    Job.countDocuments(),
+  ]);
+
+  return { totalUsers, totalCreator, totalEvent, totalJobs, totalEarning };
+};
+
 export const UserService = {
   createUserToDB,
   getUserProfileFromDB,
@@ -434,4 +456,5 @@ export const UserService = {
   getEarningStatus,
   getOneUser,
   getAllUsers,
+  getAdminStatus,
 };

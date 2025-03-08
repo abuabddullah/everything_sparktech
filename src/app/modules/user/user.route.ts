@@ -21,6 +21,7 @@ router.get(
   auth(USER_ROLES.CREATOR),
   UserController.getCreatorStatus
 );
+router.get('/home', auth(USER_ROLES.ADMIN), UserController.getAdminStatus);
 router.get(
   '/events',
   auth(...Object.values(USER_ROLES)),
