@@ -180,7 +180,7 @@ const createCreatorStripeAccount = async (
           month: dob.getMonth() + 1,
           year: dob.getFullYear(),
         },
-        id_number: data.idNumber,
+        id_number: Number(data.idNumber),
         first_name:
           data.name.split(' ')[0] ||
           isExistUser.name.split(' ')[0] ||
@@ -445,6 +445,75 @@ const getAdminStatus = async () => {
   return { totalUsers, totalCreator, totalEvent, totalJobs, totalEarning };
 };
 
+const getAdminEarnings = async (year: number) => {
+  const allEvent = await Event.find();
+  const totalEarningPerMonth = await Promise.all(
+    [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ].map(async (_, i) => {
+      const groups = await Group.find({
+        event: { $in: allEvent.map(event => event._id) },
+        createdAt: {
+          $gte: new Date(year, i, 1),
+          $lte: new Date(year, i + 1, 0),
+        },
+      });
+      const totalEarning = groups.reduce((acc, group: any) => {
+        const eventEarning =
+          (group.members.length || 0) *
+          //@ts-ignore
+          allEvent?.find(event => event._id.equals(group.event)).price;
+        return acc + eventEarning * 0.1;
+      }, 0);
+      return { month: _ as string, totalEarning };
+    })
+  ).then(result =>
+    result.sort(
+      (a, b) =>
+        [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ].indexOf(a.month) -
+        [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ].indexOf(b.month)
+    )
+  );
+  return totalEarningPerMonth;
+};
+
 export const UserService = {
   createUserToDB,
   getUserProfileFromDB,
@@ -457,4 +526,5 @@ export const UserService = {
   getOneUser,
   getAllUsers,
   getAdminStatus,
+  getAdminEarnings,
 };

@@ -23,6 +23,11 @@ router.get(
 );
 router.get('/home', auth(USER_ROLES.ADMIN), UserController.getAdminStatus);
 router.get(
+  '/home/earnings',
+  auth(USER_ROLES.ADMIN),
+  UserController.getAdminEarnings
+);
+router.get(
   '/events',
   auth(...Object.values(USER_ROLES)),
   UserController.getEventStatus
