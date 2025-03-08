@@ -514,6 +514,43 @@ const getAdminEarnings = async (year: number) => {
   return totalEarningPerMonth;
 };
 
+const getUserStatus = async (year: number) => {
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const result = await Promise.all(
+    months.map(async month => {
+      const totalUsers = await User.countDocuments({
+        role: USER_ROLES.USER,
+        createdAt: {
+          $gte: new Date(year, months.indexOf(month), 1),
+          $lte: new Date(year, months.indexOf(month) + 1, 0),
+        },
+      });
+      const totalCreator = await User.countDocuments({
+        role: USER_ROLES.CREATOR,
+        createdAt: {
+          $gte: new Date(year, months.indexOf(month), 1),
+          $lte: new Date(year, months.indexOf(month) + 1, 0),
+        },
+      });
+      return { month, totalUsers, totalCreator };
+    })
+  );
+  return result;
+};
+
 export const UserService = {
   createUserToDB,
   getUserProfileFromDB,
@@ -527,4 +564,5 @@ export const UserService = {
   getAllUsers,
   getAdminStatus,
   getAdminEarnings,
+  getUserStatus,
 };

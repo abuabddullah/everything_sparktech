@@ -172,6 +172,17 @@ const getAdminEarnings = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getUserStatus = catchAsync(async (req: Request, res: Response) => {
+  const year = req.query.year || new Date().getFullYear();
+  const result = await UserService.getUserStatus(Number(year));
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'User status fetched successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getUserProfile,
@@ -185,4 +196,5 @@ export const UserController = {
   getOneUser,
   getAdminStatus,
   getAdminEarnings,
+  getUserStatus,
 };
