@@ -14,6 +14,7 @@ export type IEvent = {
   price: number;
   creator: Types.ObjectId;
   address: string;
+  type: 'adult' | 'kids' | 'family';
   coordinate: Array<number>;
 };
 

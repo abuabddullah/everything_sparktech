@@ -15,6 +15,7 @@ const eventSchema = new Schema<IEvent, EventModel>(
       ref: 'User',
       required: true,
     },
+    type: { type: String, enum: ['adult', 'child', 'family'], required: true },
     address: { type: String, required: true },
     coordinate: { type: [Number], required: true },
   },
