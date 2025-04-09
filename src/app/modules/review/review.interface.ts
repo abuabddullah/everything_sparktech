@@ -4,7 +4,7 @@ export type IReview = {
   organization: Types.ObjectId;
   description: string;
   star: number;
-  replyTo?: Types.ObjectId;
+  // replyTo?: Types.ObjectId;
   user: Types.ObjectId;
 };
 

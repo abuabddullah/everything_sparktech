@@ -9,7 +9,7 @@ const reviewSchema = new Schema<IReview, ReviewModel>(
       required: true,
     },
     description: { type: String, required: true },
-    replyTo: { type: Schema.Types.ObjectId, ref: 'Review', required: false },
+    // replyTo: { type: Schema.Types.ObjectId, ref: 'Review', required: false },
     star: { type: Number, required: true },
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   },

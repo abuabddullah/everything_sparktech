@@ -9,6 +9,8 @@ import { Review } from '../review/review.model';
 const createOrganizations = async (
   payload: IOrganizations
 ): Promise<IOrganizations> => {
+  if (typeof payload.locationCoordinates === 'string')
+    payload.locationCoordinates = JSON.parse(payload.locationCoordinates);
   const result = await Organizations.create(payload);
   if (!result) {
     throw new ApiError(

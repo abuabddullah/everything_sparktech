@@ -21,6 +21,7 @@ const createEvent = async (payload: IEvent): Promise<IEvent> => {
   const subscription = await Subscription.findOne({
     user: creator._id,
   });
+
   if (!subscription) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Subscription not found!');
   }
@@ -192,17 +193,20 @@ const getEventStatus = async (userId: string): Promise<any> => {
   if (!result) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Event not found!');
   }
+
   const group = await Group.findOne({ event: result._id });
   const totalEarning = group?.members?.reduce(
     (acc: number, participant: any) => {
-      return acc + result.price;
+      if (participant.toString() === userId) return 0;
+      return acc + result.price * 0.9;
     },
     0
   );
+
   const finalResult = {
     ...result.toObject(),
     totalEarning,
-    ticketSold: group?.members?.length,
+    ticketSold: group?.members?.length! - 1 || 0,
   };
   return finalResult;
 };
@@ -212,19 +216,23 @@ const getEventStatusAll = async (id: string): Promise<any> => {
   if (!result) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Event not found!');
   }
+
   const finalResult = await Promise.all([
     ...result.map(async (event: any) => {
       const group = await Group.findOne({ event: event._id });
       const totalEarning = group?.members?.reduce(
         (acc: number, participant: any) => {
+          console.log(participant, id);
+          if (participant.toString() === id) return 0;
           return acc + event.price;
         },
         0
       );
+
       return {
         ...event.toObject(),
         totalEarning: (totalEarning || 0) * 0.9,
-        ticketSold: group?.members?.length,
+        ticketSold: group?.members?.length! - 1 || 0,
       };
     }),
   ]);

@@ -282,13 +282,13 @@ const getCreatorStatus = async (user: any) => {
   );
   const totalParticipants = eventsWithGroups.reduce(
     (acc: number, { group }) => {
-      return acc + (group?.members?.length || 0);
+      return acc + (group?.members?.length! - 1 || 0);
     },
     0
   );
   const totalEarning = eventsWithGroups.reduce(
     (acc: number, { event, group }) => {
-      const eventEarning = (group?.members?.length || 0) * event.price;
+      const eventEarning = (group?.members?.length! - 1 || 0) * event.price;
       return acc + eventEarning * 0.9;
     },
     0
@@ -351,7 +351,7 @@ const getEarningStatus = async (user: any, year: number) => {
     );
     const totalEarning = eventsWithGroups.reduce(
       (acc: number, { event, group }) => {
-        const eventEarning = (group?.members?.length || 0) * event.price;
+        const eventEarning = (group?.members?.length! - 1 || 0) * event.price;
         return acc + eventEarning * 0.9;
       },
       0
