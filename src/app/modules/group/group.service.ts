@@ -7,6 +7,7 @@ import Stripe from 'stripe';
 import { Event } from '../event/event.model';
 import { User } from '../user/user.model';
 import { IUser } from '../user/user.interface';
+import { Types } from 'mongoose';
 
 const createGroup = async (payload: IGroup): Promise<IGroup> => {
   const result = await Group.create(payload);
@@ -72,12 +73,26 @@ const deleteGroup = async (id: string): Promise<IGroup | null> => {
   return result;
 };
 
-const getMyGroupFromDB = async (userId: string): Promise<IGroup[]> => {
-  const result = await Group.find({ members: { $in: [userId] } }).populate({
-    path: 'members',
-    select: 'name email profile',
+const getMyGroupFromDB = async (userId: string) => {
+  const result = await Group.find({ members: { $in: [userId] } })
+    .populate({
+      path: 'members',
+      select: 'name email profile',
+    })
+    .populate<{
+      event: { _id: Types.ObjectId; name: string; thumbnailImage: string };
+    }>('event', 'name thumbnailImage')
+    .lean();
+
+  const groupsWithImage = result.map(group => {
+    const { event, ...rest } = group;
+    return {
+      ...rest,
+      images: [event.thumbnailImage],
+    };
   });
-  return result;
+  console.log(groupsWithImage);
+  return groupsWithImage;
 };
 
 const createPaymentIntent = async (payload: any) => {

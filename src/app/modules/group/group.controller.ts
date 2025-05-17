@@ -65,6 +65,7 @@ const getMyGroup = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
   const result = await GroupService.createPaymentIntent(req.body);
   sendResponse(res, {

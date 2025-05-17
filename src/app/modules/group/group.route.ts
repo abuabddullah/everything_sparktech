@@ -19,7 +19,6 @@ router.post(
   auth(...rolesOfAccess),
   GroupController.createGroupIndividual
 );
-router.get('/', auth(USER_ROLES.ADMIN), GroupController.getAllGroups);
 router.get(
   '/my',
   auth(...rolesOfAccess, USER_ROLES.USER),
@@ -34,4 +33,5 @@ router.patch(
 );
 router.delete('/:id', auth(...rolesOfAccess), GroupController.deleteGroup);
 router.use('/join', JoinRoutes);
+router.get('/', auth(USER_ROLES.ADMIN), GroupController.getAllGroups);
 export const GroupRoutes = router;
