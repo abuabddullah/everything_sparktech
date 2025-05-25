@@ -13,7 +13,7 @@ const vehicleSchema = new Schema<IVehicle>(
     licenseNumber: { type: String, required: true, unique: true },
     vin: { type: String },
     fuelType: { type: String, enum: Object.values(FUEL_TYPES) },
-    noOfSeats: { type: Number, required: true },
+    noOfSeats: { type: Number, required: true,max: 7, min: 2 },
     noOfDoors: { type: Number, required: true },
     noOfLuggages: { type: Number, required: true },
     image: { type: String },
