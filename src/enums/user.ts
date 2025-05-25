@@ -3,4 +3,5 @@ export enum USER_ROLES {
   ADMIN = 'ADMIN',
   USER = 'USER',
   DRIVER = 'DRIVER',
+  TEAM_MEMBER = 'TEAM_MEMBER',
 }

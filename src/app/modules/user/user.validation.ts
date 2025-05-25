@@ -11,6 +11,11 @@ const createUserZodSchema = z.object({
   }),
 });
 
+const createTeamMemberZodSchema = z.object({
+  name: z.string({ required_error: 'Name is required' }),
+  designation: z.string({ required_error: 'Designation is required' }),
+});
+
 const createAdminZodSchema = z.object({
   body: z.object({
     name: z.string({ required_error: 'Name is required' }),
@@ -27,6 +32,7 @@ const createDriverZodSchema = z.object({
   email: z.string({ required_error: 'Email is required' }),
   password: z.string().optional(),
   licenseNumber: z.string(),
+  address: z.string(),
 })
 
 const updateUserZodSchema = z.object({
@@ -40,6 +46,7 @@ const updateUserZodSchema = z.object({
 
 export const UserValidation = {
   createUserZodSchema,
+  createTeamMemberZodSchema,
   updateUserZodSchema,
   createAdminZodSchema,
   createDriverZodSchema

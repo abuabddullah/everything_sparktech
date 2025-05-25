@@ -41,6 +41,34 @@ const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   return createUser;
 };
 
+const createTeamMemberToDB = async (payload: Partial<IUser>): Promise<IUser> => {
+  //set role
+  payload.role = USER_ROLES.TEAM_MEMBER;
+  payload.verified = true;
+  const emailPrefix = payload.name?.trim().replace(/\s+/g, ''); // Removes all spaces
+  payload.email = `${emailPrefix}@${config.company.domain}`; // Ensure email is formatted correctly
+  if (!payload.password) {
+    payload.password = config.company.default_password; // Use default password if not provided
+  }
+  const createUser = await User.create(payload);
+  if (!createUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user');
+  }
+
+  //send email
+  const values = {
+    name: createUser.name,
+    email: createUser.email!,
+    password: createUser.password!,
+    designation: createUser.designation!,
+  };
+  const createAccountTemplate = emailTemplate.createTeamMemberAccount(values);
+  emailHelper.sendEmail(createAccountTemplate);
+
+
+  return createUser;
+};
+
 const createAdminToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   //set role
   payload.role = USER_ROLES.ADMIN;
@@ -50,7 +78,7 @@ const createAdminToDB = async (payload: Partial<IUser>): Promise<IUser> => {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user');
   }
 
-  
+
   const values = {
     name: createAdmin.name,
     email: createAdmin.email!,
@@ -101,6 +129,9 @@ const createDriverToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   //set role
   payload.role = USER_ROLES.DRIVER;
   payload.verified = true;
+  if (!payload.password) {
+    payload.password = config.company.default_password; // Use default password if not provided
+  }
   const createDriver = await User.create(payload); // name,dob,image,phone, email , password,licenseNumber
   if (!createDriver) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user');
@@ -109,12 +140,37 @@ const createDriverToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   const values = {
     name: createDriver.name,
     email: createDriver.email!,
-    password: payload.password!,
+    password: createDriver.password!,
   };
   const createAccountTemplate = emailTemplate.createDriverAccount(values);
   emailHelper.sendEmail(createAccountTemplate);
 
   return createDriver;
+};
+
+const getAllDriverFromDB = async (): Promise<Partial<IUser[]>> => {
+  const allDriverArray = await User.find({
+    role: "DRIVER"
+  });
+  if (!allDriverArray) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Driver Not Available!");
+  }
+
+  const driversWithVehicles = await Promise.all(
+    allDriverArray.map(async (user) => {
+      const userObj = user.toObject(); // Convert to plain object
+      if (user.role === USER_ROLES.DRIVER) {
+        const vehicle = await user.getVehicle();
+        return {
+          ...userObj,
+          vehicle, // Add vehicle info only for drivers
+        };
+      }
+      return userObj;
+    })
+  );
+
+  return driversWithVehicles;
 };
 
 const getUserProfileFromDB = async (
@@ -153,11 +209,13 @@ const updateProfileToDB = async (
 
 export const UserService = {
   createUserToDB,
+  createTeamMemberToDB,
   createAdminToDB,
   getAllAdminFromDB,
   getAnAdminFromDB,
   deleteAnAdminFromDB,
   createDriverToDB,
+  getAllDriverFromDB,
   getUserProfileFromDB,
   updateProfileToDB,
 };

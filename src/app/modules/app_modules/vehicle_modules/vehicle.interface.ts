@@ -1,12 +1,14 @@
-import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_TYPES } from "../../../../enums/vehicle";
+import { Types } from "mongoose";
+import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_STATUS, VEHICLE_TYPES } from "../../../../enums/vehicle";
 
 export type IVehicle = {
+    _id?: Types.ObjectId;
     carType: VEHICLE_TYPES;
     name: string;
     model: string;
     transmissionType: TRANSMISSION_TYPES;
     shortDescription: string;
-    licensePlate: string;
+    licenseNumber: string;
     vin?: string; // Optional field for Vehicle Identification Number
     fuelType?: FUEL_TYPES; // Optional field for fuel type
     noOfSeats: number;
@@ -14,5 +16,7 @@ export type IVehicle = {
     noOfLuggages: number;
     image?: string; // Optional field for vehicle image
     dailyRate: number;
+    status: VEHICLE_STATUS; // e.g., 
+    lastMaintenanceDate?: Date; // Optional field for last maintenance date
     [key: string]: any; // Allow additional properties
 };

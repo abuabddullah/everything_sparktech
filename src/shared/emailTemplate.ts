@@ -19,10 +19,32 @@ const createAccount = (values: ICreateAccount) => {
   return data;
 };
 
-const createAdminAccount = (values: ICreateAdminAccount) => {
+const createTeamMemberAccount = (values: ICreateAccount) => {
+  const data = {
+    to: values.email,  // User's email address
+    subject: `Hi! ${values.name}, Your Account Credentials`,  // Email subject
+    html: `
+    <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 50px; padding: 20px; color: #555;">
+      <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <img src="https://i.postimg.cc/6pgNvKhD/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
+        <h2 style="color: #277E16; font-size: 24px; margin-bottom: 20px;">Hey! ${values.name}, Your Toothlens Account Credentials</h2>
+        <div style="text-align: center;">
+            <p style="color: #555; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">This code is valid for 3 minutes.</p>
+            <p style="color: #555; font-size: 14px; line-height: 1.5;">Your account details:</p>
+            <p style="color: #555; font-size: 16px; line-height: 1.5;">Designation: ${values.designation}</p>
+            <p style="color: #555; font-size: 16px; line-height: 1.5;">Email: ${values.email}</p>
+            <p style="color: #555; font-size: 16px; line-height: 1.5;">Password: ${values.password}</p>
+        </div>
+      </div>
+    </body>`,
+  };
+  return data;
+};
+
+const createAdminAccount = (values: ICreateAccount) => {
   const data = {
     to: values.email,
-    subject: 'Verify your account',
+    subject: `Hi! ${values.name}, Your Account Credentials`,  // Email subject
     html: `<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 50px; padding: 20px; color: #555;">
   <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
     <img src="https://i.postimg.cc/6pgNvKhD/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width: 150px;" />
@@ -54,10 +76,10 @@ const createAdminAccount = (values: ICreateAdminAccount) => {
   return data;
 };
 
-const createDriverAccount = (values: ICreateAdminAccount) => {
+const createDriverAccount = (values: ICreateAccount) => {
   const data = {
     to: values.email,
-    subject: 'Verify your account',
+    subject: `Hi! ${values.name}, Your Account Credentials`,  // Email subject
     html: `<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 50px; padding: 20px; color: #555;">
   <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
     <img src="https://i.postimg.cc/6pgNvKhD/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width: 150px;" />
@@ -110,6 +132,7 @@ const resetPassword = (values: IResetPassword) => {
 
 export const emailTemplate = {
   createAccount,
+  createTeamMemberAccount,
   createAdminAccount,
   createDriverAccount,
   resetPassword,

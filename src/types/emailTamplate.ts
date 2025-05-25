@@ -1,7 +1,9 @@
 export type ICreateAccount = {
   name: string;
-  email: string;
-  otp: number;
+  email?: string;
+  otp?: number;
+  password?: string;
+  designation?: string;
 };
 export type ICreateAdminAccount = {
   name: string;

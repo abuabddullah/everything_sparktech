@@ -26,4 +26,9 @@ export default {
   admin: {
     password: process.env.DEFAULT_ADMIN_PASSWORD,
   },
+  company: {
+    name: process.env.COMPANY_NAME,
+    domain: process.env.COMPANY_DOMAIN,
+    default_password: process.env.COMPANY_DEFAULT_PASSWORD,
+  },
 };

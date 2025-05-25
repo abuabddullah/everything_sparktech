@@ -5,12 +5,16 @@ import config from '../../../config';
 import { USER_ROLES } from '../../../enums/user';
 import ApiError from '../../../errors/ApiError';
 import { IUser, UserModal } from './user.interface';
+import { Vehicle } from '../app_modules/vehicle_modules/vehicle.model';
 
 const userSchema = new Schema<IUser, UserModal>(
   {
     name: {
       type: String,
       required: true,
+    },
+    designation: {
+      type: String,
     },
     dateOfBirth: {
       type: Date,
@@ -23,6 +27,11 @@ const userSchema = new Schema<IUser, UserModal>(
       default: null,
     },
     phone: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    address: {
       type: String,
       required: false,
       default: null,
@@ -77,6 +86,17 @@ const userSchema = new Schema<IUser, UserModal>(
   },
   { timestamps: true }
 );
+
+
+userSchema.methods.getVehicle = async function () {
+  if (this.role !== USER_ROLES.DRIVER || !this.licenseNumber) {
+    return null;
+  }
+
+  const vehicle = await Vehicle.findOne({ licenseNumber: this.licenseNumber });
+  return vehicle;
+};
+
 
 //exist user check
 userSchema.statics.isExistUserById = async (id: string) => {

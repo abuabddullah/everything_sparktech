@@ -1,5 +1,5 @@
 export type ISendEmail = {
-  to: string;
-  subject: string;
-  html: string;
+  to: string | undefined;
+  subject: string | undefined;
+  html: string | undefined;
 };

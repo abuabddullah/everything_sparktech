@@ -1,4 +1,7 @@
+import { Types } from "mongoose";
+
 export interface ILocation {
+    _id?: Types.ObjectId;
     location: string;
     postalCode?: string;
     country?: string;

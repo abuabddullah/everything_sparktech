@@ -1,5 +1,6 @@
 # Project Name
-its *_car_rental_*
+its *_car_rental_* dead line : **june 10 7 pm**
+<br/>
 This is a template project for backend development using Typescript, Node.js, Express, Mongoose, Bcrypt, JWT, NodeMailer, Multer, ESLint, and Prettier. The aim is to reduce setup time for new backend projects.
 
 

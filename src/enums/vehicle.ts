@@ -18,3 +18,9 @@ export enum FUEL_TYPES {
   HYBRID = 'HYBRID',
 }
 
+export enum VEHICLE_STATUS {
+  AVAILABLE = 'AVAILABLE',
+  RENTED = 'RENTED',
+  MAINTENANCE = 'MAINTENANCE',
+  SOLD = 'SOLD',
+}

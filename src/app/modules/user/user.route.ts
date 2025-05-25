@@ -6,13 +6,14 @@ import validateRequest from '../../middlewares/validateRequest';
 import { UserController } from './user.controller';
 import { UserValidation } from './user.validation';
 import { getSingleFilePath } from '../../../shared/getFilePath';
+import { createLogger } from 'winston';
 const router = express.Router();
 
 router
   .route('/profile')
-  .get(auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.DRIVER), UserController.getUserProfile)
+  .get(auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.DRIVER, USER_ROLES.TEAM_MEMBER), UserController.getUserProfile)
   .patch(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.DRIVER),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.DRIVER, USER_ROLES.TEAM_MEMBER),
     fileUploadHandler(),
     (req: Request, res: Response, next: NextFunction) => {
       if (req.body.data) {
@@ -24,6 +25,21 @@ router
     }
   );
 
+router
+  .route('/team-member')
+  .post(
+    auth(USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN),
+    fileUploadHandler(),
+    (req: Request, res: Response, next: NextFunction) => {
+      if (req.body.data) {
+        req.body = UserValidation.createTeamMemberZodSchema.parse(
+          JSON.parse(req.body.data)
+        );
+      }
+      // Proceed to controller
+      return UserController.createTeamMember(req, res, next);
+    }
+  );
 router
   .route('/admin')
   .post(
@@ -55,6 +71,10 @@ router
 
 router
   .route('/driver')
+  .get(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    UserController.getAllDriver
+  )
   .post(
     auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
     fileUploadHandler(),
@@ -68,7 +88,7 @@ router
             let image = getSingleFilePath(req.files, 'image');
             parsedData.image = image;
           }
-          
+
 
           // Validate and assign to req.body
           req.body = UserValidation.createDriverZodSchema.parse(parsedData);

@@ -19,6 +19,24 @@ const createUser = catchAsync(
   }
 );
 
+const createTeamMember = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let image = getSingleFilePath(req.files, 'image');
+    const userData = {
+      ...req.body,
+      image,
+    };
+    const result = await UserService.createTeamMemberToDB(userData);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'User created successfully',
+      data: result,
+    });
+  }
+);
+
 const createAdmin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { ...userData } = req.body; // name, email , password
@@ -34,7 +52,6 @@ const createAdmin = catchAsync(
 );
 
 const getAllAdmin = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
   const result = await UserService.getAllAdminFromDB();
 
   sendResponse(res, {
@@ -46,7 +63,7 @@ const getAllAdmin = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAnAdmin = catchAsync(async (req: Request, res: Response) => {
-  const {id} = req.params;
+  const { id } = req.params;
   const result = await UserService.getAnAdminFromDB(id);
 
   sendResponse(res, {
@@ -58,7 +75,7 @@ const getAnAdmin = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteAnAdmin = catchAsync(async (req: Request, res: Response) => {
-  const {id} = req.params;
+  const { id } = req.params;
   const result = await UserService.deleteAnAdminFromDB(id);
 
   sendResponse(res, {
@@ -72,12 +89,6 @@ const deleteAnAdmin = catchAsync(async (req: Request, res: Response) => {
 
 const createDriver = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    // // const { ...userData } = req.body; 
-    // let image = getSingleFilePath(req.files, 'image');
-    // const data = {
-    //   image,
-    //   ...req.body, // name,dob,image,phone, email , password,licenseNumber
-    // };
     const result = await UserService.createDriverToDB(req.body);
 
     sendResponse(res, {
@@ -88,6 +99,18 @@ const createDriver = catchAsync(
     });
   }
 );
+
+
+const getAllDriver = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getAllDriverFromDB();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Profile data retrieved successfully',
+    data: result,
+  });
+});
 
 const getUserProfile = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
@@ -122,4 +145,4 @@ const updateProfile = catchAsync(
   }
 );
 
-export const UserController = { createUser,createAdmin,getAllAdmin,getAnAdmin,deleteAnAdmin,createDriver, getUserProfile, updateProfile };
+export const UserController = { createUser, createTeamMember, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, createDriver, getAllDriver, getUserProfile, updateProfile };
