@@ -1,5 +1,5 @@
 import QueryBuilder from "../../../builder/QueryBuilder";
-import { VehicleRangeableFieldsFilter, VehicleSearchableFields } from "./vehicle.constants";
+import { VehicleSearchableFields } from "./vehicle.constants";
 import { IVehicle } from "./vehicle.interface";
 import { Vehicle } from "./vehicle.model";
 
