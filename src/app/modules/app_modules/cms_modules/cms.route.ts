@@ -24,9 +24,9 @@ router.put('/company-overview/faq', CmsController.editFAQ);
 // Delete FAQ
 router.delete('/company-overview/faq', CmsController.deleteFAQ);
 // Add logo
-router.post('/company-overview/logo', CmsController.addLogo);
+// router.post('/company-overview/logo', CmsController.addLogo);
 
 // Edit logo
-router.put('/company-overview/logo', CmsController.editLogo);
+// router.put('/company-overview/logo', CmsController.editLogo);
 
 module.exports = router;
