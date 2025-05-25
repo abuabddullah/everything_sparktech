@@ -15,7 +15,20 @@ const createVehicle = catchAsync(
     });
   }
 );
+const getAllVehicles = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await VehicleService.getAllVehiclesFromDB(req.query);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Vehicles retrieved successfully',
+      data: result,
+    });
+  }
+);
 
 export const VehicleController = {
-    createVehicle
+    createVehicle,
+    getAllVehicles,
 }

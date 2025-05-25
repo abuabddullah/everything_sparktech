@@ -6,6 +6,7 @@ export type IVehicle = {
     carType: VEHICLE_TYPES;
     name: string;
     model: string;
+    brand?: string;
     transmissionType: TRANSMISSION_TYPES;
     shortDescription: string;
     licenseNumber: string;
@@ -18,5 +19,11 @@ export type IVehicle = {
     dailyRate: number;
     status: VEHICLE_STATUS; // e.g., 
     lastMaintenanceDate?: Date; // Optional field for last maintenance date
+    avgRating?: number; // Optional field for vehicle rating
+    reviews?: {
+        user: Types.ObjectId; // Reference to User
+        comment: string;
+        rating: number; // Rating between 1 and 5
+    }[];
     [key: string]: any; // Allow additional properties
 };

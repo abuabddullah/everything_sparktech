@@ -8,7 +8,8 @@ import fileUploadHandler from '../../../middlewares/fileUploadHandler';
 import { getSingleFilePath } from '../../../../shared/getFilePath';
 const router = express.Router();
 
-router.route('/').post(
+router.route('/')
+.post(
     auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
 
     fileUploadHandler(),
@@ -36,7 +37,10 @@ router.route('/').post(
             next(error); // Pass validation errors to error handler
         }
     }
-);
+)
+.get(VehicleController.getAllVehicles);
+
+
 
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
     // Handle fetching all vehicles
