@@ -5,7 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import { LocationService } from "./location.service";
 
 const getAllLocations = catchAsync(async (req: Request, res: Response) => {
-  const result = await LocationService.getAllLocations();
+  const result = await LocationService.getAllLocations(req.query);
 
   sendResponse(res, {
     success: true,

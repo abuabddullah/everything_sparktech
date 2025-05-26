@@ -1,12 +1,3 @@
-// export default{
-//     name: 'Extra Service',
-//     description: 'This module handles extra services offered by the company, such as insurance, GPS, and child seats.',
-//     icon: 'fa-solid fa-concierge-bell',
-//     cost: 0,
-//     status: 'active' | 'inactive',
-
-// }
-
 
 
 import mongoose, { Schema, Document } from 'mongoose';

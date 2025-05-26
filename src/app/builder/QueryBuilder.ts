@@ -33,7 +33,14 @@ class QueryBuilder<T> {
     const excludeFields = ['searchTerm', 'sort', 'page', 'limit', 'fields'];
     excludeFields.forEach(el => delete queryObj[el]);
 
-    this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+    // this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>); // this line of code is for strict value filtering but considering rangeable filter like filtering for price range or rating range this line will fail soo need ot comment out and work as bellow
+
+    
+    // Filter For Price and Rating
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
+    this.modelQuery = this.modelQuery.find(JSON.parse(queryStr));
+
     return this;
   }
 

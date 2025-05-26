@@ -2,14 +2,24 @@ import { StatusCodes } from "http-status-codes";
 import ApiError from "../../../../errors/ApiError";
 import { Location } from "./location.model";
 import { ILocation } from "./location.interface";
+import QueryBuilder from "../../../builder/QueryBuilder";
+import { LocationSearchableFields } from "./location.constant";
 
-const getAllLocations = async (): Promise<Partial<ILocation[]>> => {
-    const allLocations = await Location.find();
-    if (!allLocations) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, "Locations Not Available!");
-    }
+const getAllLocations = async (query: Record<string, unknown>) => {
+    const locationQueryBuilder = new QueryBuilder(Location.find(), query)
+        .search(LocationSearchableFields)
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
 
-    return allLocations;
+    const result = await locationQueryBuilder.modelQuery;
+    const meta = await locationQueryBuilder.getPaginationInfo();
+
+    return {
+        meta,
+        result,
+    };
 };
 
 

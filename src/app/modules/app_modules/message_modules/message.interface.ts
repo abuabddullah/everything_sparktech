@@ -1,7 +1,10 @@
-// import { Types } from "mongoose";
+import { Model, Types } from 'mongoose';
 
-// {
-//     chatRoomId: Types.ObjectId of chatroom; // Reference to ChatRoom model
-//     senderId: Types.ObjectId of user; // Reference to User model
-//     content: string; // Message content
-// }
+export type IMessage = {
+  chatId: Types.ObjectId;
+  sender: Types.ObjectId;
+  text?: string;
+  image?: string;
+};
+
+export type MessageModel = Model<IMessage, Record<string, unknown>>;

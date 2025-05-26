@@ -4,7 +4,8 @@ const createLocationValidation = z.object({
     body: z.object({
         location: z.string({ required_error: 'Location name is required' }),
         postalCode: z.string().optional(),
-        country: z.string({ required_error: 'Country is required' }),
+        country: z.string({ required_error: 'Country is required' }).optional(),
+        state: z.string({ required_error: 'State is required' }).optional(),
         coordinates: z.object({
             lat: z.number().optional(),
             lng: z.number().optional(),

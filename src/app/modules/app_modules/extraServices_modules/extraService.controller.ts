@@ -19,21 +19,24 @@ export const createExtraService = catchAsync(
         sendResponse(res, {
             success: true,
             statusCode: StatusCodes.OK,
-            message: 'User created successfully',
+            message: 'Extra Service created successfully',
             data: result,
         });
     }
 );
 
-export const getAllExtraServices = async (_req: Request, res: Response) => {
-    try {
-        const extraServices = await ExtraServiceModel.find();
-        return res.status(200).json(extraServices);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
-    }
-};
+export const getAllExtraServices = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await ExtraService.getAllExtraServicesFromDB(req.query);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Extra services retrieved successfully',
+      data: result,
+    });
+  }
+);
 
 export const updateExtraService = async (req: Request, res: Response) => {
     const { id } = req.params;

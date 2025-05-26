@@ -4,4 +4,5 @@ export enum USER_ROLES {
   USER = 'USER',
   DRIVER = 'DRIVER',
   TEAM_MEMBER = 'TEAM_MEMBER',
+  CLIENT = 'CLIENT',
 }
