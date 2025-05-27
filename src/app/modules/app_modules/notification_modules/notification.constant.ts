@@ -1,0 +1,16 @@
+
+export enum NOTIFICATION_CATEGORIES {
+    RESERVATION = 'RESERVATION',
+    ORDER = 'ORDER',
+    CHAT = 'CHAT',
+    SYSTEM = 'SYSTEM',
+    PROMOTION = 'PROMOTION',
+}
+
+export enum NOTIFICATION_TYPE {
+    ADMIN = "ADMIN",
+    USER = "USER",
+    SUPER_ADMIN = "SUPER_ADMIN",
+    CLIENT = "CLIENT",
+    DRIVER = "DRIVER",
+}
