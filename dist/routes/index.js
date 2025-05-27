@@ -9,6 +9,7 @@ const user_route_1 = require("../app/modules/user/user.route");
 const vehicle_route_1 = require("../app/modules/app_modules/vehicle_modules/vehicle.route");
 const extraService_route_1 = require("../app/modules/app_modules/extraServices_modules/extraService.route");
 const location_route_1 = require("../app/modules/app_modules/location_modules/location.route");
+const booking_route_1 = require("../app/modules/app_modules/booking_modules/booking.route");
 const router = express_1.default.Router();
 const apiRoutes = [
     {
@@ -30,6 +31,10 @@ const apiRoutes = [
     {
         path: '/location',
         route: location_route_1.LocationRoutes,
+    },
+    {
+        path: '/booking',
+        route: booking_route_1.BookingRoutes,
     },
 ];
 apiRoutes.forEach(route => router.use(route.path, route.route));

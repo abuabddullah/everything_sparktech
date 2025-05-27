@@ -28,6 +28,15 @@ const vehicleSchema = new mongoose_1.Schema({
             rating: { type: Number, min: 1, max: 5, required: false, default: 1 },
         },
     ],
+    bookings: [
+        { type: mongoose_1.Schema.Types.ObjectId, ref: "Booking", required: false },
+    ],
+    unavailable_slots: [
+        {
+            start: { type: Date, required: true },
+            end: { type: Date, required: true },
+        },
+    ],
 }, {
     timestamps: true,
     strict: false, // Allows additional properties

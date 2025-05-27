@@ -139,15 +139,20 @@ const getAllDriverFromDB = () => __awaiter(void 0, void 0, void 0, function* () 
     if (!allDriverArray) {
         throw new ApiError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, "Driver Not Available!");
     }
-    const driversWithVehicles = yield Promise.all(allDriverArray.map((user) => __awaiter(void 0, void 0, void 0, function* () {
-        const userObj = user.toObject(); // Convert to plain object
-        if (user.role === user_1.USER_ROLES.DRIVER) {
-            const vehicle = yield user.getVehicle();
-            return Object.assign(Object.assign({}, userObj), { vehicle });
-        }
-        return userObj;
-    })));
-    return driversWithVehicles;
+    // const driversWithVehicles = await Promise.all(
+    //   allDriverArray.map(async (user) => {
+    //     const userObj = user.toObject(); // Convert to plain object
+    //     if (user.role === USER_ROLES.DRIVER) {
+    //       const vehicle = await user.getVehicle();
+    //       return {
+    //         ...userObj,
+    //         vehicle, // Add vehicle info only for drivers
+    //       };
+    //     }
+    //     return userObj;
+    //   })
+    // );
+    return allDriverArray;
 });
 const getUserProfileFromDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = user;

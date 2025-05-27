@@ -36,6 +36,9 @@ router.route('/')
 router.get('/', (req, res, next) => {
     // Handle fetching all vehicles
 });
+router.get('/available-vehicles', (req, res, next) => {
+    // Vehicle route e get /available-vehicle thakbe ja body te piktime and return time nibe ar service e unavilable slots er bahihre hole segulo retrieve korbe
+});
 router.get('/:id', (req, res, next) => {
     // Handle fetching a single vehicle by ID
 });

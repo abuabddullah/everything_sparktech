@@ -26,21 +26,19 @@ exports.createExtraService = (0, catchAsync_1.default)((req, res, next) => __awa
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_codes_1.StatusCodes.OK,
-        message: 'User created successfully',
+        message: 'Extra Service created successfully',
         data: result,
     });
 }));
-const getAllExtraServices = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const extraServices = yield extraService_model_1.default.find();
-        return res.status(200).json(extraServices);
-    }
-    catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
-    }
-});
-exports.getAllExtraServices = getAllExtraServices;
+exports.getAllExtraServices = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield ExtraService_service_1.ExtraService.getAllExtraServicesFromDB(req.query);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        message: 'Extra services retrieved successfully',
+        data: result,
+    });
+}));
 const updateExtraService = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {

@@ -16,12 +16,21 @@ exports.LocationService = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const ApiError_1 = __importDefault(require("../../../../errors/ApiError"));
 const location_model_1 = require("./location.model");
-const getAllLocations = () => __awaiter(void 0, void 0, void 0, function* () {
-    const allLocations = yield location_model_1.Location.find();
-    if (!allLocations) {
-        throw new ApiError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, "Locations Not Available!");
-    }
-    return allLocations;
+const QueryBuilder_1 = __importDefault(require("../../../builder/QueryBuilder"));
+const location_constant_1 = require("./location.constant");
+const getAllLocations = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const locationQueryBuilder = new QueryBuilder_1.default(location_model_1.Location.find(), query)
+        .search(location_constant_1.LocationSearchableFields)
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+    const result = yield locationQueryBuilder.modelQuery;
+    const meta = yield locationQueryBuilder.getPaginationInfo();
+    return {
+        meta,
+        result,
+    };
 });
 const createLocationToDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const createLocation = yield location_model_1.Location.create(payload);

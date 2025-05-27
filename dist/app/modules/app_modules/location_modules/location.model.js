@@ -5,7 +5,8 @@ const mongoose_1 = require("mongoose");
 const LocationSchema = new mongoose_1.Schema({
     location: { type: String, required: true },
     postalCode: { type: String },
-    country: { type: String, required: true },
+    country: { type: String, required: false },
+    state: { type: String, required: false },
     coordinates: {
         lat: { type: Number },
         lng: { type: Number },

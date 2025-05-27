@@ -1,10 +1,4 @@
 "use strict";
-// export default{
-//     name: 'Extra Service',
-//     description: 'This module handles extra services offered by the company, such as insurance, GPS, and child seats.',
-//     icon: 'fa-solid fa-concierge-bell',
-//     cost: 0,
-//     status: 'active' | 'inactive',
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -29,7 +23,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// }
 const mongoose_1 = __importStar(require("mongoose"));
 const extraService_1 = require("../../../../enums/extraService");
 const extraServiceSchema = new mongoose_1.Schema({

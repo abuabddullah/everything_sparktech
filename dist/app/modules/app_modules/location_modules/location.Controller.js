@@ -29,7 +29,7 @@ const sendResponse_1 = __importDefault(require("../../../../shared/sendResponse"
 const http_status_codes_1 = require("http-status-codes");
 const location_service_1 = require("./location.service");
 const getAllLocations = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield location_service_1.LocationService.getAllLocations();
+    const result = yield location_service_1.LocationService.getAllLocations(req.query);
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_codes_1.StatusCodes.OK,

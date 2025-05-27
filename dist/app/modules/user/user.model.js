@@ -37,6 +37,7 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         required: false,
         default: null,
+        unique: true, // Ensure license number is unique for drivers
     },
     phone: {
         type: String,

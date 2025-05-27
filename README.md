@@ -96,7 +96,7 @@ Ensure you have the following installed:
    ***********************
 
    # IP_ADDRESS= 10.0.70.30
-   DATABASE_URL= mongodb://127.0.0.1:27017/sparktech_starter_template
+   DATABASE_URL= mongodb://localhost:27017/car_rental
    NODE_ENV= development
    PORT= 5000
    BCRYPT_SALT_ROUNDS= 12
@@ -109,6 +109,10 @@ Ensure you have the following installed:
    EMAIL_PORT=587
    SUPER_ADMIN_EMAIL=admin@gmail.com
    SUPER_ADMIN_PASSWORD=00000000
+   DEFAULT_ADMIN_PASSWORD=00000000
+   COMPANY_DEFAULT_PASSWORD=00000000
+   COMPANY_NAME=MyCompany
+   COMPANY_DOMAIN=mycompany.com
    ```
 
 4. **Run the project:**
