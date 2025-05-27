@@ -227,100 +227,135 @@ const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
 };
 
 
-/* 
 const searchBookingFromDB = async ({ searchTerm, limit = 10, page = 1 }: ISearchBookingParams) => {
+    // Create the case-insensitive regex for searching
+    const searchRegex = new RegExp(searchTerm, 'i');
+    
+    // Step 1: Aggregation Pipeline for filtering and population
+    const bookings = await BookingModel.aggregate([
+        // Step 2: Lookup to join the Booking model with the Client model (clientId)
+        {
+            $lookup: {
+                from: 'clients', // Assuming 'clients' is the collection name of the Client model
+                localField: 'clientId',
+                foreignField: '_id',
+                as: 'clientId', // Alias for the populated client data
+            }
+        },
+        // Step 3: Unwind the clientId array to get a single object instead of an array
+        {
+            $unwind: '$clientId'
+        },
+        // Step 4: Match against the email field in the populated clientId
+        {
+            $match: {
+                'clientId.email': searchRegex // Match the email using the regex
+            }
+        },
+        // Step 5: Apply pagination
+        {
+            $skip: (Number(page) - 1) * Number(limit)
+        },
+        {
+            $limit: Number(limit)
+        },
+        // Step 6: Populate other fields (pickupLocation, vehicle, etc.)
+        {
+            $lookup: {
+                from: 'locations',
+                localField: 'pickupLocation',
+                foreignField: '_id',
+                as: 'pickupLocation'
+            }
+        },
+        {
+            $lookup: {
+                from: 'locations',
+                localField: 'returnLocation',
+                foreignField: '_id',
+                as: 'returnLocation'
+            }
+        },
+        {
+            $lookup: {
+                from: 'vehicles',
+                localField: 'vehicle',
+                foreignField: '_id',
+                as: 'vehicle'
+            }
+        },
+        {
+            $lookup: {
+                from: 'extraservices',
+                localField: 'extraServices',
+                foreignField: '_id',
+                as: 'extraServices'
+            }
+        },
+        {
+            $lookup: {
+                from: 'payments',
+                localField: 'paymentId',
+                foreignField: '_id',
+                as: 'paymentId'
+            }
+        },
+        // Step 7: Clean up fields (optional, to match the output format)
+        {
+            $project: {
+                pickupLocation: 1,
+                returnLocation: 1,
+                vehicle: 1,
+                extraServices: 1,
+                clientId: 1,
+                paymentId: 1
+            }
+        }
+    ]);
 
-    // ignore querybuilder do raw
-    const regex = new RegExp(searchTerm, 'i'); // 'i' for case-insensitive search
-    const bookings = await BookingModel.find({
-        $or: [
-            { 'pickupLocation.name': regex },
-            { 'returnLocation.name': regex },
-            { 'vehicle.name': regex },
-            { 'extraServices.name': regex },
-            { 'clientId.firstName': regex },
-            { 'clientId.lastName': regex },
-            { 'clientId.email': regex },
-            { 'clientId.phone': regex }
-        ]
-    })
-        .populate([
-            { path: 'pickupLocation' },
-            { path: 'returnLocation' },
-            { path: 'vehicle' },
-            { path: 'extraServices' },
-            { path: 'clientId' },
-            { path: 'paymentId' }
-        ])
-        .limit(Number(limit))
-        .skip((Number(page) - 1) * Number(limit));
+    // Step 2: Count the total number of matching bookings
+    const total = await BookingModel.aggregate([
+        {
+            $lookup: {
+                from: 'clients',
+                localField: 'clientId',
+                foreignField: '_id',
+                as: 'clientDetails',
+            }
+        },
+        {
+            $unwind: '$clientDetails'
+        },
+        {
+            $match: {
+                'clientDetails.email': searchRegex
+            }
+        },
+        {
+            $count: 'total'
+        }
+    ]);
 
-    // include pagination
-    const total = await BookingModel.countDocuments({
-        $or: [
-            { 'pickupLocation.name': regex },
-            { 'returnLocation.name': regex },
-            { 'vehicle.name': regex },
-            { 'extraServices.name': regex },
-            { 'clientId.firstName': regex },
-            { 'clientId.lastName': regex },
-            { 'clientId.email': regex },
-            { 'clientId.phone': regex }
-        ]
-    });
-    const totalPage = Math.ceil(total / Number(limit));
+    // Get the total count or fallback to 0
+    const totalCount = total.length > 0 ? total[0].total : 0;
+
+    // Step 3: Pagination metadata
+    const totalPage = Math.ceil(totalCount / Number(limit));
+
     const meta = {
-        total,
+        total: totalCount,
         limit: Number(limit),
         page: Number(page),
         totalPage,
     };
+
+    // Step 4: Return the result as a documents array, not the pipeline
     return {
         meta,
-        result: bookings,
+        result: bookings, // Return populated bookings as documents array
     };
 };
- */
 
-const searchBookingFromDB = async ({ searchTerm, limit = 10, page = 1 }: ISearchBookingParams) => {
-    const bookings = await BookingModel.find()
-        .populate([
-            { path: 'pickupLocation' },
-            { path: 'returnLocation' },
-            { path: 'vehicle' },
-            { path: 'extraServices' },
-            { path: 'clientId' },
-            { path: 'paymentId' }
-        ])
-    // do findmany based on the searchTerm in the booking.clientId.email
-    const searchedBookingResult = bookings.filter((booking: any) => {
-        return booking.clientId.email.toLowerCase().includes(searchTerm.toLowerCase())
-    });
-    console.log("searchedBookingResult", searchedBookingResult);
-    // Count the total number of matching bookings (without pagination)
-    const total = searchedBookingResult.length;
-    // Apply pagination
-    const startIndex = (Number(page) - 1) * Number(limit);
-    const endIndex = startIndex + Number(limit);
-    const paginatedBookings = searchedBookingResult.slice(startIndex, endIndex);
-
-
-    // Calculate the total number of pages
-    const totalPage = Math.ceil(total / Number(limit));
-
-    // Prepare pagination metadata
-    const meta = {
-        total,
-        limit: Number(limit),
-        page: Number(page),
-        totalPage,
-    };
-
-    return {
-        meta,
-        result: paginatedBookings,
-    };
-};
 
 export const BookingService = {
     createBookingToDB,
