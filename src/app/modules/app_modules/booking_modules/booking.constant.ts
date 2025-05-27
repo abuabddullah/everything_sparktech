@@ -12,6 +12,7 @@ export const BookingSearchableNestedFields = [
   'pickupLocation.location',
   'returnLocation.location',
   'vehicle.name',
+  'vehicle.carType',
   'clientId.firstName',
   'clientId.lastName',
   'clientId.email',

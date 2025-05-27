@@ -36,7 +36,9 @@ const updateDriverValidationSchema = z.object({
     body: z.object({ driverID: objectIdSchema, })
 })
 
+
 export const BookingValidation = {
     createBookingValidationSchema,
-    updateDriverValidationSchema
+    updateDriverValidationSchema,
+
 }

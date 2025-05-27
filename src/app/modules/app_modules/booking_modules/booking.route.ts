@@ -15,6 +15,9 @@ router.route('/')
         BookingController.createBooking
     );
 
+router.route('/:id').delete(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), BookingController.deleteBooking);
+router.route('/search').get(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), BookingController.searchBooking);
+
 router.route('/assign-driver/:id').patch(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), validateRequest(BookingValidation.updateDriverValidationSchema), BookingController.assignDriverToBooking);
 
 export const BookingRoutes = router;

@@ -1,4 +1,4 @@
-import { ICreateAccount, ICreateAdminAccount, IResetPassword } from '../types/emailTamplate';
+import { IConfirmBookingEmail, ICreateAccount, IResetPassword } from '../types/emailTamplate';
 
 const createAccount = (values: ICreateAccount) => {
   const data = {
@@ -130,10 +130,53 @@ const resetPassword = (values: IResetPassword) => {
   return data;
 };
 
+
+
+const confirmBookingEmail = (values: IConfirmBookingEmail) => {
+  const data = {
+    to: values.email,
+    subject: `Booking Confirmation - ${values.bookingId}`,
+    html: `
+      <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 50px; padding: 20px; color: #555;">
+        <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+          <img src="https://i.postimg.cc/6pgNvKhD/logo.png" alt="Logo" style="display: block; margin: 0 auto 20px; width:150px" />
+          <h2 style="color: #277E16; font-size: 24px; margin-bottom: 20px;">Hi ${values.name},</h2>
+          <p style="font-size: 16px; line-height: 1.5; margin-bottom: 20px;">
+            Thank you for booking with Toothlens Car Rental! Your booking has been confirmed. Here are your booking details:
+          </p>
+          <div style="background-color: #f2f2f2; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <p style="margin: 8px 0;"><strong>Booking ID:</strong> ${values.bookingId}</p>
+            <p style="margin: 8px 0;"><strong>Name:</strong> ${values.name}</p>
+            <p style="margin: 8px 0;"><strong>Email:</strong> ${values.email}</p>
+            <p style="margin: 8px 0;"><strong>Phone:</strong> ${values.phone}</p>
+            <p style="margin: 8px 0;"><strong>Vehicle:</strong> ${values.vehicle}</p>
+            <p style="margin: 8px 0;"><strong>Pickup Location:</strong> ${values.pickupLocation}</p>
+            <p style="margin: 8px 0;"><strong>Return Location:</strong> ${values.returnLocation}</p>
+            <p style="margin: 8px 0;"><strong>Pickup Time:</strong> ${values.pickupTime}</p>
+            <p style="margin: 8px 0;"><strong>Return Time:</strong> ${values.returnTime}</p>
+            <p style="margin: 8px 0;"><strong>Total Amount:</strong> $${values.amount}</p>
+          </div>
+          <p style="font-size: 14px; color: #888;">
+            If you have any questions or need to make changes to your booking, please contact our support team.
+          </p>
+          <p style="font-size: 14px; color: #0a9c00;">
+            For getting updates about your booking, please use your booking ID: <strong>${values.bookingId}</strong> and email : <strong>${values.email}</strong> in our website.
+          </p>
+          <p style="font-size: 14px; color: #888;">
+            Thank you for choosing Toothlens Car Rental!
+          </p>
+        </div>
+      </body>
+    `,
+  };
+  return data;
+};
+
 export const emailTemplate = {
   createAccount,
   createTeamMemberAccount,
   createAdminAccount,
   createDriverAccount,
   resetPassword,
+  confirmBookingEmail,
 };

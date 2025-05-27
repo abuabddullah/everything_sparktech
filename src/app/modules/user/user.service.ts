@@ -156,21 +156,21 @@ const getAllDriverFromDB = async (): Promise<Partial<IUser[]>> => {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Driver Not Available!");
   }
 
-  const driversWithVehicles = await Promise.all(
-    allDriverArray.map(async (user) => {
-      const userObj = user.toObject(); // Convert to plain object
-      if (user.role === USER_ROLES.DRIVER) {
-        const vehicle = await user.getVehicle();
-        return {
-          ...userObj,
-          vehicle, // Add vehicle info only for drivers
-        };
-      }
-      return userObj;
-    })
-  );
+  // const driversWithVehicles = await Promise.all(
+  //   allDriverArray.map(async (user) => {
+  //     const userObj = user.toObject(); // Convert to plain object
+  //     if (user.role === USER_ROLES.DRIVER) {
+  //       const vehicle = await user.getVehicle();
+  //       return {
+  //         ...userObj,
+  //         vehicle, // Add vehicle info only for drivers
+  //       };
+  //     }
+  //     return userObj;
+  //   })
+  // );
 
-  return driversWithVehicles;
+  return allDriverArray;
 };
 
 const getUserProfileFromDB = async (

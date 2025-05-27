@@ -29,6 +29,15 @@ const vehicleSchema = new Schema<IVehicle>(
         rating: { type: Number, min: 1, max: 5, required: false, default: 1 },
       },
     ],
+    bookings: [
+      { type: Schema.Types.ObjectId, ref: "Booking", required: false },
+    ],
+    unavailable_slots: [
+      {
+        start: { type: Date, required: true },
+        end: { type: Date, required: true },
+      },
+    ],
   },
   {
     timestamps: true,
@@ -42,5 +51,6 @@ const vehicleSchema = new Schema<IVehicle>(
 vehicleSchema.virtual('reviewsCount').get(function (this: any) {
   return this.reviews ? this.reviews.length : 0; // Return 0 if no reviews exist
 });
+
 
 export const Vehicle = model<IVehicle>("Vehicle", vehicleSchema);

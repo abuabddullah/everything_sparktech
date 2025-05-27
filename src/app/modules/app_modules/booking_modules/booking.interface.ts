@@ -31,10 +31,10 @@ import { Document, Model, Types } from 'mongoose';
 import { BOOKING_PAYMENT_METHOD, BOOKING_STATUS } from '../../../../enums/booking';
 export interface IBooking extends Document {
     pickupDate: Date;
-    pickupTime: string;
+    pickupTime: Date;
     pickupLocation: Types.ObjectId; // Assuming this is a reference to a location model
     returnDate: Date;
-    returnTime: string;
+    returnTime: Date;
     returnLocation: Types.ObjectId; // Assuming this is a reference to a location model
     vehicle: Types.ObjectId; // Reference to the vehicle being booked
     extraServices: Types.ObjectId[]; // Array of extra services
@@ -43,6 +43,7 @@ export interface IBooking extends Document {
     paymentMethod: BOOKING_PAYMENT_METHOD; // Payment method used for the booking
     status: BOOKING_STATUS; // Status of the booking (e.g., PENDING, CONFIRMED, CANCELLED, COMPLETED)
     amount: number; // Total amount for the booking
+    carRentedForInDays: number; // Total carRentedForInDays for the booking
     paymentId?: Types.ObjectId; // Reference to the payment transaction
     createdAt?: Date; // Automatically managed by Mongoose
     updatedAt?: Date; // Automatically managed by Mongoose
@@ -51,10 +52,10 @@ export interface IBooking extends Document {
 
 export interface IBookingRequestBody {
     pickupDate: Date;
-    pickupTime: string;
+    pickupTime: Date;
     pickupLocation: Types.ObjectId;
     returnDate: Date;
-    returnTime: string;
+    returnTime: Date;
     returnLocation: Types.ObjectId;
     vehicle: Types.ObjectId;
     extraServices?: Types.ObjectId[];
@@ -70,10 +71,17 @@ export interface IBookingRequestBody {
         state?: string;
         postCode?: string;
     };
-    paymentMethod: BOOKING_PAYMENT_METHOD; // STRIP | BANK
+    paymentMethod: BOOKING_PAYMENT_METHOD; // STRIPE | BANK
     // amount?: number; // Positive number
-    status: BOOKING_STATUS; // NOT CONFIRMED | CONFIRMED | CANCELED | COMPLETED
+    status: BOOKING_STATUS; // NOT_CONFIRMED | CONFIRMED | CANCELED | COMPLETED
 
+}
+
+
+export interface ISearchBookingParams {
+    searchTerm: string;
+    limit?: number | string | undefined | unknown;
+    page?: number | string | undefined | unknown;
 }
 
 export interface BookingModel extends Model<IBooking> {
