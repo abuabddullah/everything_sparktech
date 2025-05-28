@@ -3,6 +3,7 @@ import catchAsync from "../../../../shared/catchAsync"
 import { BookingService } from "./booking.service";
 import sendResponse from "../../../../shared/sendResponse";
 import { StatusCodes } from "http-status-codes";
+import { BookingModel } from "./booking.model";
 
 const createBooking = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -57,17 +58,31 @@ const searchBooking = catchAsync(
     }
 );
 
+const deleteBooking = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await BookingService.deleteBookingFromDB(id);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Booking deleted successfully',
+        data: result,
+    });
+});
+
 export const BookingController = {
     createBooking,
     getAllBookings,
     searchBooking,
-    deleteBooking:()=>{
-        // must remove the booking and unavailable slots from the vehicle model for this booking
+    deleteBooking,
+    getAvailableDriverForAssignABooking: () => {
+        // get pickupDateAndTime and returnDateAndTime from req.body and findMany in the bookingModel get all the assigned driver'sID of those foundManyBookings and then do findMany in userModel based on role DRIVER and no match those assigned driver'sID and retrived the dirverList
         return 0
     },
     assignDriverToBooking: () => {
-        // ekhane driver assign korar jonno booking er vehicle er driver id change korte hobe
+        // ekhane driver assign korar jonno booking er id vehicle.driverId  + driver.bookings.push(booking id) change korte hobe
         // also must Booking e jokhon driver assign korben tokhon driver change service e vehicle er driver id o change hobe
+        // must remove the booking and unavailable slots from the driver-user model for this booking
         return 0
     }
 }

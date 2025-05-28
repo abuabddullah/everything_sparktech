@@ -62,6 +62,7 @@ router.patch('/:id/last-maintenance', (req: Request, res: Response, next: NextFu
 });
 
 router.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
+    // 1. delete the bookings for this vehicle from booking model
     // Handle deleting a vehicle by ID
 });
 

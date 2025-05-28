@@ -22,6 +22,8 @@ export type IUser = {
     oneTimeCode: number;
     expireAt: Date;
   };
+
+  [key: string]: any; // Allow additional properties
 };
 
 

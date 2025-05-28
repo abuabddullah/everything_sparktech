@@ -18,6 +18,9 @@ import { User } from "../../user/user.model";
 import { USER_ROLES } from "../../../../enums/user";
 import { NOTIFICATION_CATEGORIES, NOTIFICATION_TYPE } from "../notification_modules/notification.constant";
 import { sendNotifications } from "../../../../helpers/notificationsHelper";
+import ApiError from "../../../../errors/ApiError";
+import { StatusCodes } from "http-status-codes";
+import { IUser } from "../../user/user.interface";
 
 
 
@@ -83,17 +86,26 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         }
 
         // Check if the vehicle is available during the requested time period
-        const unavailableSlots = isExistingVehicle.unavailable_slots || [];
-        const isAvailable = !unavailableSlots.some((slot: { start: string; end: string }) => {
-            const slotStart = new Date(slot.start);
-            const slotEnd = new Date(slot.end);
+        /**
+         * get the bookings of  the vehicle for this specific isExistingVehicle
+         * check and ensure pickupDateTime and returnDateTime doesn't overlap with these booked bookings
+         */
 
-            // Check if there is an overlap between the requested time period and any unavailable slot
-            return (pickupDateTime < slotEnd && returnDateTime > slotStart);
-        });
+        const existingBookings = await BookingModel.find({
+            vehicle: isExistingVehicle._id,
+            $or: [
+                { pickupTime: { $gte: pickupDateTime, $lt: returnDateTime } },  // Pickup is during an existing booking
+                { returnTime: { $gt: pickupDateTime, $lte: returnDateTime } },   // Return is during an existing booking
+                {
+                    pickupTime: { $lt: pickupDateTime },  // Entire booking is before the requested time
+                    returnTime: { $gt: returnDateTime }   // Entire booking is after the requested time
+                }
+            ]
+        }).session(session);
 
-        if (!isAvailable) {
-            throw new Error("The vehicle is unavailable for the selected time period.");
+        // Check if any existing booking overlaps with the requested time period
+        if (existingBookings.length > 0) {
+            throw new Error("Vehicle is already booked during the requested time period");
         }
 
         //need to check if all the selected extra services are valid or not if valid then calculate the amount and update selectedExtraServicesAmount
@@ -164,11 +176,6 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
             throw new Error('Failed to create booking');
         }
 
-        // Update the vehicle's unavailable_slots field with the booking time period
-        isExistingVehicle.unavailable_slots.push({
-            start: bookingdata.pickupTime,
-            end: bookingdata.returnTime
-        });
 
         // Update the vehicle's bookings field with this created booking id
         isExistingVehicle.bookings.push(createdBooking[0]._id);
@@ -251,115 +258,29 @@ const searchBookingFromDB = async ({ searchTerm, limit = 10, page = 1 }: ISearch
     // Create the case-insensitive regex for searching
     const searchRegex = new RegExp(searchTerm, 'i');
 
-    // Step 1: Aggregation Pipeline for filtering and population
-    const bookings = await BookingModel.aggregate([
-        // Step 2: Lookup to join the Booking model with the Client model (clientId)
-        {
-            $lookup: {
-                from: 'clients', // Assuming 'clients' is the collection name of the Client model
-                localField: 'clientId',
-                foreignField: '_id',
-                as: 'clientId', // Alias for the populated client data
-            }
-        },
-        // Step 3: Unwind the clientId array to get a single object instead of an array
-        {
-            $unwind: '$clientId'
-        },
-        // Step 4: Match against the email field in the populated clientId
-        {
-            $match: {
-                'clientId.email': searchRegex // Match the email using the regex
-            }
-        },
-        // Step 5: Apply pagination
-        {
-            $skip: (Number(page) - 1) * Number(limit)
-        },
-        {
-            $limit: Number(limit)
-        },
-        // Step 6: Populate other fields (pickupLocation, vehicle, etc.)
-        {
-            $lookup: {
-                from: 'locations',
-                localField: 'pickupLocation',
-                foreignField: '_id',
-                as: 'pickupLocation'
-            }
-        },
-        {
-            $lookup: {
-                from: 'locations',
-                localField: 'returnLocation',
-                foreignField: '_id',
-                as: 'returnLocation'
-            }
-        },
-        {
-            $lookup: {
-                from: 'vehicles',
-                localField: 'vehicle',
-                foreignField: '_id',
-                as: 'vehicle'
-            }
-        },
-        {
-            $lookup: {
-                from: 'extraservices',
-                localField: 'extraServices',
-                foreignField: '_id',
-                as: 'extraServices'
-            }
-        },
-        {
-            $lookup: {
-                from: 'payments',
-                localField: 'paymentId',
-                foreignField: '_id',
-                as: 'paymentId'
-            }
-        },
-        // Step 7: Clean up fields (optional, to match the output format)
-        {
-            $project: {
-                pickupLocation: 1,
-                returnLocation: 1,
-                vehicle: 1,
-                extraServices: 1,
-                clientId: 1,
-                paymentId: 1
-            }
-        }
-    ]);
+    // Step 1: Find client IDs matching the email search
+    const matchingClients = await ClientModel.find({ email: searchRegex }).select('_id');
+    const matchingClientIds = matchingClients.map(client => client._id);
 
-    // Step 2: Count the total number of matching bookings
-    const total = await BookingModel.aggregate([
-        {
-            $lookup: {
-                from: 'clients',
-                localField: 'clientId',
-                foreignField: '_id',
-                as: 'clientDetails',
-            }
-        },
-        {
-            $unwind: '$clientDetails'
-        },
-        {
-            $match: {
-                'clientDetails.email': searchRegex
-            }
-        },
-        {
-            $count: 'total'
-        }
-    ]);
+    // Step 2: Find bookings with those client IDs
+    const bookings = await BookingModel.find({ clientId: { $in: matchingClientIds } })
+        .populate({
+            path: 'clientId',
+            select: 'email firstName',
+        })
+        .skip((Number(page) - 1) * Number(limit))
+        .limit(Number(limit))
+        .populate('pickupLocation')
+        .populate('returnLocation')
+        .populate('vehicle')
+        .populate('extraServices')
+        .populate('paymentId')
+        .select('pickupLocation returnLocation vehicle extraServices clientId paymentId');
 
-    // Get the total count or fallback to 0
-    const totalCount = total.length > 0 ? total[0].total : 0;
+    // Step 3: Count total matching bookings
+    const totalCount = await BookingModel.countDocuments({ clientId: { $in: matchingClientIds } });
 
-    // Step 3: Pagination metadata
+    // Step 4: Pagination metadata
     const totalPage = Math.ceil(totalCount / Number(limit));
 
     const meta = {
@@ -369,16 +290,83 @@ const searchBookingFromDB = async ({ searchTerm, limit = 10, page = 1 }: ISearch
         totalPage,
     };
 
-    // Step 4: Return the result as a documents array, not the pipeline
+    // Step 5: Return the result as an object with metadata
     return {
         meta,
-        result: bookings, // Return populated bookings as documents array
+        result: bookings,
     };
+};
+
+
+const deleteBookingFromDB = async (
+    id: string
+): Promise<unknown> => {
+    // Start a session for the transaction
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        // Find the booking
+        const isExistBooking = await BookingModel.findById(id).session(session);
+        if (!isExistBooking) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Booking doesn't exist!");
+        }
+
+        // 1. Find the vehicle and remove the booking from the vehicle's bookings array
+        const isExistVehicle = await Vehicle.findById(isExistBooking.vehicle).session(session);
+
+        if (!isExistVehicle) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Vehicle not found");
+        }
+
+        const bookingIndex = isExistVehicle.bookings.indexOf(isExistBooking._id);
+
+        if (bookingIndex !== -1) {
+            // Remove the booking ID from the bookings array
+            isExistVehicle.bookings.splice(bookingIndex, 1);
+
+            // Save the updated vehicle document
+            await isExistVehicle.save({ session });
+        } else {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in vehicle's bookings array");
+        }
+
+        // 2. Remove the booking from the driver's bookings array
+        const isExistDriver : IUser | any = await User.findById(isExistBooking.clientId).session(session);
+
+        const indexOfBookingInDriver = isExistDriver?.bookings.indexOf(isExistBooking._id);
+
+        if (indexOfBookingInDriver !== -1) {
+            // Remove the booking ID from the bookings array
+            isExistDriver?.bookings.splice(indexOfBookingInDriver, 1);
+
+            // Save the updated driver document
+            await isExistDriver?.save({ session });
+        } else {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in Driver's bookings array");
+        }
+
+        // 3. Delete the booking from the BookingModel
+        await BookingModel.findByIdAndDelete(id).session(session);
+
+        // Commit the transaction if all operations succeed
+        await session.commitTransaction();
+        return { message: 'Booking deleted successfully' };
+
+    } catch (error) {
+        // If any error occurs, abort the transaction to revert all changes
+        await session.abortTransaction();
+        throw error;  // Re-throw the error to be handled elsewhere
+    } finally {
+        // End the session
+        session.endSession();
+    }
 };
 
 
 export const BookingService = {
     createBookingToDB,
     getAllBookingsFromDB,
-    searchBookingFromDB
+    searchBookingFromDB,
+    deleteBookingFromDB
 };

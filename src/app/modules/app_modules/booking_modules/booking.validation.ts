@@ -32,6 +32,13 @@ export const createBookingValidationSchema = z.object({
     })
 });
 
+const getAvailableDriversValidationSchema = z.object({
+    body: z.object({
+        pickupDateAndTime: z.string().min(1, "pickupDate is required"),
+        returnDateAndTime: z.string().min(1, "pickupDate is required"),
+    })
+})
+
 const updateDriverValidationSchema = z.object({
     body: z.object({ driverID: objectIdSchema, })
 })
@@ -40,5 +47,5 @@ const updateDriverValidationSchema = z.object({
 export const BookingValidation = {
     createBookingValidationSchema,
     updateDriverValidationSchema,
-
+    getAvailableDriversValidationSchema
 }

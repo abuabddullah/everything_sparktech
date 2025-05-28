@@ -103,6 +103,13 @@ router
     }
   );
 
+  router
+  .route('/driver/:id')
+  .get(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    UserController.getADriver
+  )
+
 
 router
   .route('/')

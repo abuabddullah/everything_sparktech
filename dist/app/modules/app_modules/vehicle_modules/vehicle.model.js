@@ -31,12 +31,12 @@ const vehicleSchema = new mongoose_1.Schema({
     bookings: [
         { type: mongoose_1.Schema.Types.ObjectId, ref: "Booking", required: false },
     ],
-    unavailable_slots: [
-        {
-            start: { type: Date, required: true },
-            end: { type: Date, required: true },
-        },
-    ],
+    // unavailable_slots: [
+    //     {
+    //         start: { type: Date, required: true },
+    //         end: { type: Date, required: true },
+    //     },
+    // ],
 }, {
     timestamps: true,
     strict: false, // Allows additional properties

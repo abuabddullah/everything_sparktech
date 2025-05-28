@@ -112,6 +112,20 @@ const getAllDriver = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+
+const getADriver = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await UserService.getADriverFromDB(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Profile data retrieved successfully',
+    data: result,
+  });
+});
+
 const getUserProfile = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
   const result = await UserService.getUserProfileFromDB(user);
@@ -145,4 +159,4 @@ const updateProfile = catchAsync(
   }
 );
 
-export const UserController = { createUser, createTeamMember, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, createDriver, getAllDriver, getUserProfile, updateProfile };
+export const UserController = { createUser, createTeamMember, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, createDriver, getAllDriver,getADriver, getUserProfile, updateProfile };

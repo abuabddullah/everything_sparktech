@@ -10,7 +10,7 @@ import { IUser } from './user.interface';
 import { User } from './user.model';
 import config from '../../../config';
 
-const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
+const createUserToDB = async (payload: Partial<IUser>) => {
   //set role
   payload.role = USER_ROLES.USER;
   const createUser = await User.create(payload);
@@ -41,7 +41,7 @@ const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   return createUser;
 };
 
-const createTeamMemberToDB = async (payload: Partial<IUser>): Promise<IUser> => {
+const createTeamMemberToDB = async (payload: Partial<IUser>) => {
   //set role
   payload.role = USER_ROLES.TEAM_MEMBER;
   payload.verified = true;
@@ -69,7 +69,7 @@ const createTeamMemberToDB = async (payload: Partial<IUser>): Promise<IUser> => 
   return createUser;
 };
 
-const createAdminToDB = async (payload: Partial<IUser>): Promise<IUser> => {
+const createAdminToDB = async (payload: Partial<IUser>) => {
   //set role
   payload.role = USER_ROLES.ADMIN;
   payload.verified = true;
@@ -90,7 +90,7 @@ const createAdminToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   return createAdmin;
 };
 
-const getAllAdminFromDB = async (): Promise<Partial<IUser[]>> => {
+const getAllAdminFromDB = async () => {
   const allAdminArray = await User.find({
     role: "ADMIN"
   });
@@ -125,7 +125,7 @@ const deleteAnAdminFromDB = async (
 };
 
 
-const createDriverToDB = async (payload: Partial<IUser>): Promise<IUser> => {
+const createDriverToDB = async (payload: Partial<IUser>) => {
   //set role
   payload.role = USER_ROLES.DRIVER;
   payload.verified = true;
@@ -148,7 +148,7 @@ const createDriverToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   return createDriver;
 };
 
-const getAllDriverFromDB = async (): Promise<Partial<IUser[]>> => {
+const getAllDriverFromDB = async () => {
   const allDriverArray = await User.find({
     role: "DRIVER"
   });
@@ -156,21 +156,20 @@ const getAllDriverFromDB = async (): Promise<Partial<IUser[]>> => {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Driver Not Available!");
   }
 
-  // const driversWithVehicles = await Promise.all(
-  //   allDriverArray.map(async (user) => {
-  //     const userObj = user.toObject(); // Convert to plain object
-  //     if (user.role === USER_ROLES.DRIVER) {
-  //       const vehicle = await user.getVehicle();
-  //       return {
-  //         ...userObj,
-  //         vehicle, // Add vehicle info only for drivers
-  //       };
-  //     }
-  //     return userObj;
-  //   })
-  // );
-
   return allDriverArray;
+};
+
+
+
+const getADriverFromDB = async (
+  id: string
+): Promise<Partial<IUser>> => {
+  const isExistUser = await User.isExistUserById(id);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  return isExistUser;
 };
 
 const getUserProfileFromDB = async (
@@ -216,6 +215,7 @@ export const UserService = {
   deleteAnAdminFromDB,
   createDriverToDB,
   getAllDriverFromDB,
+  getADriverFromDB,
   getUserProfileFromDB,
   updateProfileToDB,
 };

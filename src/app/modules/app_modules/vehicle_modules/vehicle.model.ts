@@ -32,12 +32,6 @@ const vehicleSchema = new Schema<IVehicle>(
     bookings: [
       { type: Schema.Types.ObjectId, ref: "Booking", required: false },
     ],
-    unavailable_slots: [
-      {
-        start: { type: Date, required: true },
-        end: { type: Date, required: true },
-      },
-    ],
   },
   {
     timestamps: true,
