@@ -5,6 +5,7 @@ export type IMessage = {
   sender: Types.ObjectId;
   text?: string;
   image?: string;
+  readBy: Types.ObjectId[];
 };
 
 export type MessageModel = Model<IMessage, Record<string, unknown>>;

@@ -40,4 +40,55 @@ const getMessageFromDB = async (id: any): Promise<IMessage[]> => {
     return messages;
 };
 
-export const MessageService = { sendMessageToDB, getMessageFromDB };
+
+
+const sendMessage = async (chatId: string, messageData: any): Promise<IMessage> => {
+    const message = await Message.create({
+        chatId,
+        ...messageData
+    });
+
+    // Get chat participants
+    const chat = await Chat.findById(chatId).populate('participants', '_id');
+
+    if (chat) {
+        // @ts-ignore
+        const socketIo = global.io;
+        if (socketIo) {
+            // Emit new message to all participants in the chat
+            socketIo.to(chatId).emit('receive_message', message);
+
+            // Send notifications to offline participants
+            const notificationData = {
+                type: 'new_message',
+                chatId,
+                message,
+                timestamp: new Date()
+            };
+
+            socketIo.to(chatId).emit('chat_notification', notificationData);
+        }
+    }
+
+    return message;
+};
+
+const markMessageAsRead = async (chatId: string, messageId: string, userId: string): Promise<void> => {
+    await Message.findByIdAndUpdate(messageId, {
+        $addToSet: { readBy: userId }
+    });
+
+    // @ts-ignore
+    const socketIo = global.io;
+    if (socketIo) {
+        socketIo.to(chatId).emit('message_read_by', {
+            messageId,
+            userId
+        });
+    }
+};
+export const MessageService = {
+    sendMessageToDB, getMessageFromDB,
+    sendMessage,
+    markMessageAsRead
+};

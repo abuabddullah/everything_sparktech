@@ -13,14 +13,20 @@ const messageSchema = new Schema<IMessage, MessageModel>(
       required: true,
       ref: 'User',
     },
-    text: { 
+    text: {
       type: String,
-      required: false 
+      required: false
     },
-    image: { 
+    image: {
       type: String,
-      required: false 
+      required: false
     },
+    readBy: [{
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      default: []
+    }]
+
   },
   {
     timestamps: true,
