@@ -314,7 +314,7 @@ const deleteBookingFromDB = async (
 
         // 1. Find the vehicle and remove the booking from the vehicle's bookings array
         const isExistVehicle = await Vehicle.findById(isExistBooking.vehicle).session(session);
-
+        console.log(isExistVehicle)
         if (!isExistVehicle) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Vehicle not found");
         }
@@ -331,20 +331,7 @@ const deleteBookingFromDB = async (
             throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in vehicle's bookings array");
         }
 
-        // 2. Remove the booking from the driver's bookings array
-        const isExistDriver : IUser | any = await User.findById(isExistBooking.clientId).session(session);
 
-        const indexOfBookingInDriver = isExistDriver?.bookings.indexOf(isExistBooking._id);
-
-        if (indexOfBookingInDriver !== -1) {
-            // Remove the booking ID from the bookings array
-            isExistDriver?.bookings.splice(indexOfBookingInDriver, 1);
-
-            // Save the updated driver document
-            await isExistDriver?.save({ session });
-        } else {
-            throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in Driver's bookings array");
-        }
 
         // 3. Delete the booking from the BookingModel
         await BookingModel.findByIdAndDelete(id).session(session);

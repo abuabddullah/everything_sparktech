@@ -10,7 +10,6 @@ const createBooking = catchAsync(
         const bookingData = req.body;
 
         const createdBooking = await BookingService.createBookingToDB(bookingData);
-        console.log({ createBooking })
 
 
         sendResponse(res, {

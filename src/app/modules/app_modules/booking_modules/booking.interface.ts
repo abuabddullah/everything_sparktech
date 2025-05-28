@@ -1,30 +1,3 @@
-// req.body should be of type BookingRequest
-
-// booking.json.body = {
-//     pickupDate:
-//     pickupTime:
-//     pickupLocation: objectId
-//     returnDate:
-//     returnTime:
-//     returnLocation: objectId,
-//     vehicle: objectId,
-//     extraServices: [objectId],
-//     userDetails:{
-//         firstName:
-//         lastName:
-//         email:
-//         phone:
-//         parmanentAddress:
-//         country,
-//         presentAddress,
-//         State,
-//         postCode,
-//     },
-//     paymentMethod: STRIP | BANK
-//     ammount:
-//     status: 'NOT CONFRIMED|  CONFIRMED| CANCELED | COMPLETED'
-
-// }
 
 // booking.interface.ts
 import { Document, Model, Types } from 'mongoose';

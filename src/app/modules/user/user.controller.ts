@@ -94,7 +94,7 @@ const createDriver = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: 'User created successfully',
+      message: 'Driver created successfully',
       data: result,
     });
   }

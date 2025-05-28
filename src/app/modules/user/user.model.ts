@@ -25,7 +25,6 @@ const userSchema = new Schema<IUser, UserModal>(
       type: String,
       required: false,
       default: null,
-      unique: true, // Ensure license number is unique for drivers
     },
     phone: {
       type: String,
@@ -67,10 +66,6 @@ const userSchema = new Schema<IUser, UserModal>(
       type: Boolean,
       default: false,
     },
-    
-    bookings: [
-      { type: Schema.Types.ObjectId, ref: "Booking", required: false },
-    ],
     authentication: {
       type: {
         isResetPassword: {

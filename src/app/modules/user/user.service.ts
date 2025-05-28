@@ -132,6 +132,11 @@ const createDriverToDB = async (payload: Partial<IUser>) => {
   if (!payload.password) {
     payload.password = config.company.default_password; // Use default password if not provided
   }
+  // is alerady exist as driver check via lic
+  const isExistDriver = await User.findOne({ licenseNumber: payload.licenseNumber })
+  if (isExistDriver) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "The licenseNumber must be unique for each driver")
+  }
   const createDriver = await User.create(payload); // name,dob,image,phone, email , password,licenseNumber
   if (!createDriver) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user');

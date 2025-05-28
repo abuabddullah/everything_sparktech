@@ -3,7 +3,7 @@ import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_STATUS, VEHICLE_TYPES } from ".
 
 export type IVehicle = {
     _id?: Types.ObjectId;
-    carType: VEHICLE_TYPES;
+    vehicleType: VEHICLE_TYPES;
     name: string;
     model: string;
     brand?: string;
@@ -19,11 +19,5 @@ export type IVehicle = {
     dailyRate: number;
     status: VEHICLE_STATUS; // e.g., 
     lastMaintenanceDate?: Date; // Optional field for last maintenance date
-    avgRating?: number; // Optional field for vehicle rating
-    reviews?: {
-        user: Types.ObjectId; // Reference to User
-        comment: string;
-        rating: number; // Rating between 1 and 5
-    }[];
     [key: string]: any; // Allow additional properties
 };

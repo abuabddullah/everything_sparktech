@@ -10,7 +10,7 @@ const createVehicle = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: 'User created successfully',
+      message: 'Vehicle created successfully',
       data: result,
     });
   }
