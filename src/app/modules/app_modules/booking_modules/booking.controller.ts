@@ -139,6 +139,26 @@ const getABookingID = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getBookingByDriverID = catchAsync(async (req: Request, res: Response) => {
+    const { driverId } = req.params;
+    if (!driverId) {
+        return sendResponse(res, {
+            success: false,
+            statusCode: StatusCodes.BAD_REQUEST,
+            message: 'Driver ID is required',
+        });
+    }
+
+    const result = await BookingService.getBookingByDriverIDFromDB(driverId);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Bookings retrieved successfully',
+        data: result,
+    });
+});
+
 export const BookingController = {
     createBooking,
     getAllBookings,
@@ -151,5 +171,6 @@ export const BookingController = {
     getABookingByEmailAndID,
     assignDriverToBooking,
     updateBookingStatus,
-    getABookingID
+    getABookingID,
+    getBookingByDriverID
 }

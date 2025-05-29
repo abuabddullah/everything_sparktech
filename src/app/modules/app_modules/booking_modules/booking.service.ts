@@ -378,6 +378,13 @@ const getABookingByEmailAndIDFromDB = async (clientEmail: string, bookingId: str
     return booking;
 };
 
+
+/**
+ * if same driver is being assigned for same booking then thrwor eerror alreads same driver assigned
+ * the logic is the driver can be assigned to any booking if he is free(he is not assgined to any booking on that booking time it we can find in booking model by query) but if any new booking overlap then we will check the booking status if status is "on_ride" or "cancelled"  he can't be assigned but status is "not_confirmed" or "confirmed" or "COMPLETED" its possible to assign
+ */
+
+
 const assignDriverToBooking = async (driverId: string, bookingId: string) => {
     // Find the booking by ID
     const booking = await BookingModel.findById(bookingId);
@@ -385,24 +392,105 @@ const assignDriverToBooking = async (driverId: string, bookingId: string) => {
         throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found");
     }
 
+    // Check if the driver is already assigned to the booking
+    if (booking.driverId && booking.driverId.toString() === driverId) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "Driver is already assigned to this booking");
+    }
+
     const driver = await User.findById(driverId) as IUser | null;
     if (!driver) {
         throw new ApiError(StatusCodes.NOT_FOUND, "Driver not found");
     }
 
-    // Assign the driverId to the booking
+    // Get current time
+    const now = new Date();
+
+    const driverBookings = await BookingModel.find({
+        driverId: driver._id,
+        pickupTime: { $gte: now }
+    }).select('pickupTime returnTime status driverId'); // Only select the relevant fields
+
+    // Check for overlapping bookings
+    const newPickup = new Date(booking.pickupTime);
+    const newReturn = new Date(booking.returnTime);
+
+    const hasOverlap = driverBookings.some(existing => {
+        const existingPickup = new Date(existing.pickupTime);
+        const existingReturn = new Date(existing.returnTime);
+
+
+        // Check if there is an overlap (A starts before B ends, and A ends after B starts)
+        const overlapCondition = (newPickup < existingReturn) && (newReturn > existingPickup);
+
+        // If there's an overlap, check the status
+        if (overlapCondition) {
+            const status = existing.status;
+            // Allow assignment only if the status is "not_confirmed", "confirmed", or "completed"
+            if ([BOOKING_STATUS.ON_RIDE, BOOKING_STATUS.CANCELLED].includes(status as BOOKING_STATUS)) {
+                return true;
+            }
+        }
+        return false;
+    });
+
+    if (hasOverlap) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "Driver already has a booking during this time period");
+    }
+
+    // Assign the driver to the booking
     booking.driverId = driver._id as mongoose.Types.ObjectId;
+    booking.status = BOOKING_STATUS.ON_RIDE;
     await booking.save();
 
     return booking;
 };
 
+/**
+ update status is possible if only 
+ present status is NOT_CONFIRMED THEN POSSIBLE CONFIRMED | CANCELLED ONLY
+                   CONFIRMED AND NO DRIVERID ASSIGNED YET     (THROW ERROR SYING ASSING DRIVER)
+                   ON_RIDE       THEN POSSIBLE COMPLETED             ONLY
+                   COMPLETED     THEN NOTHING IS POSSIBLE            ONLY
+ */
 const updateBookingStatusInDB = async (id: string, status: BOOKING_STATUS) => {
     const booking = await BookingModel.findById(id);
     if (!booking) {
         throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found");
     }
-    booking.status = status;
+
+    switch (booking.status) {
+        case BOOKING_STATUS.NOT_CONFIRMED:
+            if (status === BOOKING_STATUS.CONFIRMED || status === BOOKING_STATUS.CANCELLED) {
+                booking.status = status;
+            } else {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Status can only be updated to CONFIRMED or CANCELLED from NOT_CONFIRMED");
+            }
+            break;
+        case BOOKING_STATUS.CONFIRMED:
+            if (!booking.driverId) {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Assign driver before updating status from CONFIRMED");
+            }
+            if (status === BOOKING_STATUS.ON_RIDE) {
+                booking.status = status;
+            } else {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Status can only be updated to ON_RIDE from CONFIRMED");
+            }
+            break;
+        case BOOKING_STATUS.ON_RIDE:
+            if (status === BOOKING_STATUS.COMPLETED) {
+                booking.status = status;
+            } else {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Status can only be updated to COMPLETED from ON_RIDE");
+            }
+            break;
+        case BOOKING_STATUS.COMPLETED:
+            throw new ApiError(StatusCodes.BAD_REQUEST, "No further status updates allowed after COMPLETED");
+        case BOOKING_STATUS.CANCELLED:
+            throw new ApiError(StatusCodes.BAD_REQUEST, "No further status updates allowed after CANCELLED");
+        default:
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid current booking status");
+    }
+
     await booking.save();
     return booking;
 };
@@ -423,6 +511,21 @@ const getABookingByIDFromDB = async (bookingId: string) => {
     return booking;
 };
 
+
+const getBookingByDriverIDFromDB = async (driverId: string) => {
+    const bookings = await BookingModel.find({ driverId })
+        // .populate('pickupLocation')
+        // .populate('returnLocation')
+        // .populate('vehicle')
+        // .populate('extraServices')
+        // .populate('clientId')
+        // .populate('paymentId')
+        .sort({ pickupTime: -1 }) // Newest to oldest by pickupTime
+        .select('pickupTime returnTime status driverId returnLocation pickupLocation');
+
+    return bookings;
+};
+
 export const BookingService = {
     createBookingToDB,
     getAllBookingsFromDB,
@@ -431,5 +534,6 @@ export const BookingService = {
     getABookingByEmailAndIDFromDB,
     assignDriverToBooking,
     updateBookingStatusInDB,
-    getABookingByIDFromDB
+    getABookingByIDFromDB,
+    getBookingByDriverIDFromDB
 };
