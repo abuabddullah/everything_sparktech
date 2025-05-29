@@ -15,11 +15,11 @@ const sendMessage = catchAsync(async (req: Request, res: Response) => {
 
   const payload = {
     ...req.body, // chatId,text
-    image:image,
+    image: image,
     sender: user,
   };
 
-  const message = await MessageService.sendMessageToDB(payload);
+  const message = await MessageService.sendMessage(payload);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -28,9 +28,9 @@ const sendMessage = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getMessage = catchAsync(async (req: Request, res: Response) => {
+const getMessageByChatID = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const messages = await MessageService.getMessageFromDB(id);
+  const messages = await MessageService.getMessageByChatIDFromDB(id);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -39,4 +39,4 @@ const getMessage = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const MessageController = { sendMessage, getMessage };
+export const MessageController = { sendMessage, getMessageByChatID };

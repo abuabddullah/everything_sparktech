@@ -13,5 +13,5 @@ const validateRequest_1 = __importDefault(require("../../../middlewares/validate
 const message_validation_1 = require("./message.validation");
 const router = express_1.default.Router();
 router.post('/', (0, fileUploadHandler_1.default)(), (0, auth_1.default)(user_1.USER_ROLES.USER, user_1.USER_ROLES.DRIVER), (0, validateRequest_1.default)(message_validation_1.MessageValidation.createMessageValidationSchema), message_controller_1.MessageController.sendMessage);
-router.get('/:id', (0, auth_1.default)(user_1.USER_ROLES.USER, user_1.USER_ROLES.DRIVER), message_controller_1.MessageController.getMessage);
+router.get('/:id', (0, auth_1.default)(user_1.USER_ROLES.USER, user_1.USER_ROLES.DRIVER), message_controller_1.MessageController.getMessageByChatID);
 exports.MessageRoutes = router;

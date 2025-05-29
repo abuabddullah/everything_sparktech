@@ -39,8 +39,14 @@ router.get('/', (req, res, next) => {
 router.get('/available-vehicles', (req, res, next) => {
     // Vehicle route e get /available-vehicle thakbe ja body te piktime and return time nibe ar service e unavilable slots er bahihre hole segulo retrieve korbe
 });
+router.get('/seat-door-luggage', (req, res, next) => {
+    // Handle fetching vehicles meta data  based on no count of {seat, lauggages, doors }
+});
 router.get('/:id', (req, res, next) => {
     // Handle fetching a single vehicle by ID
+});
+router.get('/:id', (req, res, next) => {
+    // Handle fetching vehicles based on no of seat, lauggages, doors 
 });
 router.patch('/:id', (req, res, next) => {
     // Handle updating a vehicle by ID
@@ -49,6 +55,7 @@ router.patch('/:id/last-maintenance', (req, res, next) => {
     // Handle updating a vehicle's last maintenance date by ID
 });
 router.delete('/:id', (req, res, next) => {
+    // 1. delete the bookings for this vehicle from booking model
     // Handle deleting a vehicle by ID
 });
 exports.VehicleRoutes = router;

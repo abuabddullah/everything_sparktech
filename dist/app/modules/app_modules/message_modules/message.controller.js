@@ -24,7 +24,7 @@ const sendMessage = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         image = `/images/${req.files.image[0].filename}`;
     }
     const payload = Object.assign(Object.assign({}, req.body), { image: image, sender: user });
-    const message = yield message_service_1.MessageService.sendMessageToDB(payload);
+    const message = yield message_service_1.MessageService.sendMessage(payload);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_codes_1.StatusCodes.OK,
         success: true,
@@ -32,9 +32,9 @@ const sendMessage = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: message,
     });
 }));
-const getMessage = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMessageByChatID = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
-    const messages = yield message_service_1.MessageService.getMessageFromDB(id);
+    const messages = yield message_service_1.MessageService.getMessageByChatIDFromDB(id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_codes_1.StatusCodes.OK,
         success: true,
@@ -42,4 +42,4 @@ const getMessage = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: messages,
     });
 }));
-exports.MessageController = { sendMessage, getMessage };
+exports.MessageController = { sendMessage, getMessageByChatID };

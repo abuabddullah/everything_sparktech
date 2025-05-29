@@ -66,6 +66,9 @@ router
     }
 });
 router
+    .route('/driver/:id')
+    .get((0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, user_1.USER_ROLES.ADMIN), user_controller_1.UserController.getADriver);
+router
     .route('/')
     .post((0, validateRequest_1.default)(user_validation_1.UserValidation.createUserZodSchema), user_controller_1.UserController.createUser);
 exports.UserRoutes = router;

@@ -119,6 +119,11 @@ const createDriverToDB = (payload) => __awaiter(void 0, void 0, void 0, function
     if (!payload.password) {
         payload.password = config_1.default.company.default_password; // Use default password if not provided
     }
+    // is alerady exist as driver check via lic
+    const isExistDriver = yield user_model_1.User.findOne({ licenseNumber: payload.licenseNumber });
+    if (isExistDriver) {
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, "The licenseNumber must be unique for each driver");
+    }
     const createDriver = yield user_model_1.User.create(payload); // name,dob,image,phone, email , password,licenseNumber
     if (!createDriver) {
         throw new ApiError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Failed to create user');
@@ -139,20 +144,14 @@ const getAllDriverFromDB = () => __awaiter(void 0, void 0, void 0, function* () 
     if (!allDriverArray) {
         throw new ApiError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, "Driver Not Available!");
     }
-    // const driversWithVehicles = await Promise.all(
-    //   allDriverArray.map(async (user) => {
-    //     const userObj = user.toObject(); // Convert to plain object
-    //     if (user.role === USER_ROLES.DRIVER) {
-    //       const vehicle = await user.getVehicle();
-    //       return {
-    //         ...userObj,
-    //         vehicle, // Add vehicle info only for drivers
-    //       };
-    //     }
-    //     return userObj;
-    //   })
-    // );
     return allDriverArray;
+});
+const getADriverFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistUser = yield user_model_1.User.isExistUserById(id);
+    if (!isExistUser) {
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, "User doesn't exist!");
+    }
+    return isExistUser;
 });
 const getUserProfileFromDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = user;
@@ -186,6 +185,7 @@ exports.UserService = {
     deleteAnAdminFromDB,
     createDriverToDB,
     getAllDriverFromDB,
+    getADriverFromDB,
     getUserProfileFromDB,
     updateProfileToDB,
 };

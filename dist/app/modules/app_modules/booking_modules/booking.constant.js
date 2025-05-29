@@ -13,7 +13,7 @@ exports.BookingSearchableNestedFields = [
     'pickupLocation.location',
     'returnLocation.location',
     'vehicle.name',
-    'vehicle.carType',
+    'vehicle.vehicleType',
     'clientId.firstName',
     'clientId.lastName',
     'clientId.email',

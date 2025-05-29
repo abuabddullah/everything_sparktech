@@ -7,13 +7,13 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-        // save to DB
-        const response = await Message.create([payload], { session });
         // find by payload.chatId and add the message to the chat
         const chat = await Chat.findById(payload.chatId).session(session);
         if (!chat) {
             throw new Error('Chat not found');
         }
+        // save message to DB
+        const response = await Message.create([payload], { session });
         chat.messages!.push(response[0]._id);
         await chat.save({ session });
 
@@ -34,7 +34,7 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
     }
 };
 
-const getMessageFromDB = async (id: any): Promise<IMessage[]> => {
+const getMessageByChatIDFromDB = async (id: any): Promise<IMessage[]> => {
     const messages = await Message.find({ chatId: id })
         .sort({ createdAt: -1 })
     return messages;
@@ -42,16 +42,18 @@ const getMessageFromDB = async (id: any): Promise<IMessage[]> => {
 
 
 
-const sendMessage = async (chatId: string, messageData: any): Promise<IMessage> => {
-    const message = await Message.create({
-        chatId,
-        ...messageData
-    });
-
+const sendMessage = async (payload: any): Promise<IMessage> => {
+    const { chatId, ...messageData } = payload
     // Get chat participants
     const chat = await Chat.findById(chatId).populate('participants', '_id');
+    let message: IMessage | any;
+
 
     if (chat) {
+        message = await Message.create({
+            chatId,
+            ...messageData
+        });
         // @ts-ignore
         const socketIo = global.io;
         if (socketIo) {
@@ -88,7 +90,7 @@ const markMessageAsRead = async (chatId: string, messageId: string, userId: stri
     }
 };
 export const MessageService = {
-    sendMessageToDB, getMessageFromDB,
+    sendMessageToDB, getMessageByChatIDFromDB,
     sendMessage,
     markMessageAsRead
 };

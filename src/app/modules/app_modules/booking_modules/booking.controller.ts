@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, response, Response } from "express";
 import catchAsync from "../../../../shared/catchAsync"
 import { BookingService } from "./booking.service";
 import sendResponse from "../../../../shared/sendResponse";
@@ -69,6 +69,20 @@ const deleteBooking = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getABookingByEmailAndID = catchAsync(async (req: Request, res: Response) => {
+    const { clientEmail } = req.query;  // Changed from req.body to req.query
+    const { id } = req.params;
+    const result = await BookingService.getABookingByEmailAndIDFromDB(clientEmail as string, id);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Booking retrieved successfully',
+        data: result,
+    });
+});
+
+
 export const BookingController = {
     createBooking,
     getAllBookings,
@@ -83,5 +97,6 @@ export const BookingController = {
         // also must Booking e jokhon driver assign korben tokhon driver change service e vehicle er driver id o change hobe
         // must remove the booking and unavailable slots from the driver-user model for this booking
         return 0
-    }
+    },
+    getABookingByEmailAndID,
 }

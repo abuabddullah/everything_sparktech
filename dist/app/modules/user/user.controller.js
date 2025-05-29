@@ -94,12 +94,22 @@ const createDriver = (0, catchAsync_1.default)((req, res, next) => __awaiter(voi
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_codes_1.StatusCodes.OK,
-        message: 'User created successfully',
+        message: 'Driver created successfully',
         data: result,
     });
 }));
 const getAllDriver = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_service_1.UserService.getAllDriverFromDB();
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        message: 'Profile data retrieved successfully',
+        data: result,
+    });
+}));
+const getADriver = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield user_service_1.UserService.getADriverFromDB(id);
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_codes_1.StatusCodes.OK,
@@ -130,4 +140,4 @@ const updateProfile = (0, catchAsync_1.default)((req, res, next) => __awaiter(vo
         data: result,
     });
 }));
-exports.UserController = { createUser, createTeamMember, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, createDriver, getAllDriver, getUserProfile, updateProfile };
+exports.UserController = { createUser, createTeamMember, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, createDriver, getAllDriver, getADriver, getUserProfile, updateProfile };

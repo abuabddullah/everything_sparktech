@@ -3,6 +3,10 @@ import { BOOKING_PAYMENT_METHOD, BOOKING_STATUS } from "../../../../enums/bookin
 
 // Helper for MongoDB ObjectId validation (24 hex chars)
 const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i, { message: "Invalid ObjectId" });
+const validEmailSchema = z.string().regex(
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    { message: "Invalid email address" }
+);
 
 export const createBookingValidationSchema = z.object({
     body: z.object({
@@ -43,9 +47,16 @@ const updateDriverValidationSchema = z.object({
     body: z.object({ driverID: objectIdSchema, })
 })
 
+const getABookingSchemaValidation = z.object({
+    query: z.object({
+        clientEmail: z.string(),
+    }),
+});
+
 
 export const BookingValidation = {
     createBookingValidationSchema,
     updateDriverValidationSchema,
-    getAvailableDriversValidationSchema
+    getAvailableDriversValidationSchema,
+    getABookingSchemaValidation
 }

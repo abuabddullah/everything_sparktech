@@ -21,6 +21,11 @@ const messageSchema = new mongoose_1.Schema({
         type: String,
         required: false
     },
+    readBy: [{
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: 'User',
+            default: []
+        }]
 }, {
     timestamps: true,
 });

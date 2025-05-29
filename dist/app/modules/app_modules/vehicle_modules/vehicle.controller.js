@@ -22,7 +22,7 @@ const createVehicle = (0, catchAsync_1.default)((req, res, next) => __awaiter(vo
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_codes_1.StatusCodes.OK,
-        message: 'User created successfully',
+        message: 'Vehicle created successfully',
         data: result,
     });
 }));

@@ -350,10 +350,38 @@ const deleteBookingFromDB = async (
     }
 };
 
+const getABookingByEmailAndIDFromDB = async (clientEmail: string, bookingId: string) => {
+    console.log({ clientEmail, bookingId })
+    // Find the client by email
+    const client = await ClientModel.findOne({ email: clientEmail });
+    if (!client) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Client not found");
+    }
+
+    // Find the booking by id and clientId
+    const booking = await BookingModel.findOne({
+        _id: bookingId,
+        clientId: client._id,
+    })
+        .populate('pickupLocation')
+        .populate('returnLocation')
+        .populate('vehicle')
+        .populate('extraServices')
+        .populate('clientId')
+        .populate('paymentId');
+
+    if (!booking) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found for this client");
+    }
+
+    return booking;
+};
+
 
 export const BookingService = {
     createBookingToDB,
     getAllBookingsFromDB,
     searchBookingFromDB,
-    deleteBookingFromDB
+    deleteBookingFromDB,
+    getABookingByEmailAndIDFromDB
 };

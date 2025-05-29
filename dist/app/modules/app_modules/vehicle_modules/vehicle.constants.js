@@ -6,5 +6,5 @@ exports.VehicleSearchableFields = [
     'brand',
     'model',
     'licenseNumber',
-    'carType',
+    'vehicleType',
 ];

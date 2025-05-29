@@ -32,10 +32,17 @@ exports.createBookingValidationSchema = zod_1.z.object({
         status: zod_1.z.enum([...Object.values(booking_1.BOOKING_STATUS)]).default(booking_1.BOOKING_STATUS.NOT_CONFIRMED),
     })
 });
+const getAvailableDriversValidationSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        pickupDateAndTime: zod_1.z.string().min(1, "pickupDate is required"),
+        returnDateAndTime: zod_1.z.string().min(1, "pickupDate is required"),
+    })
+});
 const updateDriverValidationSchema = zod_1.z.object({
     body: zod_1.z.object({ driverID: objectIdSchema, })
 });
 exports.BookingValidation = {
     createBookingValidationSchema: exports.createBookingValidationSchema,
     updateDriverValidationSchema,
+    getAvailableDriversValidationSchema
 };
