@@ -21,6 +21,7 @@ import { sendNotifications } from "../../../../helpers/notificationsHelper";
 import ApiError from "../../../../errors/ApiError";
 import { StatusCodes } from "http-status-codes";
 import { IUser } from "../../user/user.interface";
+import { BOOKING_STATUS } from "../../../../enums/booking";
 
 
 
@@ -377,11 +378,58 @@ const getABookingByEmailAndIDFromDB = async (clientEmail: string, bookingId: str
     return booking;
 };
 
+const assignDriverToBooking = async (driverId: string, bookingId: string) => {
+    // Find the booking by ID
+    const booking = await BookingModel.findById(bookingId);
+    if (!booking) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found");
+    }
+
+    const driver = await User.findById(driverId) as IUser | null;
+    if (!driver) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Driver not found");
+    }
+
+    // Assign the driverId to the booking
+    booking.driverId = driver._id as mongoose.Types.ObjectId;
+    await booking.save();
+
+    return booking;
+};
+
+const updateBookingStatusInDB = async (id: string, status: BOOKING_STATUS) => {
+    const booking = await BookingModel.findById(id);
+    if (!booking) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found");
+    }
+    booking.status = status;
+    await booking.save();
+    return booking;
+};
+
+const getABookingByIDFromDB = async (bookingId: string) => {
+    const booking = await BookingModel.findById(bookingId)
+        .populate('pickupLocation')
+        .populate('returnLocation')
+        .populate('vehicle')
+        .populate('extraServices')
+        .populate('clientId')
+        .populate('paymentId');
+
+    if (!booking) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found");
+    }
+
+    return booking;
+};
 
 export const BookingService = {
     createBookingToDB,
     getAllBookingsFromDB,
     searchBookingFromDB,
     deleteBookingFromDB,
-    getABookingByEmailAndIDFromDB
+    getABookingByEmailAndIDFromDB,
+    assignDriverToBooking,
+    updateBookingStatusInDB,
+    getABookingByIDFromDB
 };

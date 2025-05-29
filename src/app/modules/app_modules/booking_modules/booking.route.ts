@@ -19,8 +19,9 @@ router.route('/search').get(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), Book
 
 // router.route('/available-drivers').get(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),validateRequest(BookingValidation.getAvailableDriversValidationSchema), BookingController.getAvailableDriverForAssignABooking);
 
+router.route('/status/:id').patch(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), validateRequest(BookingValidation.updateStatusValidationSchema), BookingController.updateBookingStatus);
 router.route('/assign-driver/:id').patch(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), validateRequest(BookingValidation.updateDriverValidationSchema), BookingController.assignDriverToBooking);
+router.route('/admin/:id').get(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),BookingController.getABookingID);
 router.route('/:id').delete(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), BookingController.deleteBooking);
-router.route('/:id').get(validateRequest(BookingValidation.getABookingSchemaValidation),BookingController.getABookingByEmailAndID);
 
 export const BookingRoutes = router;

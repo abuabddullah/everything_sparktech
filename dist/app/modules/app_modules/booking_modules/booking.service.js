@@ -306,9 +306,73 @@ const deleteBookingFromDB = (id) => __awaiter(void 0, void 0, void 0, function* 
         session.endSession();
     }
 });
+const getABookingByEmailAndIDFromDB = (clientEmail, bookingId) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ clientEmail, bookingId });
+    // Find the client by email
+    const client = yield client_model_1.ClientModel.findOne({ email: clientEmail });
+    if (!client) {
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, "Client not found");
+    }
+    // Find the booking by id and clientId
+    const booking = yield booking_model_1.BookingModel.findOne({
+        _id: bookingId,
+        clientId: client._id,
+    })
+        .populate('pickupLocation')
+        .populate('returnLocation')
+        .populate('vehicle')
+        .populate('extraServices')
+        .populate('clientId')
+        .populate('paymentId');
+    if (!booking) {
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, "Booking not found for this client");
+    }
+    return booking;
+});
+const assignDriverToBooking = (driverId, bookingId) => __awaiter(void 0, void 0, void 0, function* () {
+    // Find the booking by ID
+    const booking = yield booking_model_1.BookingModel.findById(bookingId);
+    if (!booking) {
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, "Booking not found");
+    }
+    const driver = yield user_model_1.User.findById(driverId);
+    if (!driver) {
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, "Driver not found");
+    }
+    // Assign the driverId to the booking
+    booking.driverId = driver._id;
+    yield booking.save();
+    return booking;
+});
+const updateBookingStatusInDB = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    const booking = yield booking_model_1.BookingModel.findById(id);
+    if (!booking) {
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, "Booking not found");
+    }
+    booking.status = status;
+    yield booking.save();
+    return booking;
+});
+const getABookingByIDFromDB = (bookingId) => __awaiter(void 0, void 0, void 0, function* () {
+    const booking = yield booking_model_1.BookingModel.findById(bookingId)
+        .populate('pickupLocation')
+        .populate('returnLocation')
+        .populate('vehicle')
+        .populate('extraServices')
+        .populate('clientId')
+        .populate('paymentId');
+    if (!booking) {
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, "Booking not found");
+    }
+    return booking;
+});
 exports.BookingService = {
     createBookingToDB,
     getAllBookingsFromDB,
     searchBookingFromDB,
-    deleteBookingFromDB
+    deleteBookingFromDB,
+    getABookingByEmailAndIDFromDB,
+    assignDriverToBooking,
+    updateBookingStatusInDB,
+    getABookingByIDFromDB
 };

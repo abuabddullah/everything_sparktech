@@ -44,7 +44,11 @@ const getAvailableDriversValidationSchema = z.object({
 })
 
 const updateDriverValidationSchema = z.object({
-    body: z.object({ driverID: objectIdSchema, })
+    body: z.object({ driverId: objectIdSchema, })
+})
+
+const updateStatusValidationSchema = z.object({
+    body: z.object({ status: z.enum([...(Object.values(BOOKING_STATUS) as [string, ...string[]])]) })
 })
 
 const getABookingSchemaValidation = z.object({
@@ -58,5 +62,6 @@ export const BookingValidation = {
     createBookingValidationSchema,
     updateDriverValidationSchema,
     getAvailableDriversValidationSchema,
-    getABookingSchemaValidation
+    getABookingSchemaValidation,
+    updateStatusValidationSchema
 }

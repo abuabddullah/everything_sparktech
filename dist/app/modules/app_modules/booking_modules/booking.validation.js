@@ -5,6 +5,7 @@ const zod_1 = require("zod");
 const booking_1 = require("../../../../enums/booking");
 // Helper for MongoDB ObjectId validation (24 hex chars)
 const objectIdSchema = zod_1.z.string().regex(/^[a-f\d]{24}$/i, { message: "Invalid ObjectId" });
+const validEmailSchema = zod_1.z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: "Invalid email address" });
 exports.createBookingValidationSchema = zod_1.z.object({
     body: zod_1.z.object({
         pickupDate: zod_1.z.string().min(1, "pickupDate is required"),
@@ -39,10 +40,20 @@ const getAvailableDriversValidationSchema = zod_1.z.object({
     })
 });
 const updateDriverValidationSchema = zod_1.z.object({
-    body: zod_1.z.object({ driverID: objectIdSchema, })
+    body: zod_1.z.object({ driverId: objectIdSchema, })
+});
+const updateStatusValidationSchema = zod_1.z.object({
+    body: zod_1.z.object({ status: zod_1.z.enum([...Object.values(booking_1.BOOKING_STATUS)]) })
+});
+const getABookingSchemaValidation = zod_1.z.object({
+    query: zod_1.z.object({
+        clientEmail: zod_1.z.string(),
+    }),
 });
 exports.BookingValidation = {
     createBookingValidationSchema: exports.createBookingValidationSchema,
     updateDriverValidationSchema,
-    getAvailableDriversValidationSchema
+    getAvailableDriversValidationSchema,
+    getABookingSchemaValidation,
+    updateStatusValidationSchema
 };
