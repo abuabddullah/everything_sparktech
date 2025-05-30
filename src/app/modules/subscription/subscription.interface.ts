@@ -7,7 +7,7 @@ export type ISubscription = {
      package: Types.ObjectId;
      trxId: string;
      remaining: number;
-     subscriptionId: string;
+     subscriptionId: string; // referrence of subscribed package
      status: 'expired' | 'active' | 'cancel';
      currentPeriodStart: string;
      currentPeriodEnd: string;
