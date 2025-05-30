@@ -1,0 +1,8 @@
+Wed May 28 2025 19:28:46 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/favourit/683413d06f4e8798dfa1075a 401 - 0.557 ms
+Wed May 28 2025 19:29:13 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/favourit/683413d06f4e8798dfa1075a 401 - 0.594 ms
+Wed May 28 2025 19:29:14 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/favourit/683413d06f4e8798dfa1075a 401 - 0.604 ms
+Wed May 28 2025 19:31:50 [SERVER-NAME] error: 10.0.60.147 - GET /api/v1/admin/subscriptions?page=1&limit=10 404 - 0.647 ms
+Wed May 28 2025 19:31:50 [SERVER-NAME] error: 10.0.60.147 - GET /api/v1/admin/subscriptions?page=1&limit=10&page=1&limit=10 404 - 0.629 ms
+Wed May 28 2025 19:32:52 [SERVER-NAME] error: 10.0.60.147 - GET /api/v1/admin/subscriptions?page=1&limit=10&page=1&limit=10 404 - 0.492 ms
+Wed May 28 2025 19:32:55 [SERVER-NAME] error: 10.0.60.147 - GET /api/v1/admin/subscriptions?page=1&limit=10&page=1&limit=10 404 - 0.554 ms
+Wed May 28 2025 19:41:17 [SERVER-NAME] error: 10.0.60.147 - GET /api/v1/admin/videos/managment/video-status/6831832e4f5c96c45dd8f93f?page=1&limit=10 404 - 0.562 ms

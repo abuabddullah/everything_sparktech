@@ -1,0 +1,16 @@
+Wed May 28 2025 16:5:43 [SERVER-NAME] error: 10.0.60.147 - DELETE /api/v1/community/6836dee3ef9dcc159f1a7c25 404 - 568.449 ms
+Wed May 28 2025 16:5:44 [SERVER-NAME] error: 10.0.60.147 - DELETE /api/v1/community/6836dee3ef9dcc159f1a7c25 404 - 573.450 ms
+Wed May 28 2025 16:5:44 [SERVER-NAME] error: 10.0.60.147 - DELETE /api/v1/community/6836dee3ef9dcc159f1a7c25 404 - 568.889 ms
+Wed May 28 2025 16:5:44 [SERVER-NAME] error: 10.0.60.147 - DELETE /api/v1/community/6836dee3ef9dcc159f1a7c25 404 - 569.035 ms
+Wed May 28 2025 16:6:1 [SERVER-NAME] error: 10.0.60.147 - DELETE /api/v1/community/6836dee3ef9dcc159f1a7c25 404 - 570.794 ms
+Wed May 28 2025 16:18:23 [SERVER-NAME] error: 10.0.60.147 - GET /api/v1/users/profile 401 - 1.221 ms
+Wed May 28 2025 16:21:15 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category/subcategory/683183f94f5c96c45dd8f96b 401 - 0.645 ms
+Wed May 28 2025 16:21:15 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category/get-videos/683183f94f5c96c45dd8f96b 401 - 0.454 ms
+Wed May 28 2025 16:21:22 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category/get-videos/683183f94f5c96c45dd8f96b 401 - 0.468 ms
+Wed May 28 2025 16:21:22 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category/subcategory/683183f94f5c96c45dd8f96b 401 - 1.537 ms
+Wed May 28 2025 16:21:25 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category 401 - 0.553 ms
+Wed May 28 2025 16:22:15 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category 401 - 0.554 ms
+Wed May 28 2025 16:22:34 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category 401 - 0.592 ms
+Wed May 28 2025 16:22:52 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/users/profile 401 - 0.629 ms
+Wed May 28 2025 16:22:52 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category 401 - 0.439 ms
+Wed May 28 2025 16:58:23 [SERVER-NAME] error: 10.0.60.126 - GET /api/v1/admin/comingSoon/ 403 - 283.791 ms
