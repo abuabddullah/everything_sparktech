@@ -183,6 +183,16 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         // save the isExistingVehicle with session
         await isExistingVehicle.save({ session });
 
+        // Update the client's bookings field with this created booking id
+        const clientToUpdate = await ClientModel.findById(bookingDataWithClient.clientId).session(session);
+        if (clientToUpdate) {
+            if (!clientToUpdate.bookings) {
+                clientToUpdate.bookings = [];
+            }
+            clientToUpdate.bookings.push(createdBooking[0]._id as mongoose.Types.ObjectId);
+            await clientToUpdate.save({ session });
+        }
+
         // need to send email to the client email with booking details specially the refferece id = booking._id
 
         const values: IConfirmBookingEmail = {
