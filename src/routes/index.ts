@@ -5,6 +5,8 @@ import { VehicleRoutes } from '../app/modules/app_modules/vehicle_modules/vehicl
 import { ExtraServiceRoutes } from '../app/modules/app_modules/extraServices_modules/extraService.route';
 import { LocationRoutes } from '../app/modules/app_modules/location_modules/location.route';
 import { BookingRoutes } from '../app/modules/app_modules/booking_modules/booking.route';
+import { ReviewRoutes } from '../app/modules/app_modules/review/review.routes';
+import { ClientRoutes } from '../app/modules/app_modules/client_modules/client.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -31,6 +33,14 @@ const apiRoutes = [
   {
     path: '/booking',
     route: BookingRoutes,
+  },
+  {
+    path: '/client',
+    route: ClientRoutes,
+  },
+  {
+    path: '/review',
+    route: ReviewRoutes,
   },
 ];
 
