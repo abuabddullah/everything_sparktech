@@ -1,83 +1,107 @@
-import { ICompanyOverview, IFaq, ITermsConditions } from './cms.interface';
+import { IFaq, ICMSModel } from './cms.interface';
 import CMSModel from './cms.model';
-import { CompanyOverviewSchema, FaqSchema } from './cms.validation';
 
 const CMSService = {
-  createCompanyOverview: async (data: ICompanyOverview) => {
-    // Validate the data with Zod
-    CompanyOverviewSchema.parse(data);
-
-    // Create and save the company overview
-    const newCompanyOverview = new CMSModel(data);
-    await newCompanyOverview.save();
-    return newCompanyOverview;
+  // Create or replace the CMS document (singleton pattern)
+  createCompanyOverview: async (data: ICMSModel) => {
+    await CMSModel.deleteMany({});
+    const cms = new CMSModel(data);
+    await cms.save();
+    return cms;
   },
 
   getCompanyOverview: async () => {
-    const companyOverview = await CMSModel.findOne().exec();
-    if (!companyOverview) throw new Error("Company Overview not found");
-    return companyOverview;
+    const cms = await CMSModel.findOne().exec();
+    if (!cms) throw new Error("CMS not found");
+    return cms;
   },
 
-  updateCompanyOverview: async (data: ICompanyOverview) => {
-    // Validate the data with Zod
-    CompanyOverviewSchema.parse(data);
-
-    const updatedCompanyOverview = await CMSModel.findOneAndUpdate(
+  updateCompanyOverview: async (data: Partial<ICMSModel>) => {
+    const updatedCms = await CMSModel.findOneAndUpdate(
       {},
-      { termsConditions: data.termsConditions },
+      { $set: data },
       { new: true }
     ).exec();
-    if (!updatedCompanyOverview) throw new Error("Company Overview not found");
-    return updatedCompanyOverview;
+    if (!updatedCms) throw new Error("CMS not found");
+    return updatedCms;
   },
 
   deleteCompanyOverview: async () => {
-    const result = await CMSModel.deleteOne().exec();
-    if (result.deletedCount === 0) throw new Error("Company Overview not found");
+    const result = await CMSModel.deleteMany({}).exec();
+    if (result.deletedCount === 0) throw new Error("CMS not found");
   },
 
+  // FAQ CRUD
   addFAQ: async (faqData: IFaq) => {
-    FaqSchema.parse(faqData);
-
-    const companyOverview = await CMSModel.findOne().exec();
-    if (!companyOverview) throw new Error("Company Overview not found");
-
-    companyOverview.termsConditions.faqs.push(faqData);
-    await companyOverview.save();
-    return companyOverview;
+    const cms = await CMSModel.findOne().exec();
+    if (!cms) throw new Error("CMS not found");
+    cms.faqs.push(faqData);
+    await cms.save();
+    return cms;
   },
 
-  editFAQ: async (faqData: IFaq) => {
-    FaqSchema.parse(faqData);
-
-    const companyOverview = await CMSModel.findOne().exec();
-    if (!companyOverview) throw new Error("Company Overview not found");
-
-    const faqIndex = companyOverview.termsConditions.faqs.findIndex(
-      (faq) => faq.question === faqData.question
-    );
-    if (faqIndex === -1) throw new Error("FAQ not found");
-
-    companyOverview.termsConditions.faqs[faqIndex] = faqData;
-    await companyOverview.save();
-    return companyOverview;
+  editFAQ: async (faqData: IFaq, faqId: string) => {
+    const cms = await CMSModel.findOne().exec();
+    if (!cms) throw new Error("CMS not found");
+    const idx = cms.faqs.findIndex(f => f._id == faqId);
+    if (idx === -1) throw new Error("FAQ not found");
+    // Update only the fields except _id to avoid changing the id during patch
+    Object.assign(cms.faqs[idx], { ...faqData, _id: cms.faqs[idx]._id });
+    await cms.save();
+    return cms;
   },
 
-  deleteFAQ: async (faqData: IFaq) => {
-    FaqSchema.parse(faqData);
+  deleteFAQ: async (faqId: string) => {
+    console.log({faqId})
+    const cms = await CMSModel.findOne().exec();
+    if (!cms) throw new Error("CMS not found");
+    const idx = cms.faqs.findIndex(f => f._id == faqId);
+    console.log({idx})
+    if (idx === -1) throw new Error("FAQ not found");
+    cms.faqs.splice(idx, 1);
+    await cms.save();
+    return cms;
+  },
 
-    const companyOverview = await CMSModel.findOne().exec();
-    if (!companyOverview) throw new Error("Company Overview not found");
+  getAllFAQFromDB: async () => {
+    const cms = await CMSModel.findOne().exec();
+    if (!cms) throw new Error("CMS not found");
+    return cms.faqs;
+  },
 
-    const faqIndex = companyOverview.termsConditions.faqs.findIndex(
-      (faq) => faq.question === faqData.question
-    );
-    if (faqIndex === -1) throw new Error("FAQ not found");
+  // Contact CRUD
+  getContact: async () => {
+    const cms = await CMSModel.findOne().exec();
+    if (!cms) throw new Error("Contact not found");
+    return cms.contact;
+  },
 
-    companyOverview.termsConditions.faqs.splice(faqIndex, 1);
-    await companyOverview.save();
-    return companyOverview;
+  updateContact: async (contactData: ICMSModel['contact']) => {
+    console.log({contactData})
+    const updatedCms = await CMSModel.findOneAndUpdate(
+      {},
+      { $set: { contact: contactData } },
+      { new: true }
+    ).exec();
+    if (!updatedCms) throw new Error("Contact not found");
+    return updatedCms.contact;
+  },
+
+  // Logo CRUD
+  getLogo: async () => {
+    const cms = await CMSModel.findOne().exec();
+    if (!cms) throw new Error("Logo not found");
+    return cms.logo;
+  },
+
+  updateLogo: async (logoData: string) => {
+    const updatedCms = await CMSModel.findOneAndUpdate(
+      {},
+      { $set: { logo: logoData } },
+      { new: true }
+    ).exec();
+    if (!updatedCms) throw new Error("Logo not found");
+    return updatedCms.logo;
   },
 };
 

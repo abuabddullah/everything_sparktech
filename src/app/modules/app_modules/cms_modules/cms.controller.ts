@@ -1,174 +1,146 @@
-// const createCompanyOverview = async (req, res) => {
-//   try {
-//     const companyOverview = new CompanyOverview({
-//       termsConditions: req.body.termsConditions
-//     });
-
-//     await companyOverview.save();
-//     res.status(201).json(companyOverview);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error creating company overview', error });
-//   }
-// };
-
-
-// const getCompanyOverview = async (req, res) => {
-//   try {
-//     const companyOverview = await CompanyOverview.findOne();
-//     if (!companyOverview) {
-//       return res.status(404).json({ message: 'Company Overview not found' });
-//     }
-//     res.json(companyOverview);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error fetching company overview', error });
-//   }
-// };
-
-
-// const updateCompanyOverview = async (req, res) => {
-//   try {
-//     const updatedOverview = await CompanyOverview.findOneAndUpdate(
-//       {},
-//       { termsConditions: req.body.termsConditions },
-//       { new: true }  // returns the updated document
-//     );
-
-//     if (!updatedOverview) {
-//       return res.status(404).json({ message: 'Company Overview not found' });
-//     }
-
-//     res.json(updatedOverview);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error updating company overview', error });
-//   }
-// };
-
-
-// const deleteCompanyOverview = async (req, res) => {
-//   try {
-//     const result = await CompanyOverview.deleteOne({});
-//     if (result.deletedCount === 0) {
-//       return res.status(404).json({ message: 'Company Overview not found' });
-//     }
-//     res.json({ message: 'Company Overview deleted' });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error deleting company overview', error });
-//   }
-// };
-
-
-// const addFAQ = async (req, res) => {
-//   try {
-//     const { question, answer } = req.body;
-//     const companyOverview = await CompanyOverview.findOne();
-
-//     if (!companyOverview) {
-//       return res.status(404).json({ message: 'Company Overview not found' });
-//     }
-
-//     companyOverview.termsConditions.faqs.push({ question, answer });
-//     await companyOverview.save();
-
-//     res.json(companyOverview);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error adding FAQ', error });
-//   }
-// };
-
-
-// const editFAQ = async (req, res) => {
-//   const { faqId, question, answer } = req.body;
-
-//   try {
-//     const companyOverview = await CompanyOverview.findOne();
-//     if (!companyOverview) {
-//       return res.status(404).json({ message: 'Company Overview not found' });
-//     }
-
-//     const faq = companyOverview.termsConditions.faqs.id(faqId);
-//     if (!faq) {
-//       return res.status(404).json({ message: 'FAQ not found' });
-//     }
-
-//     faq.question = question || faq.question;
-//     faq.answer = answer || faq.answer;
-
-//     await companyOverview.save();
-
-//     res.json(companyOverview);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error editing FAQ', error });
-//   }
-// };
-
-
-// const deleteFAQ = async (req, res) => {
-//   const { faqId } = req.body;
-
-//   try {
-//     const companyOverview = await CompanyOverview.findOne();
-//     if (!companyOverview) {
-//       return res.status(404).json({ message: 'Company Overview not found' });
-//     }
-
-//     const faq = companyOverview.termsConditions.faqs.id(faqId);
-//     if (!faq) {
-//       return res.status(404).json({ message: 'FAQ not found' });
-//     }
-
-//     faq.remove();
-//     await companyOverview.save();
-
-//     res.json(companyOverview);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error deleting FAQ', error });
-//   }
-// };
-
-
-// export const CmsController = { createCompanyOverview, getCompanyOverview, updateCompanyOverview, deleteCompanyOverview, addFAQ, editFAQ, deleteFAQ }
-
-
-
-
 import { Request, Response } from 'express';
 import CMSService from './cms.service';
 import catchAsync from '../../../../shared/catchAsync';
+import sendResponse from '../../../../shared/sendResponse';
+import { StatusCodes } from 'http-status-codes';
+import { getSingleFilePath } from '../../../../shared/getFilePath';
 
-// Controller for creating company overview
 export const CmsController = {
-  createCompanyOverview: catchAsync(async (req: Request, res: Response) => {
-    const companyOverview = await CMSService.createCompanyOverview(req.body);
-    res.status(201).json(companyOverview);
+  // // Company Overview CRUD
+
+  getCompanyOverview: catchAsync(async (_req: Request, res: Response) => {
+    const companyOverview = await CMSService.getCompanyOverview();
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'CMS Retrieved successfully',
+      data: companyOverview,
+    });
   }),
 
-  getCompanyOverview: catchAsync(async (req: Request, res: Response) => {
-    const companyOverview = await CMSService.getCompanyOverview();
-    res.status(200).json(companyOverview);
-  }),
 
   updateCompanyOverview: catchAsync(async (req: Request, res: Response) => {
-    const companyOverview = await CMSService.updateCompanyOverview(req.body);
-    res.status(200).json(companyOverview);
+    let image = getSingleFilePath(req.files, 'image');
+
+    let body = req.body;
+    if (typeof req.body === 'string') {
+      try {
+        body = JSON.parse(req.body);
+      } catch (e) {
+        console.error('Invalid JSON in req.body', e);
+        return res.status(400).json({ error: 'Invalid JSON in request body' });
+      }
+    }
+
+    const data = {
+      logo: image,
+      ...body
+    };
+
+    const companyOverview = await CMSService.updateCompanyOverview(data);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Company Overview updated successfully',
+      data: data,
+    });
   }),
 
-  deleteCompanyOverview: catchAsync(async (req: Request, res: Response) => {
+
+  deleteCompanyOverview: catchAsync(async (_req: Request, res: Response) => {
     await CMSService.deleteCompanyOverview();
-    res.status(204).send();
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.NO_CONTENT,
+      message: 'Company Overview deleted successfully',
+      data: null,
+    });
   }),
 
+  // FAQ CRUD
   addFAQ: catchAsync(async (req: Request, res: Response) => {
     const updatedCompanyOverview = await CMSService.addFAQ(req.body);
-    res.status(200).json(updatedCompanyOverview);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'FAQ added successfully',
+      data: updatedCompanyOverview,
+    });
   }),
 
   editFAQ: catchAsync(async (req: Request, res: Response) => {
-    const updatedCompanyOverview = await CMSService.editFAQ(req.body);
-    res.status(200).json(updatedCompanyOverview);
+    const { faqId } = req.params
+    const updatedCompanyOverview = await CMSService.editFAQ(req.body, faqId);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'FAQ edited successfully',
+      data: updatedCompanyOverview,
+    });
   }),
 
   deleteFAQ: catchAsync(async (req: Request, res: Response) => {
-    const updatedCompanyOverview = await CMSService.deleteFAQ(req.body);
-    res.status(200).json(updatedCompanyOverview);
+    const { faqId } = req.params
+    const updatedCompanyOverview = await CMSService.deleteFAQ(faqId);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'FAQ deleted successfully',
+      data: updatedCompanyOverview,
+    });
+  }),
+
+  getAllFAQ: catchAsync(async (_req: Request, res: Response) => {
+    const faqs = await CMSService.getAllFAQFromDB();
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'FAQs retrieved successfully',
+      data: faqs,
+    });
+  }),
+
+  // Contact CRUD
+  getContact: catchAsync(async (_req: Request, res: Response) => {
+    const contact = await CMSService.getContact();
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Contact retrieved successfully',
+      data: contact,
+    });
+  }),
+
+  updateContact: catchAsync(async (req: Request, res: Response) => {
+    const updatedContact = await CMSService.updateContact(req.body);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Contact updated successfully',
+      data: updatedContact,
+    });
+  }),
+
+  // Logo CRUD
+  getLogo: catchAsync(async (_req: Request, res: Response) => {
+    const logo = await CMSService.getLogo();
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Logo retrieved successfully',
+      data: logo,
+    });
+  }),
+
+  updateLogo: catchAsync(async (req: Request, res: Response) => {
+
+    let logo = getSingleFilePath(req.files, 'image');
+    const updatedLogo = await CMSService.updateLogo(logo!);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Logo updated successfully',
+      data: updatedLogo,
+    });
   }),
 };

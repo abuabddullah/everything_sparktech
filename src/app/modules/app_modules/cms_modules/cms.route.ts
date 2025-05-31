@@ -1,32 +1,34 @@
-import { CmsController } from "./cms.controller";
 
-const express = require('express');
+import express, { NextFunction, Request, Response } from "express";
+import { CmsController } from "./cms.controller";
+import auth from "../../../middlewares/auth";
+import { USER_ROLES } from "../../../../enums/user";
+import fileUploadHandler from "../../../middlewares/fileUploadHandler";
+
 const router = express.Router();
 
-// Create
-router.post('/company-overview', CmsController.createCompanyOverview);
+// Company Overview CRUD
+router.get('/', CmsController.getCompanyOverview);
+router.patch('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), fileUploadHandler(), (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.data) {
+        req.body = req.body.data
+    }
+    // Proceed to controller
+    return CmsController.updateCompanyOverview(req, res, next);
+});
 
-// Read
-router.get('/company-overview', CmsController.getCompanyOverview);
+// FAQ CRUD
+router.get('/faq', CmsController.getAllFAQ);
+router.post('/faq', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), CmsController.addFAQ);
+router.patch('/faq/:faqId', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), CmsController.editFAQ);
+router.delete('/faq/:faqId', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), CmsController.deleteFAQ);
 
-// Update
-router.put('/company-overview', CmsController.updateCompanyOverview);
+// Contact CRUD
+router.get('/contact', CmsController.getContact);
+router.patch('/contact', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), CmsController.updateContact);
 
-// Delete
-router.delete('/company-overview', CmsController.deleteCompanyOverview);
+// Logo CRUD
+router.get('/logo', CmsController.getLogo);
+router.patch('/logo', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), fileUploadHandler(), CmsController.updateLogo);
 
-// Add FAQ
-router.post('/company-overview/faq', CmsController.addFAQ);
-
-// Edit FAQ
-router.put('/company-overview/faq', CmsController.editFAQ);
-
-// Delete FAQ
-router.delete('/company-overview/faq', CmsController.deleteFAQ);
-// Add logo
-// router.post('/company-overview/logo', CmsController.addLogo);
-
-// Edit logo
-// router.put('/company-overview/logo', CmsController.editLogo);
-
-module.exports = router;
+export const companyCMSRoutes = router;

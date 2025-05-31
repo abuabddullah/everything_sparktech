@@ -16,8 +16,7 @@ router.route('/').post(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), fileUploa
         }
         // Proceed to controller
         return ExtraServiceController.createExtraService(req, res, next);
-    },
-    ExtraServiceController.createExtraService);
+    });
 router.get('/', ExtraServiceController.getAllExtraServices);
 router.put('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.updateExtraService);
 router.delete('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.deleteExtraService);

@@ -7,6 +7,7 @@ import { LocationRoutes } from '../app/modules/app_modules/location_modules/loca
 import { BookingRoutes } from '../app/modules/app_modules/booking_modules/booking.route';
 import { ReviewRoutes } from '../app/modules/app_modules/review/review.routes';
 import { ClientRoutes } from '../app/modules/app_modules/client_modules/client.route';
+import { companyCMSRoutes } from '../app/modules/app_modules/cms_modules/cms.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -41,6 +42,10 @@ const apiRoutes = [
   {
     path: '/review',
     route: ReviewRoutes,
+  },
+  {
+    path: '/company-cms',
+    route: companyCMSRoutes,
   },
 ];
 
