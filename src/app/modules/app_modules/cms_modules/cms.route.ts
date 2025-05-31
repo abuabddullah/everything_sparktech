@@ -16,6 +16,8 @@ router.patch('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), fileUploadHand
     // Proceed to controller
     return CmsController.updateCompanyOverview(req, res, next);
 });
+router.patch('/terms-conditions', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), CmsController.updateTermsConditions);
+router.patch('/privacy-policy', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), CmsController.updatePrivacyPolicy); 
 
 // FAQ CRUD
 router.get('/faq', CmsController.getAllFAQ);

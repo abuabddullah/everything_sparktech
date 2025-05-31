@@ -18,6 +18,26 @@ export const CmsController = {
     });
   }),
 
+  updateTermsConditions: catchAsync(async (req: Request, res: Response) => {
+    const updatedTerms = await CMSService.updateTermsConditionsInDB(req.body);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Terms & Conditions updated successfully',
+      data: updatedTerms,
+    });
+  }),
+
+  updatePrivacyPolicy: catchAsync(async (req: Request, res: Response) => {
+    const updatedPolicy = await CMSService.updatePrivacyPolicyInDB(req.body);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Privacy Policy updated successfully',
+      data: updatedPolicy,
+    });
+  }),
+
 
   updateCompanyOverview: catchAsync(async (req: Request, res: Response) => {
     let image = getSingleFilePath(req.files, 'image');

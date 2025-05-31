@@ -3,17 +3,31 @@ import CMSModel from './cms.model';
 
 const CMSService = {
   // Create or replace the CMS document (singleton pattern)
-  createCompanyOverview: async (data: ICMSModel) => {
-    await CMSModel.deleteMany({});
-    const cms = new CMSModel(data);
-    await cms.save();
-    return cms;
-  },
 
   getCompanyOverview: async () => {
     const cms = await CMSModel.findOne().exec();
     if (!cms) throw new Error("CMS not found");
     return cms;
+  },
+
+  updateTermsConditionsInDB: async (termsData: string | any) => {
+    const updatedCms = await CMSModel.findOneAndUpdate(
+      {},
+      { $set: { termsConditions: termsData.termsConditions } },
+      { new: true }
+    ).exec();
+    if (!updatedCms) throw new Error("Terms & Conditions not found");
+    return updatedCms.termsConditions;
+  },
+
+  updatePrivacyPolicyInDB: async (policyData: string | any) => {
+    const updatedCms = await CMSModel.findOneAndUpdate(
+      {},
+      { $set: { privacyPolicy: policyData.privacyPolicy } },
+      { new: true }
+    ).exec();
+    if (!updatedCms) throw new Error("Privacy Policy not found");
+    return updatedCms.privacyPolicy;
   },
 
   updateCompanyOverview: async (data: Partial<ICMSModel>) => {
@@ -52,11 +66,11 @@ const CMSService = {
   },
 
   deleteFAQ: async (faqId: string) => {
-    console.log({faqId})
+    console.log({ faqId })
     const cms = await CMSModel.findOne().exec();
     if (!cms) throw new Error("CMS not found");
     const idx = cms.faqs.findIndex(f => f._id == faqId);
-    console.log({idx})
+    console.log({ idx })
     if (idx === -1) throw new Error("FAQ not found");
     cms.faqs.splice(idx, 1);
     await cms.save();
@@ -77,7 +91,7 @@ const CMSService = {
   },
 
   updateContact: async (contactData: ICMSModel['contact']) => {
-    console.log({contactData})
+    console.log({ contactData })
     const updatedCms = await CMSModel.findOneAndUpdate(
       {},
       { $set: { contact: contactData } },
