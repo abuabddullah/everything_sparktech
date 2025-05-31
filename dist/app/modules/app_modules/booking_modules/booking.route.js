@@ -19,5 +19,6 @@ router.route('/search').get((0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, u
 router.route('/status/:id').patch((0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, user_1.USER_ROLES.ADMIN), (0, validateRequest_1.default)(booking_validation_1.BookingValidation.updateStatusValidationSchema), booking_controller_1.BookingController.updateBookingStatus);
 router.route('/assign-driver/:id').patch((0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, user_1.USER_ROLES.ADMIN), (0, validateRequest_1.default)(booking_validation_1.BookingValidation.updateDriverValidationSchema), booking_controller_1.BookingController.assignDriverToBooking);
 router.route('/admin/:id').get((0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, user_1.USER_ROLES.ADMIN), booking_controller_1.BookingController.getABookingID);
+router.route('/driver/:driverId').get((0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, user_1.USER_ROLES.ADMIN, user_1.USER_ROLES.DRIVER), booking_controller_1.BookingController.getBookingByDriverID);
 router.route('/:id').delete((0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, user_1.USER_ROLES.ADMIN), booking_controller_1.BookingController.deleteBooking);
 exports.BookingRoutes = router;

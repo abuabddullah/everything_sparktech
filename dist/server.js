@@ -20,6 +20,7 @@ const config_1 = __importDefault(require("./config"));
 const seedAdmin_1 = require("./DB/seedAdmin");
 const socketHelper_1 = require("./helpers/socketHelper");
 const logger_1 = require("./shared/logger");
+const seedCompanyCMS_1 = require("./DB/seedCompanyCMS");
 //uncaught exception
 process.on('uncaughtException', error => {
     logger_1.errorLogger.error('UnhandleException Detected', error);
@@ -33,6 +34,8 @@ function main() {
             logger_1.logger.info(colors_1.default.green('🚀 Database connected successfully'));
             //Seed Super Admin after database connection is successful
             yield (0, seedAdmin_1.seedSuperAdmin)();
+            //Seed Super Admin after database connection is successful
+            yield (0, seedCompanyCMS_1.seedCMS)();
             const port = typeof config_1.default.port === 'number' ? config_1.default.port : Number(config_1.default.port);
             server = app_1.default.listen(port, config_1.default.ip_address, () => {
                 logger_1.logger.info(colors_1.default.yellow(`♻️  Application listening on port:${config_1.default.port}`));

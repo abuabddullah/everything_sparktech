@@ -10,6 +10,9 @@ const vehicle_route_1 = require("../app/modules/app_modules/vehicle_modules/vehi
 const extraService_route_1 = require("../app/modules/app_modules/extraServices_modules/extraService.route");
 const location_route_1 = require("../app/modules/app_modules/location_modules/location.route");
 const booking_route_1 = require("../app/modules/app_modules/booking_modules/booking.route");
+const review_routes_1 = require("../app/modules/app_modules/review/review.routes");
+const client_route_1 = require("../app/modules/app_modules/client_modules/client.route");
+const cms_route_1 = require("../app/modules/app_modules/cms_modules/cms.route");
 const router = express_1.default.Router();
 const apiRoutes = [
     {
@@ -35,6 +38,18 @@ const apiRoutes = [
     {
         path: '/booking',
         route: booking_route_1.BookingRoutes,
+    },
+    {
+        path: '/client',
+        route: client_route_1.ClientRoutes,
+    },
+    {
+        path: '/review',
+        route: review_routes_1.ReviewRoutes,
+    },
+    {
+        path: '/company-cms',
+        route: cms_route_1.companyCMSRoutes,
     },
 ];
 apiRoutes.forEach(route => router.use(route.path, route.route));

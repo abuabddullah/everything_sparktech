@@ -13,67 +13,103 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const cms_model_1 = __importDefault(require("./cms.model"));
-const cms_validation_1 = require("./cms.validation");
 const CMSService = {
-    createCompanyOverview: (data) => __awaiter(void 0, void 0, void 0, function* () {
-        // Validate the data with Zod
-        cms_validation_1.CompanyOverviewSchema.parse(data);
-        // Create and save the company overview
-        const newCompanyOverview = new cms_model_1.default(data);
-        yield newCompanyOverview.save();
-        return newCompanyOverview;
-    }),
+    // Create or replace the CMS document (singleton pattern)
     getCompanyOverview: () => __awaiter(void 0, void 0, void 0, function* () {
-        const companyOverview = yield cms_model_1.default.findOne().exec();
-        if (!companyOverview)
-            throw new Error("Company Overview not found");
-        return companyOverview;
+        const cms = yield cms_model_1.default.findOne().exec();
+        if (!cms)
+            throw new Error("CMS not found");
+        return cms;
+    }),
+    updateTermsConditionsInDB: (termsData) => __awaiter(void 0, void 0, void 0, function* () {
+        const updatedCms = yield cms_model_1.default.findOneAndUpdate({}, { $set: { termsConditions: termsData.termsConditions } }, { new: true }).exec();
+        if (!updatedCms)
+            throw new Error("Terms & Conditions not found");
+        return updatedCms.termsConditions;
+    }),
+    updatePrivacyPolicyInDB: (policyData) => __awaiter(void 0, void 0, void 0, function* () {
+        const updatedCms = yield cms_model_1.default.findOneAndUpdate({}, { $set: { privacyPolicy: policyData.privacyPolicy } }, { new: true }).exec();
+        if (!updatedCms)
+            throw new Error("Privacy Policy not found");
+        return updatedCms.privacyPolicy;
     }),
     updateCompanyOverview: (data) => __awaiter(void 0, void 0, void 0, function* () {
-        // Validate the data with Zod
-        cms_validation_1.CompanyOverviewSchema.parse(data);
-        const updatedCompanyOverview = yield cms_model_1.default.findOneAndUpdate({}, { termsConditions: data.termsConditions }, { new: true }).exec();
-        if (!updatedCompanyOverview)
-            throw new Error("Company Overview not found");
-        return updatedCompanyOverview;
+        const updatedCms = yield cms_model_1.default.findOneAndUpdate({}, { $set: data }, { new: true }).exec();
+        if (!updatedCms)
+            throw new Error("CMS not found");
+        return updatedCms;
     }),
     deleteCompanyOverview: () => __awaiter(void 0, void 0, void 0, function* () {
-        const result = yield cms_model_1.default.deleteOne().exec();
+        const result = yield cms_model_1.default.deleteMany({}).exec();
         if (result.deletedCount === 0)
-            throw new Error("Company Overview not found");
+            throw new Error("CMS not found");
     }),
+    // FAQ CRUD
     addFAQ: (faqData) => __awaiter(void 0, void 0, void 0, function* () {
-        cms_validation_1.FaqSchema.parse(faqData);
-        const companyOverview = yield cms_model_1.default.findOne().exec();
-        if (!companyOverview)
-            throw new Error("Company Overview not found");
-        companyOverview.termsConditions.faqs.push(faqData);
-        yield companyOverview.save();
-        return companyOverview;
+        const cms = yield cms_model_1.default.findOne().exec();
+        if (!cms)
+            throw new Error("CMS not found");
+        cms.faqs.push(faqData);
+        yield cms.save();
+        return cms;
     }),
-    editFAQ: (faqData) => __awaiter(void 0, void 0, void 0, function* () {
-        cms_validation_1.FaqSchema.parse(faqData);
-        const companyOverview = yield cms_model_1.default.findOne().exec();
-        if (!companyOverview)
-            throw new Error("Company Overview not found");
-        const faqIndex = companyOverview.termsConditions.faqs.findIndex((faq) => faq.question === faqData.question);
-        if (faqIndex === -1)
+    editFAQ: (faqData, faqId) => __awaiter(void 0, void 0, void 0, function* () {
+        const cms = yield cms_model_1.default.findOne().exec();
+        if (!cms)
+            throw new Error("CMS not found");
+        const idx = cms.faqs.findIndex(f => f._id == faqId);
+        if (idx === -1)
             throw new Error("FAQ not found");
-        companyOverview.termsConditions.faqs[faqIndex] = faqData;
-        yield companyOverview.save();
-        return companyOverview;
+        // Update only the fields except _id to avoid changing the id during patch
+        Object.assign(cms.faqs[idx], Object.assign(Object.assign({}, faqData), { _id: cms.faqs[idx]._id }));
+        yield cms.save();
+        return cms;
     }),
-    deleteFAQ: (faqData) => __awaiter(void 0, void 0, void 0, function* () {
-        cms_validation_1.FaqSchema.parse(faqData);
-        const companyOverview = yield cms_model_1.default.findOne().exec();
-        if (!companyOverview)
-            throw new Error("Company Overview not found");
-        const faqIndex = companyOverview.termsConditions.faqs.findIndex((faq) => faq.question === faqData.question);
-        if (faqIndex === -1)
+    deleteFAQ: (faqId) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log({ faqId });
+        const cms = yield cms_model_1.default.findOne().exec();
+        if (!cms)
+            throw new Error("CMS not found");
+        const idx = cms.faqs.findIndex(f => f._id == faqId);
+        console.log({ idx });
+        if (idx === -1)
             throw new Error("FAQ not found");
-        companyOverview.termsConditions.faqs.splice(faqIndex, 1);
-        yield companyOverview.save();
-        return companyOverview;
+        cms.faqs.splice(idx, 1);
+        yield cms.save();
+        return cms;
+    }),
+    getAllFAQFromDB: () => __awaiter(void 0, void 0, void 0, function* () {
+        const cms = yield cms_model_1.default.findOne().exec();
+        if (!cms)
+            throw new Error("CMS not found");
+        return cms.faqs;
+    }),
+    // Contact CRUD
+    getContact: () => __awaiter(void 0, void 0, void 0, function* () {
+        const cms = yield cms_model_1.default.findOne().exec();
+        if (!cms)
+            throw new Error("Contact not found");
+        return cms.contact;
+    }),
+    updateContact: (contactData) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log({ contactData });
+        const updatedCms = yield cms_model_1.default.findOneAndUpdate({}, { $set: { contact: contactData } }, { new: true }).exec();
+        if (!updatedCms)
+            throw new Error("Contact not found");
+        return updatedCms.contact;
+    }),
+    // Logo CRUD
+    getLogo: () => __awaiter(void 0, void 0, void 0, function* () {
+        const cms = yield cms_model_1.default.findOne().exec();
+        if (!cms)
+            throw new Error("Logo not found");
+        return cms.logo;
+    }),
+    updateLogo: (logoData) => __awaiter(void 0, void 0, void 0, function* () {
+        const updatedCms = yield cms_model_1.default.findOneAndUpdate({}, { $set: { logo: logoData } }, { new: true }).exec();
+        if (!updatedCms)
+            throw new Error("Logo not found");
+        return updatedCms.logo;
     }),
 };
 exports.default = CMSService;

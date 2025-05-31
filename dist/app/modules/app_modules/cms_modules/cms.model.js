@@ -28,17 +28,19 @@ const FaqSchema = new mongoose_1.Schema({
     question: { type: String, required: true },
     answer: { type: String, required: true }
 });
-const TermsConditionsSchema = new mongoose_1.Schema({
-    description: { type: String, required: true },
-    privacyPolicy: { type: String, required: true },
-    faqs: { type: [FaqSchema], required: true },
-    contact: { type: String, required: true },
+const ContactSchema = new mongoose_1.Schema({
+    phone: { type: String, required: true },
     email: { type: String, required: true },
-    location: { type: String, required: true },
-    logo: { type: String, required: true, default: 'https://i.ibb.co/z5YHLV9/profile.png' }
+    whatsapp: { type: String, required: true },
+    location: { type: String, required: true }
 });
 const CMSSchema = new mongoose_1.Schema({
-    termsConditions: { type: TermsConditionsSchema, required: true }
+    description: { type: String, required: true },
+    privacyPolicy: { type: String, required: true },
+    termsConditions: { type: String, required: true },
+    faqs: { type: [FaqSchema], required: true },
+    contact: { type: ContactSchema, required: true },
+    logo: { type: String, required: true, default: 'https://i.ibb.co/z5YHLV9/profile.png' }
 });
-const CMSModel = mongoose_1.default.model('CompanyOverview', CMSSchema);
+const CMSModel = mongoose_1.default.model('CMS', CMSSchema);
 exports.default = CMSModel;

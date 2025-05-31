@@ -1,1 +1,1 @@
-* payment & cms module
+* payment & dashboard data

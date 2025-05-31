@@ -17,7 +17,7 @@ router.route('/').post((0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, user_1
     }
     // Proceed to controller
     return extraService_controller_1.ExtraServiceController.createExtraService(req, res, next);
-}, extraService_controller_1.ExtraServiceController.createExtraService);
+});
 router.get('/', extraService_controller_1.ExtraServiceController.getAllExtraServices);
 router.put('/:id', (0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, user_1.USER_ROLES.ADMIN), extraService_controller_1.ExtraServiceController.updateExtraService);
 router.delete('/:id', (0, auth_1.default)(user_1.USER_ROLES.SUPER_ADMIN, user_1.USER_ROLES.ADMIN), extraService_controller_1.ExtraServiceController.deleteExtraService);
