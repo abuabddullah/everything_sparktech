@@ -5,18 +5,19 @@ import { PaymentModel } from './payment.model';
 import ApiError from '../../../../errors/ApiError';
 import { USER_ROLES } from '../../../../enums/user';
 import { User } from '../../user/user.model';
+import { ClientModel } from '../client_modules/client.model';
 
 // Create court
 const createPaymentService = async (payload: any) => {
   // console.log('payload');
   // console.log(payload);
-  const user = await User.findById(payload?.userId?.toString());
+  const client = await ClientModel.findById(payload?.clientId?.toString());
 
-  if (!user) {
-    throw new ApiError(StatusCodes.NOT_FOUND, 'User not found!');
+  if (!client) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'CLIENT not found!');
   }
 
-  if (user.role != USER_ROLES.USER) {
+  if (client.role != USER_ROLES.CLIENT) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'User are not authorized!');
   }
 
