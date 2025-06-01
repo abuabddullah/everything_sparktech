@@ -14,6 +14,7 @@ const ClientSchema = new Schema<IClient>(
     state: { type: String, required: false },
     postCode: { type: String, required: false },
     bookings: [{ type: Types.ObjectId, ref: "Booking" }],
+    stripeCustomerId: { type: String, required: false },
     role: { type: String, enum: ["CLIENT"], default: "CLIENT" }
   },
   {

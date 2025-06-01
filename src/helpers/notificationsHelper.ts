@@ -9,10 +9,15 @@ export const sendNotifications = async (data: any): Promise<INotification> => {
     const socketIo = global.io;
 
     if (socketIo) {
-        data.receiver.forEach((receiverId: string) => {
+        if (Array.isArray(data.receiver) && data.receiver.length > 0) {
+            data.receiver.forEach((receiverId: string) => {
             // Emit the notification to the specific receiver
             socketIo.emit(`get-notification::${receiverId}`, result);
-        });
+            });
+        } else {
+            // Emit to all connected clients if no receiverId is specified
+            socketIo.emit("get-notification::all", result);
+        }
     }
 
     return result;

@@ -12,5 +12,6 @@ export interface IClient {
     state: string;
     postCode: string;
     bookings?: Types.ObjectId[]; // it will give me virtual total bookings and total spend
+    stripeCustomerId?: string;
     role: "CLIENT";
 }

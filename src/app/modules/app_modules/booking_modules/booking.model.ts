@@ -21,6 +21,7 @@ const BookingSchema = new Schema<IBooking>(
         amount: { type: Number, required: true },
         carRentedForInDays: { type: Number, required: true },
         paymentId: { type: Schema.Types.ObjectId, ref: 'Transaction', required: false },
+        isPaid: { type: Boolean, required: true, default: false },
         createdAt: { type: Date, default: Date.now },
         updatedAt: { type: Date, default: Date.now }
     },

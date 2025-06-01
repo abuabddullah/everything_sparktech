@@ -21,7 +21,9 @@ import { sendNotifications } from "../../../../helpers/notificationsHelper";
 import ApiError from "../../../../errors/ApiError";
 import { StatusCodes } from "http-status-codes";
 import { IUser } from "../../user/user.interface";
-import { BOOKING_STATUS } from "../../../../enums/booking";
+import { BOOKING_PAYMENT_METHOD, BOOKING_STATUS } from "../../../../enums/booking";
+import stripe from "../../../../config/stripe.config";
+import config from "../../../../config";
 
 
 
@@ -144,14 +146,15 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
             throw new Error('Client details are incomplete');
         }
         // find client by email  if exists then use that client otherwise create new client
-        const existingClient = await ClientModel.findOne({ email: clientDetails.email }).session(session);
-        if (existingClient) {
+        let thisClient;
+        thisClient = await ClientModel.findOne({ email: clientDetails.email }).session(session);
+        if (thisClient) {
             // bookingdata.clientId = existingClient._id; // Assign existing client ID to booking data
             bookingDataWithClient = {
                 ...bookingdata,
                 amount,
                 carRentedForInDays,
-                clientId: existingClient._id, // Assign the existing client ID to booking data
+                clientId: thisClient._id, // Assign the existing client ID to booking data
             };
         } else {
             // create client in Client model
@@ -160,7 +163,7 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
                 throw new Error('Failed to create client');
             }
             // Use the created client document
-            const createdClient = client[0];
+            thisClient = client[0];
             if (!client) {
                 throw new Error('Failed to create client');
             }
@@ -168,7 +171,7 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
                 ...bookingdata,
                 amount,
                 carRentedForInDays,
-                clientId: createdClient._id, // Assign the created client ID to booking data
+                clientId: thisClient._id, // Assign the created client ID to booking data
             };
         }
         const createdBooking = await BookingModel.create([bookingDataWithClient], { session });
@@ -184,17 +187,71 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         await isExistingVehicle.save({ session });
 
         // Update the client's bookings field with this created booking id
-        const clientToUpdate = await ClientModel.findById(bookingDataWithClient.clientId).session(session);
-        if (clientToUpdate) {
-            if (!clientToUpdate.bookings) {
-                clientToUpdate.bookings = [];
+        thisClient?.bookings?.push(createdBooking[0]._id as mongoose.Types.ObjectId);
+
+        // check if client already has stripe account or need to be created and saved
+        let stripeCustomerId = thisClient?.stripeCustomerId;
+        let stripeCustomer;
+
+        if (stripeCustomerId) {
+            try {
+                // Attempt to retrieve the Stripe customer
+                stripeCustomer = await stripe.customers.retrieve(stripeCustomerId);
+
+                // Check if the customer exists
+                if (!stripeCustomer || stripeCustomer.deleted) {
+                    throw new Error(`Customer with ID ${stripeCustomerId} no longer exists.`);
+                }
+
+                // If customer exists, proceed with your logic
+                console.log('Customer retrieved:', stripeCustomer);
+
+            } catch (error: any) {
+                // Log detailed error for debugging
+                console.error('Stripe Error:', error.message);
+                console.error('Error details:', error); // Log full error object
+
+                if (error.code === 'resource_missing') {
+                    console.log(`No such customer: ${stripeCustomerId}`);
+                    // Proceed to create a new customer
+                } else {
+                    // Handle other errors
+                    throw new ApiError(
+                        StatusCodes.INTERNAL_SERVER_ERROR,
+                        'Failed to retrieve Stripe customer',
+                    );
+                }
             }
-            clientToUpdate.bookings.push(createdBooking[0]._id as mongoose.Types.ObjectId);
-            await clientToUpdate.save({ session });
         }
 
-        // need to send email to the client email with booking details specially the refferece id = booking._id
+        if (!stripeCustomerId) {
+            try {
+                // Create a new Stripe customer if it doesn't exist
+                stripeCustomer = await stripe.customers.create({
+                    email: thisClient!.email,
+                    name: `${thisClient?.firstName} ${thisClient?.lastName}`,
+                });
 
+                // Save the Stripe customer ID
+                thisClient!.stripeCustomerId = stripeCustomer?.id;
+                console.log('New customer created:', stripeCustomer);
+
+            } catch (error: any) {
+                // Log error when creating customer
+                console.error('Stripe Error:', error.message);
+                console.error('Error details:', error); // Log full error
+
+                throw new ApiError(
+                    StatusCodes.INTERNAL_SERVER_ERROR,
+                    'Failed to create Stripe customer',
+                );
+            }
+        }
+
+
+        await thisClient.save({ session });
+
+        // need to send email to the client email with booking details specially the refferece id = booking._id
         const values: IConfirmBookingEmail = {
             name: `${clientDetails.firstName} ${clientDetails.lastName}`,
             email: clientDetails.email,
@@ -210,6 +267,44 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         const confirmBookingEmailTemplate = emailTemplate.confirmBookingEmail(values);
         emailHelper.sendEmail(confirmBookingEmailTemplate);
 
+        // do the session creation acitivity if bookingdata.paymentmethod = STRIPE
+        if (bookingdata.paymentMethod == BOOKING_PAYMENT_METHOD.STRIPE) {
+            const stripeSession = await stripe.checkout.sessions.create({
+                mode: 'payment',
+                customer: stripeCustomer?.id,
+                line_items: [
+                    {
+                        price_data: {
+                            currency: 'usd',
+                            product_data: {
+                                name: 'Amount',
+                            },
+                            unit_amount: amount * 100,
+                        },
+                        quantity: 1,
+                    },
+                ],
+                metadata: {
+                    bookingId: (createdBooking[0] as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
+                    vehicleId: isExistingVehicle._id.toString(),
+                    clientId: thisClient._id.toString(),
+                    amount: amount.toFixed(2),
+                    paymentMethod: bookingDataWithClient.paymentMethod || '',
+                },
+                success_url: `${config.stripe.success_url}?bookingId=${createdBooking[0]?._id}`,
+                cancel_url: config.stripe.cancel_url,
+            });
+            console.log({
+                url: stripeSession.url,
+            });
+
+            await session.commitTransaction();
+            session.endSession();
+            return {
+                url: stripeSession.url,
+            };
+        }
+
         // send notification to the admins with booking details
         // get all the admin users from the database
         const adminUsers = await User.find({ role: { $in: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN] } }).session(session);
@@ -223,12 +318,11 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
             category: NOTIFICATION_CATEGORIES.RESERVATION,
             type: NOTIFICATION_TYPE.ADMIN,
         };
-
         sendNotifications(notificationData);
 
         await session.commitTransaction();
         session.endSession();
-        return createdBooking[0];
+        return createdBooking[0]; // but isPaid=false
 
     } catch (error) {
         await session.abortTransaction();
@@ -239,24 +333,37 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
 
 
 const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
-    const bookingQuery = BookingModel.find()
-        .populate([
-            { path: 'pickupLocation' },
-            { path: 'returnLocation' },
-            { path: 'vehicle' },
-            { path: 'extraServices' },
-            { path: 'clientId' },
-            { path: 'paymentId' }
-        ]);
-
-    const queryBuilder = new QueryBuilder(bookingQuery, query)
+    const bookingQuery = new QueryBuilder(
+        BookingModel.find()
+            .populate({
+                path: 'returnLocation',
+                select: 'location'
+            })
+            .populate({
+                path: 'pickupLocation',
+                select: 'location'
+            })
+            .populate({
+                path: 'driverId',
+                select: 'name'
+            })
+            .populate({
+                path: 'clientId',
+                select: 'firstName lastName'
+            })
+            .populate({
+                path: 'vehicle',
+                select: 'name'
+            }),
+        query
+    )
         .filter()
         .sort()
         .paginate()
         .fields();
 
-    const result = await queryBuilder.modelQuery;
-    const meta = await queryBuilder.getPaginationInfo();
+    const result = await bookingQuery.modelQuery;
+    const meta = await bookingQuery.getPaginationInfo();
 
     return {
         meta,
@@ -325,7 +432,6 @@ const deleteBookingFromDB = async (
 
         // 1. Find the vehicle and remove the booking from the vehicle's bookings array
         const isExistVehicle = await Vehicle.findById(isExistBooking.vehicle).session(session);
-        console.log(isExistVehicle)
         if (!isExistVehicle) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Vehicle not found");
         }
@@ -340,6 +446,27 @@ const deleteBookingFromDB = async (
             await isExistVehicle.save({ session });
         } else {
             throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in vehicle's bookings array");
+        }
+
+        // 2. Find the client and remove the booking from the client's bookings array
+        const isExistClient = await ClientModel.findById(isExistBooking.clientId).session(session);
+        if (!isExistClient) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Client not found");
+        }
+
+        if (!isExistClient.bookings) {
+            isExistClient.bookings = [];
+        }
+        const clientBookingIndex = isExistClient.bookings.indexOf(isExistBooking._id as mongoose.Types.ObjectId);
+
+        if (clientBookingIndex !== -1) {
+            // Remove the booking ID from the client's bookings array
+            isExistClient.bookings.splice(clientBookingIndex, 1);
+
+            // Save the updated client document
+            await isExistClient.save({ session });
+        } else {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in client's bookings array");
         }
 
 
@@ -536,6 +663,16 @@ const getBookingByDriverIDFromDB = async (driverId: string) => {
     return bookings;
 };
 
+const updateBookingIsPaid = async (bookingId: string, isPaid: boolean) => {
+    const booking = await BookingModel.findById(bookingId);
+    if (!booking) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found");
+    }
+    booking.isPaid = isPaid;
+    await booking.save();
+    return booking;
+};
+
 export const BookingService = {
     createBookingToDB,
     getAllBookingsFromDB,
@@ -545,5 +682,5 @@ export const BookingService = {
     assignDriverToBooking,
     updateBookingStatusInDB,
     getABookingByIDFromDB,
-    getBookingByDriverIDFromDB
+    getBookingByDriverIDFromDB, updateBookingIsPaid
 };

@@ -18,6 +18,7 @@ export interface IBooking extends Document {
     amount: number; // Total amount for the booking
     carRentedForInDays: number; // Total carRentedForInDays for the booking
     paymentId?: Types.ObjectId; // Reference to the payment transaction
+    isPaid: boolean;
     createdAt?: Date; // Automatically managed by Mongoose
     updatedAt?: Date; // Automatically managed by Mongoose
 

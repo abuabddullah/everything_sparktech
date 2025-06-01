@@ -31,4 +31,12 @@ export default {
     domain: process.env.COMPANY_DOMAIN,
     default_password: process.env.COMPANY_DEFAULT_PASSWORD,
   },
+  stripe: {
+    stripe_api_key: process.env.STRIPE_API_KEY,
+    stripe_api_secret: process.env.STRIPE_API_SECRET,
+    success_url: process.env.STRIPE_SUCCESS_URL,
+    cancel_url: process.env.STRIPE_CANCLE_URL,
+    webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
+    home_url: process.env.HOME_CALLBACK_URL,
+  }
 };
