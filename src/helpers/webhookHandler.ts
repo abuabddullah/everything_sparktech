@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ClientModel } from '../app/modules/app_modules/client_modules/client.model';
 import config from '../config';
 import stripe from '../config/stripe.config';
+import { PAYMENT_STATUS } from '../enums/payment';
 
 const webhookHandler = async (req: Request, res: Response): Promise<void> => {
     console.log('Webhook received');
@@ -35,7 +36,7 @@ const webhookHandler = async (req: Request, res: Response): Promise<void> => {
         console.error('Request body is Buffer:', Buffer.isBuffer(req.body));
         console.error('Request body length:', req.body?.length || 'undefined');
         console.error('Signature header:', sig);
-        
+
         // Construct the event using the raw body and the signature
         event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
         console.log('Event verified:', event.type);
@@ -53,7 +54,7 @@ const webhookHandler = async (req: Request, res: Response): Promise<void> => {
     }
 
     console.log("event.type", event.type);
-    
+
     try {
         switch (event.type) {
             case 'checkout.session.completed':
@@ -121,6 +122,7 @@ const handlePaymentSucceeded = async (session: Stripe.Checkout.Session) => {
             amount,
             paymentMethod,
             paymentIntent,
+            status: PAYMENT_STATUS.PAID
         });
 
         console.log('Payment created successfully:', newPayment._id || 'ID not available');

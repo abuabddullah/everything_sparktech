@@ -9,6 +9,7 @@ export interface IPayment extends Document {
     clientId: Types.ObjectId;
     amount: number;
     paymentMethod: BOOKING_PAYMENT_METHOD;
+    status?: PAYMENT_STATUS;
     paymentIntent?: string;
     stripeCustomerId?: string;
 }

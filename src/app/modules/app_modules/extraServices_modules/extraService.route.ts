@@ -19,6 +19,7 @@ router.route('/').post(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), fileUploa
     });
 router.get('/', ExtraServiceController.getAllExtraServices);
 router.put('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.updateExtraService);
+// router.put('/:status', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.updateStatus);
 router.delete('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.deleteExtraService);
 
 export const ExtraServiceRoutes = router;

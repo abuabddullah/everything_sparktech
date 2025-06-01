@@ -15,16 +15,12 @@ import { sendNotifications } from '../../../../helpers/notificationsHelper';
 
 // Create Field
 const createPayment = catchAsync(async (req: Request, res: Response) => {
-    const { userId } = req.user;
-
-    req.body.customerId = userId;
-
     const result = await paymentService.createPaymentService(req.body);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'Court booking successfully',
+        message: 'Payment successfully',
         data: result,
     });
 });

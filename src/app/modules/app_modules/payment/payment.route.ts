@@ -7,7 +7,7 @@ import { USER_ROLES } from '../../../../enums/user';
 export const paymentRoutes = Router();
 
 paymentRoutes
-//   .post('/', auth(USER_ROLE.USER), paymenController.createPayment)
+  .post('/', auth(USER_ROLES.CLIENT,USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN), paymenController.createPayment)
 //   .get(
 //     '/',
 //     auth(USER_ROLE.USER, USER_ROLE.BUSINESS, USER_ROLE.ADMIN),
@@ -15,8 +15,8 @@ paymentRoutes
 //   )
 
   .get(
-    '/owner',
-    auth(USER_ROLES.ADMIN),
+    '/admin',
+    auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),
     paymenController.getAllPaymentByOwnerId,
   )
 //   .get(

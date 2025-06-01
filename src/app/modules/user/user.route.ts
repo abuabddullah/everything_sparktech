@@ -11,7 +11,7 @@ const router = express.Router();
 
 router
   .route('/profile')
-  .get(auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.DRIVER, USER_ROLES.TEAM_MEMBER), UserController.getUserProfile)
+  .get(auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.DRIVER, USER_ROLES.TEAM_MEMBER,USER_ROLES.SUPER_ADMIN), UserController.getUserProfile)
   .patch(
     auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.DRIVER, USER_ROLES.TEAM_MEMBER),
     fileUploadHandler(),
@@ -40,6 +40,8 @@ router
       return UserController.createTeamMember(req, res, next);
     }
   );
+  // router.route('/team-member/:id').patch(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),UserController.updateTeamMember)
+  // router.route('/team-member/:id').delete(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),UserController.deleteTeamMember)
 router
   .route('/admin')
   .post(
@@ -66,7 +68,9 @@ router
   .delete(
     auth(USER_ROLES.SUPER_ADMIN),
     UserController.deleteAnAdmin
-  );
+  )
+  // .patch(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),UserController.updateAdmin)
+  ;
 
 
 router

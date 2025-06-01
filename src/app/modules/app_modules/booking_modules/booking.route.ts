@@ -24,5 +24,6 @@ router.route('/assign-driver/:id').patch(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES
 router.route('/admin/:id').get(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),BookingController.getABookingID);
 router.route('/driver/:driverId').get(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.DRIVER),BookingController.getBookingByDriverID);
 router.route('/:id').delete(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), BookingController.deleteBooking);
+router.route('/:id').get(BookingController.getABookingByEmailAndID);
 
 export const BookingRoutes = router;

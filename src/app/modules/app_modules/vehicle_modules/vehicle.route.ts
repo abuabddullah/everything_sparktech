@@ -70,6 +70,9 @@ router.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
 router.patch('/:id/last-maintenance', (req: Request, res: Response, next: NextFunction) => {
     // Handle updating a vehicle's last maintenance date by ID
 });
+router.patch('/:status', (req: Request, res: Response, next: NextFunction) => {
+    // Handle updating a vehicle's status AVAILABLE = 'AVAILABLE',RENTED = 'RENTED',MAINTENANCE = 'MAINTENANCE',SOLD = 'SOLD',
+});
 
 router.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
     // 1. delete the bookings for this vehicle from booking model

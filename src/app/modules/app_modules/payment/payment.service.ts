@@ -6,23 +6,47 @@ import ApiError from '../../../../errors/ApiError';
 import { USER_ROLES } from '../../../../enums/user';
 import { User } from '../../user/user.model';
 import { ClientModel } from '../client_modules/client.model';
+import { BookingModel } from '../booking_modules/booking.model';
 
 // Create court
-const createPaymentService = async (payload: any) => {
-  // console.log('payload');
-  // console.log(payload);
-  const client = await ClientModel.findById(payload?.clientId?.toString());
+const createPaymentService = async (payload: IPayment | any) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const client = await ClientModel.findById(payload?.clientId?.toString()).session(session);
 
-  if (!client) {
-    throw new ApiError(StatusCodes.NOT_FOUND, 'CLIENT not found!');
+    if (!client) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'CLIENT not found!');
+    }
+
+    if (client.role != USER_ROLES.CLIENT) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'User are not authorized!');
+    }
+
+    const result = await PaymentModel.create([payload], { session }) as (IPayment & { _id: mongoose.Types.ObjectId })[];
+
+    const booking = await BookingModel.findById(payload.bookingId).session(session);
+
+    if (!booking) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'booking not found!');
+    }
+
+    if (booking.isPaid == true) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Booking is already paid!');
+    }
+
+    booking.paymentId = result[0]._id;
+    await booking.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return result[0];
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
   }
-
-  if (client.role != USER_ROLES.CLIENT) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'User are not authorized!');
-  }
-
-  const result = await PaymentModel.create(payload);
-  return result;
 };
 
 const getAllPaymentByUserId = async (
