@@ -37,6 +37,52 @@ const createTeamMember = catchAsync(
   }
 );
 
+const updateTeamMemberById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    let image = getSingleFilePath(req.files, 'image');
+    const userData = {
+      ...req.body,
+      image,
+    };
+    const result = await UserService.updateTeamMemberByIdToDB(id, userData);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Team member updated successfully',
+      data: result,
+    });
+  }
+);
+
+const deleteTeamMemberById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user._id;
+    const { id } = req.params;
+    const result = await UserService.deleteTeamMemberByIdFromDB(userId, id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Team member deleted successfully',
+      data: result,
+    });
+  }
+);
+
+const getTeamMemberById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await UserService.getTeamMemberByIdFromDB(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Team member data retrieved successfully',
+    data: result,
+  });
+});
+
 const createAdmin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { ...userData } = req.body; // name, email , password
@@ -77,7 +123,7 @@ const getAnAdmin = catchAsync(async (req: Request, res: Response) => {
 const deleteAnAdmin = catchAsync(async (req: Request, res: Response) => {
   const userId = req.user._id
   const { id } = req.params;
-  const result = await UserService.deleteAnAdminFromDB(userId,id);
+  const result = await UserService.deleteAnAdminFromDB(userId, id);
 
   sendResponse(res, {
     success: true,
@@ -86,6 +132,29 @@ const deleteAnAdmin = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+const updateAnAdminById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req?.user?._id
+    const { id } = req.params;
+    if (userId == id) {
+      throw {
+        statusCode: StatusCodes.FORBIDDEN,
+        message: 'You are not authorized to update this admin',
+      };
+    }
+
+
+    const result = await UserService.updateAnAdminByIdToDB(id, req.body);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Admin updated successfully',
+      data: result,
+    });
+  }
+);
 
 
 const createDriver = catchAsync(
@@ -173,4 +242,4 @@ const deleteADriver = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const UserController = { createUser, createTeamMember, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, createDriver, getAllDriver, getADriver, getUserProfile, updateProfile,deleteADriver };
+export const UserController = { createUser, createTeamMember, updateTeamMemberById, deleteTeamMemberById,getTeamMemberById, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, updateAnAdminById, createDriver, getAllDriver, getADriver, getUserProfile, updateProfile, deleteADriver };

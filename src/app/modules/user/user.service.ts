@@ -72,6 +72,57 @@ const createTeamMemberToDB = async (payload: Partial<IUser>) => {
   return createUser;
 };
 
+const updateTeamMemberByIdToDB = async (
+  id: string,
+  payload: Partial<IUser>
+): Promise<Partial<IUser | null>> => {
+  const isExistUser = await User.isExistUserById(id);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  const updateDoc = await User.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+
+  return updateDoc;
+};
+
+const deleteTeamMemberByIdFromDB = async (
+  userId: string,
+  id: string
+): Promise<unknown> => {
+  // Prevent self-delete
+  if (userId === id) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "You cannot delete your own account!");
+  }
+
+  const isExistUser = await User.isExistUserById(id);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  if (isExistUser.role !== USER_ROLES.TEAM_MEMBER) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User is not a team member!");
+  }
+
+  const result = await User.findByIdAndDelete(id);
+  return result;
+};
+
+const getTeamMemberByIdFromDB = async (
+  id: string
+): Promise<Partial<IUser>> => {
+  const isExistUser = await User.isExistUserById(id);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+  if (isExistUser.role !== USER_ROLES.TEAM_MEMBER) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User is not a team member!");
+  }
+  return isExistUser;
+};
+
 const createAdminToDB = async (payload: Partial<IUser>) => {
   //set role
   payload.role = USER_ROLES.ADMIN;
@@ -131,6 +182,23 @@ const deleteAnAdminFromDB = async (
 
   const result = await User.findByIdAndDelete(id);
   return result;
+};
+
+
+const updateAnAdminByIdToDB = async (
+  id: string,
+  payload: Partial<IUser>
+): Promise<Partial<IUser | null>> => {
+  const isExistUser = await User.isExistUserById(id);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  const updateDoc = await User.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+
+  return updateDoc;
 };
 
 
@@ -276,10 +344,14 @@ const deleteADriverFromDB = async (
 export const UserService = {
   createUserToDB,
   createTeamMemberToDB,
+  updateTeamMemberByIdToDB,
+  deleteTeamMemberByIdFromDB,
+  getTeamMemberByIdFromDB,
   createAdminToDB,
   getAllAdminFromDB,
   getAnAdminFromDB,
   deleteAnAdminFromDB,
+  updateAnAdminByIdToDB,
   createDriverToDB,
   getAllDriverFromDB,
   getADriverFromDB,

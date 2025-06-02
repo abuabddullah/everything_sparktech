@@ -15,7 +15,6 @@ if cancel
 
 
 
-.patch(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),UserController.updateAdmin)
 router.route('/team-member/:id').patch(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),UserController.updateTeamMember)
 router.route('/team-member/:id').delete(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),UserController.deleteTeamMember)
 

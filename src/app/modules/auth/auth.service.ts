@@ -152,6 +152,7 @@ const resetPasswordToDB = async (
 ) => {
   const { newPassword, confirmPassword } = payload;
   //isExist token
+  console.log({token})
   const isExistToken = await ResetToken.isExistToken(token);
   if (!isExistToken) {
     throw new ApiError(StatusCodes.UNAUTHORIZED, 'You are not authorized');

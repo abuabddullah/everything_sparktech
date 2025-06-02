@@ -15,12 +15,25 @@ const createTeamMemberZodSchema = z.object({
   name: z.string({ required_error: 'Name is required' }),
   designation: z.string({ required_error: 'Designation is required' }),
 });
+const updateTeamMemberZodSchema = z.object({
+  body: z.object({
+    name: z.string({ required_error: 'Name is required' }).optional(),
+    designation: z.string({ required_error: 'Designation is required' }).optional(),
+  })
+});
 
 const createAdminZodSchema = z.object({
   body: z.object({
     name: z.string({ required_error: 'Name is required' }),
     email: z.string({ required_error: 'Email is required' }),
     password: z.string({ required_error: 'Password is required' }),
+  }),
+});
+
+const updateAdminZodSchema = z.object({
+  body: z.object({
+    name: z.string({ required_error: 'Name is required' }).optional(),
+    email: z.string({ required_error: 'Email is required' }).optional(),
   }),
 });
 
@@ -49,5 +62,7 @@ export const UserValidation = {
   createTeamMemberZodSchema,
   updateUserZodSchema,
   createAdminZodSchema,
-  createDriverZodSchema
+  createDriverZodSchema,
+  updateAdminZodSchema,
+  updateTeamMemberZodSchema
 };
