@@ -15,16 +15,6 @@ if cancel
 
 
 
-
-router.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
-    // Handle updating a vehicle by ID
-});
-router.patch('/:id/last-maintenance', (req: Request, res: Response, next: NextFunction) => {
-    // Handle updating a vehicle's last maintenance date by ID
-});
-router.patch('/:status', (req: Request, res: Response, next: NextFunction) => {
-    // Handle updating a vehicle's status AVAILABLE = 'AVAILABLE',RENTED = 'RENTED',MAINTENANCE = 'MAINTENANCE',SOLD = 'SOLD',
-});
 router.put('/:status', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.updateStatus);
 router.route('/team-member/:id').patch(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),UserController.updateTeamMember)
 router.route('/team-member/:id').delete(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),UserController.deleteTeamMember)

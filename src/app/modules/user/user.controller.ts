@@ -75,8 +75,9 @@ const getAnAdmin = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteAnAdmin = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user._id
   const { id } = req.params;
-  const result = await UserService.deleteAnAdminFromDB(id);
+  const result = await UserService.deleteAnAdminFromDB(userId,id);
 
   sendResponse(res, {
     success: true,
@@ -159,4 +160,17 @@ const updateProfile = catchAsync(
   }
 );
 
-export const UserController = { createUser, createTeamMember, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, createDriver, getAllDriver,getADriver, getUserProfile, updateProfile };
+const deleteADriver = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user._id;
+  const { id } = req.params;
+  const result = await UserService.deleteADriverFromDB(userId, id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Driver deleted successfully',
+    data: result,
+  });
+});
+
+export const UserController = { createUser, createTeamMember, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, createDriver, getAllDriver, getADriver, getUserProfile, updateProfile,deleteADriver };

@@ -9,6 +9,9 @@ import generateOTP from '../../../util/generateOTP';
 import { IUser } from './user.interface';
 import { User } from './user.model';
 import config from '../../../config';
+import mongoose from 'mongoose';
+import { BookingModel } from '../app_modules/booking_modules/booking.model';
+import { BOOKING_STATUS } from '../../../enums/booking';
 
 const createUserToDB = async (payload: Partial<IUser>) => {
   //set role
@@ -113,15 +116,21 @@ const getAnAdminFromDB = async (
 };
 
 const deleteAnAdminFromDB = async (
+  userId: string,
   id: string
 ): Promise<unknown> => {
+  // Prevent self-delete
+  if (userId === id) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "You cannot delete your own account!");
+  }
+
   const isExistUser = await User.isExistUserById(id);
   if (!isExistUser) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
   }
 
-  const result = await User.findByIdAndDelete(id)
-  return result
+  const result = await User.findByIdAndDelete(id);
+  return result;
 };
 
 
@@ -211,6 +220,59 @@ const updateProfileToDB = async (
   return updateDoc;
 };
 
+const deleteADriverFromDB = async (
+  userId: string,
+  id: string
+): Promise<unknown> => {
+  // Prevent self-delete
+  if (userId === id) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "You cannot delete your own account!");
+  }
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const isExistUser = await User.isExistUserById(id);
+    if (!isExistUser) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+    }
+
+    if (isExistUser.role !== USER_ROLES.DRIVER) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "User is not a driver!");
+    }
+
+
+    // Prevent deleting if any bookings are in ONRIDE
+    const onRideBooking = await BookingModel.findOne({
+      driverId: id,
+      status: BOOKING_STATUS.ON_RIDE
+    }).session(session);
+    console.log({ onRideBooking })
+    if (onRideBooking) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Cannot delete driver with active ONRIDE bookings.");
+    }
+
+    // Set driver to null for all pending bookings assigned to this driver
+    await BookingModel.updateMany(
+      { driverId: id, status: { $in: [BOOKING_STATUS.CANCELLED, BOOKING_STATUS.CONFIRMED, BOOKING_STATUS.NOT_CONFIRMED] } },
+      { $set: { driverId: null } },
+      { session }
+    );
+
+    const result = await User.findByIdAndDelete(id, { session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
+
 export const UserService = {
   createUserToDB,
   createTeamMemberToDB,
@@ -223,4 +285,5 @@ export const UserService = {
   getADriverFromDB,
   getUserProfileFromDB,
   updateProfileToDB,
+  deleteADriverFromDB
 };

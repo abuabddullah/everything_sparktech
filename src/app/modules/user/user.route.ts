@@ -52,14 +52,14 @@ router
 router
   .route('/admin')
   .get(
-    auth(USER_ROLES.SUPER_ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN),
     UserController.getAllAdmin
   );
 
 router
   .route('/admin/:id')
   .get(
-    auth(USER_ROLES.SUPER_ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN),
     UserController.getAnAdmin
   );
 
@@ -112,6 +112,13 @@ router
   .get(
     auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
     UserController.getADriver
+  )
+
+  router
+  .route('/driver/:id')
+  .delete(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    UserController.deleteADriver
   )
 
 

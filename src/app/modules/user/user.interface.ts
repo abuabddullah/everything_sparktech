@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { USER_ROLES } from '../../../enums/user';
 import { IVehicle } from '../app_modules/vehicle_modules/vehicle.interface';
 
@@ -22,6 +22,7 @@ export type IUser = {
     oneTimeCode: number;
     expireAt: Date;
   };
+  bookings: [Types.ObjectId]
 
   [key: string]: any; // Allow additional properties
 };

@@ -20,7 +20,7 @@ const BookingSchema = new Schema<IBooking>(
         status: { type: String, enum: Object.values(BOOKING_STATUS), default: BOOKING_STATUS.NOT_CONFIRMED, required: true },
         amount: { type: Number, required: true },
         carRentedForInDays: { type: Number, required: true },
-        paymentId: { type: Schema.Types.ObjectId, ref: 'Transaction', required: false },
+        paymentId: { type: Schema.Types.ObjectId, ref: 'Payment', required: false },
         isPaid: { type: Boolean, required: true, default: false },
         createdAt: { type: Date, default: Date.now },
         updatedAt: { type: Date, default: Date.now }

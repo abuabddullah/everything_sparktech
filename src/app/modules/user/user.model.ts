@@ -66,6 +66,9 @@ const userSchema = new Schema<IUser, UserModal>(
       type: Boolean,
       default: false,
     },
+    bookings: [
+      { type: Schema.Types.ObjectId, ref: "Booking", required: false },
+    ],
     authentication: {
       type: {
         isResetPassword: {

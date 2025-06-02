@@ -454,19 +454,53 @@ const deleteBookingFromDB = async (
             throw new ApiError(StatusCodes.NOT_FOUND, "Client not found");
         }
 
+
+
+
         if (!isExistClient.bookings) {
             isExistClient.bookings = [];
         }
         const clientBookingIndex = isExistClient.bookings.indexOf(isExistBooking._id as mongoose.Types.ObjectId);
 
         if (clientBookingIndex !== -1) {
-            // Remove the booking ID from the client's bookings array
-            isExistClient.bookings.splice(clientBookingIndex, 1);
+            await ClientModel.updateOne(
+                { _id: isExistBooking.clientId },
+                { $pull: { bookings: isExistBooking._id } },
+                { session }
+            );
+            // // Remove the booking ID from the client's bookings array
+            // isExistClient.bookings.splice(clientBookingIndex, 1);
 
-            // Save the updated client document
-            await isExistClient.save({ session });
+            // // Save the updated client document
+            // await isExistClient.save({ session });
         } else {
             throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in client's bookings array");
+        }
+
+        if (isExistBooking.driverId) {
+            // 3. Find the vehicle and remove the booking from the vehicle's bookings array
+            const isExistDriver = await User.findById(isExistBooking.driverId).session(session);
+            if (!isExistDriver) {
+                throw new ApiError(StatusCodes.NOT_FOUND, "Vehicle not found");
+            }
+
+            const driverBookingIndex = isExistDriver.bookings.indexOf(isExistBooking._id);
+
+            if (driverBookingIndex !== -1) {
+
+                await User.updateOne(
+                    { _id: isExistBooking.driverId },
+                    { $pull: { bookings: isExistBooking._id } },
+                    { session }
+                );
+                // // Remove the booking ID from the bookings array
+                // isExistDriver.bookings.splice(driverBookingIndex, 1);
+
+                // // Save the updated vehicle document
+                // await isExistDriver.save({ session });
+            } else {
+                throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in vehicle's bookings array");
+            }
         }
 
 
@@ -523,63 +557,82 @@ const getABookingByEmailAndIDFromDB = async (clientEmail: string, bookingId: str
 
 
 const assignDriverToBooking = async (driverId: string, bookingId: string) => {
-    // Find the booking by ID
-    const booking = await BookingModel.findById(bookingId);
-    if (!booking) {
-        throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found");
-    }
+    // Start a session for the transaction
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    // Check if the driver is already assigned to the booking
-    if (booking.driverId && booking.driverId.toString() === driverId) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, "Driver is already assigned to this booking");
-    }
-
-    const driver = await User.findById(driverId) as IUser | null;
-    if (!driver) {
-        throw new ApiError(StatusCodes.NOT_FOUND, "Driver not found");
-    }
-
-    // Get current time
-    const now = new Date();
-
-    const driverBookings = await BookingModel.find({
-        driverId: driver._id,
-        pickupTime: { $gte: now }
-    }).select('pickupTime returnTime status driverId'); // Only select the relevant fields
-
-    // Check for overlapping bookings
-    const newPickup = new Date(booking.pickupTime);
-    const newReturn = new Date(booking.returnTime);
-
-    const hasOverlap = driverBookings.some(existing => {
-        const existingPickup = new Date(existing.pickupTime);
-        const existingReturn = new Date(existing.returnTime);
-
-
-        // Check if there is an overlap (A starts before B ends, and A ends after B starts)
-        const overlapCondition = (newPickup < existingReturn) && (newReturn > existingPickup);
-
-        // If there's an overlap, check the status
-        if (overlapCondition) {
-            const status = existing.status;
-            // Allow assignment only if the status is "not_confirmed", "confirmed", or "completed"
-            if ([BOOKING_STATUS.ON_RIDE, BOOKING_STATUS.CANCELLED].includes(status as BOOKING_STATUS)) {
-                return true;
-            }
+    try {
+        // Find the booking by ID
+        const booking = await BookingModel.findById(bookingId).session(session);
+        if (!booking) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found");
         }
-        return false;
-    });
 
-    if (hasOverlap) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, "Driver already has a booking during this time period");
+        const driver = await User.findById(driverId).session(session) as IUser | null;
+        if (!driver) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Driver not found");
+        }
+
+        // Check if the driver is already assigned to the booking
+        if (booking.driverId && booking.driverId.toString() === driverId) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Driver is already assigned to this booking");
+        }
+
+        // Get current time
+        const now = new Date();
+
+        const driverBookings = await BookingModel.find({
+            driverId: driver._id,
+            pickupTime: { $gte: now }
+        }).select('pickupTime returnTime status driverId').session(session);
+
+        // Check for overlapping bookings
+        const newPickup = new Date(booking.pickupTime);
+        const newReturn = new Date(booking.returnTime);
+
+        const hasOverlap = driverBookings.some(existing => {
+            const existingPickup = new Date(existing.pickupTime);
+            const existingReturn = new Date(existing.returnTime);
+
+            // Check if there is an overlap (A starts before B ends, and A ends after B starts)
+            const overlapCondition = (newPickup < existingReturn) && (newReturn > existingPickup);
+
+            // If there's an overlap, check the status
+            if (overlapCondition) {
+                const status = existing.status;
+                // Allow assignment only if the status is "not_confirmed", "confirmed", or "completed"
+                if ([BOOKING_STATUS.ON_RIDE, BOOKING_STATUS.CANCELLED].includes(status as BOOKING_STATUS)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        if (hasOverlap) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Driver already has a booking during this time period");
+        }
+
+        await User.updateOne(
+            { _id: driverId },
+            { $push: { bookings: booking._id } },
+            { session }
+        );
+
+
+        // Assign the driver to the booking
+        booking.driverId = driver._id as mongoose.Types.ObjectId;
+        booking.status = BOOKING_STATUS.ON_RIDE;
+        await booking.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        return booking;
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
     }
-
-    // Assign the driver to the booking
-    booking.driverId = driver._id as mongoose.Types.ObjectId;
-    booking.status = BOOKING_STATUS.ON_RIDE;
-    await booking.save();
-
-    return booking;
 };
 
 /**

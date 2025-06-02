@@ -86,18 +86,29 @@ const updateVehicleStatusByIdInDB = async (
 };
 
 const deletVehicleByIdFromDB = async (id: string): Promise<IVehicle | null> => {
-    const exists = await Vehicle.exists({ _id: id });
-    if (!exists) {
-        throw new Error('Vehicle not found');
+    const session = await Vehicle.startSession();
+    session.startTransaction();
+    try {
+        const exists = await Vehicle.exists({ _id: id }).session(session);
+        if (!exists) {
+            throw new Error('Vehicle not found');
+        }
+        const deletedVehicle = await Vehicle.findByIdAndDelete(id, { session });
+        if (deletedVehicle) {
+            await BookingModel.updateMany(
+                { vehicle: id },
+                { $set: { vehicle: null } },
+                { session }
+            );
+        }
+        await session.commitTransaction();
+        return deletedVehicle;
+    } catch (error) {
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        session.endSession();
     }
-    const deletedVehicle = await Vehicle.findByIdAndDelete(id);
-    if (deletedVehicle) {
-        await BookingModel.updateMany(
-            { vehicle: id },
-            { $set: { vehicle: null } }
-        );
-    }
-    return deletedVehicle;
 };
 
 export const VehicleService = {
