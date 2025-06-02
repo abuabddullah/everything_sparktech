@@ -19,7 +19,15 @@ export const createVehicleZodSchema = z.object({
   status: z.enum([...(Object.values(VEHICLE_STATUS) as [string, ...string[]])]).default(VEHICLE_STATUS.AVAILABLE),
 });
 
-
+const lastMaintenanceDate = z.object({
+  body: z.object({
+    lastMaintenanceDate: z.string().refine(
+      (date) => !isNaN(Date.parse(date)),
+      { message: "Invalid date format for lastMaintenanceDate" }
+    )
+  })
+})
 export const VehicleZodValidation = {
   createVehicleZodSchema,
+  lastMaintenanceDate
 }

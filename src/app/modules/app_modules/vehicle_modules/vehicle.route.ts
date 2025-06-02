@@ -52,31 +52,14 @@ router.get('/available-vehicles', (req: Request, res: Response, next: NextFuncti
 
 
 
-router.get('/seat-door-luggage', (req: Request, res: Response, next: NextFunction) => {
-    // Handle fetching vehicles meta data  based on no count of {seat, lauggages, doors }
-});
+router.get('/seat-door-luggage-brands', VehicleController.getSeatDoorLuggageMeta);
 
-router.get('/:id', (req: Request, res: Response, next: NextFunction) => {
-    // Handle fetching a single vehicle by ID
-});
+router.get('/:id', VehicleController.getAVehicleById);
 
-router.get('/:id', (req: Request, res: Response, next: NextFunction) => {
-    // Handle fetching vehicles based on no of seat, lauggages, doors 
-});
+router.patch('/:id', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), VehicleController.updateAVehicleById);
+router.patch('/:id/status', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), VehicleController.updateVehicleStatusById);
+router.patch('/:id/last-maintenance', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN,USER_ROLES.DRIVER),validateRequest(VehicleZodValidation.lastMaintenanceDate), VehicleController.updateLastMaintenanceDateById);
 
-router.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
-    // Handle updating a vehicle by ID
-});
-router.patch('/:id/last-maintenance', (req: Request, res: Response, next: NextFunction) => {
-    // Handle updating a vehicle's last maintenance date by ID
-});
-router.patch('/:status', (req: Request, res: Response, next: NextFunction) => {
-    // Handle updating a vehicle's status AVAILABLE = 'AVAILABLE',RENTED = 'RENTED',MAINTENANCE = 'MAINTENANCE',SOLD = 'SOLD',
-});
-
-router.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
-    // 1. delete the bookings for this vehicle from booking model
-    // Handle deleting a vehicle by ID
-});
+router.delete('/:id', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), VehicleController.deletVehicleById);
 
 export const VehicleRoutes = router;

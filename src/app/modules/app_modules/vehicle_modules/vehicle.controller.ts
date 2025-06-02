@@ -28,7 +28,99 @@ const getAllVehicles = catchAsync(
   }
 );
 
+const getSeatDoorLuggageMeta = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await VehicleService.getSeatDoorLuggageMetaFromDB();
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Vehicle Seat Door Luggage data retrieved successfully',
+      data: result,
+    });
+  }
+);
+
+const getAVehicleById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const result = await VehicleService.getAVehicleByIdFromDB(id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Vehicle retrieved successfully',
+      data: result,
+    });
+  }
+);
+
+const updateAVehicleById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const result = await VehicleService.updateAVehicleByIdInDB(id, req.body);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Vehicle updated successfully',
+      data: result,
+    });
+  }
+);
+
+
+const updateLastMaintenanceDateById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { lastMaintenanceDate } = req.body;
+    const result = await VehicleService.updateLastMaintenanceDateByIdInDB(id, lastMaintenanceDate);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Last maintenance date updated successfully',
+      data: result,
+    });
+  }
+);
+
+const updateVehicleStatusById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const result = await VehicleService.updateVehicleStatusByIdInDB(id, status);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Vehicle status updated successfully',
+      data: result,
+    });
+  }
+);
+
+const deletVehicleById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const result = await VehicleService.deletVehicleByIdFromDB(id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Vehicle deleted successfully',
+      data: result,
+    });
+  }
+);
+
 export const VehicleController = {
     createVehicle,
     getAllVehicles,
+    getSeatDoorLuggageMeta,
+    getAVehicleById,
+    updateAVehicleById,
+    updateLastMaintenanceDateById,
+    updateVehicleStatusById,
+    deletVehicleById
 }

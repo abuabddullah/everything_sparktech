@@ -73,35 +73,6 @@ const getLast12MonthsEarnings = catchAsync(async (req, res) => {
 const successPage = catchAsync(async (req, res) => {
     const { bookingId } = req.query;
     await BookingService.updateBookingIsPaid(bookingId as string, true);
-
-    // send notification to the admins with booking details
-
-    // get booking details
-    const booking = await BookingModel.findById(bookingId)
-        .populate({ path: 'clientId', select: 'firstName lastName' })
-        .populate({ path: 'vehicle', select: 'name' })
-        .lean();
-    if (booking) {
-        // get client details
-        const clientDetails = booking.clientId as any;
-        // get vehicle details
-        const isExistingVehicle = booking.vehicle as any;
-
-        // get all the admin users from the database
-        const adminUsers = await User.find({ role: { $in: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN] } });
-        const adminUserIds = adminUsers.map(user => user._id);
-
-        // create notification data
-        const notificationData = {
-            text: `New booking created by ${clientDetails.firstName} ${clientDetails.lastName} for vehicle ${isExistingVehicle.name}. Booking ID: ${booking._id}`,
-            receiver: adminUserIds, // Send to all admin users
-            read: false,
-            referenceId: (booking as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
-            category: NOTIFICATION_CATEGORIES.RESERVATION,
-            type: NOTIFICATION_TYPE.ADMIN,
-        };
-        await sendNotifications(notificationData);
-    }
     res.render('success.ejs');
 });
 

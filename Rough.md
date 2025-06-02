@@ -12,9 +12,7 @@ if cancel
 
 
 
-router.get('/seat-door-luggage', (req: Request, res: Response, next: NextFunction) => {
-    // Handle fetching vehicles meta data  based on no count of {seat, lauggages, doors }
-});
+
 
 
 

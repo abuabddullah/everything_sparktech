@@ -23,7 +23,10 @@ const createPaymentService = async (payload: IPayment | any) => {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'User are not authorized!');
     }
 
-    const result = await PaymentModel.create([payload], { session }) as (IPayment & { _id: mongoose.Types.ObjectId })[];
+    const createdPayment = await PaymentModel.create([payload], { session }) as (IPayment & { _id: mongoose.Types.ObjectId })[];
+    if (!createdPayment || createdPayment.length === 0) {
+      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to create payment!');
+    }
 
     const booking = await BookingModel.findById(payload.bookingId).session(session);
 
@@ -35,13 +38,14 @@ const createPaymentService = async (payload: IPayment | any) => {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Booking is already paid!');
     }
 
-    booking.paymentId = result[0]._id;
+    booking.paymentId = createdPayment[0]._id;
+    booking.isPaid = true;
     await booking.save({ session });
 
     await session.commitTransaction();
     session.endSession();
 
-    return result[0];
+    return createdPayment[0];
   } catch (error) {
     await session.abortTransaction();
     session.endSession();

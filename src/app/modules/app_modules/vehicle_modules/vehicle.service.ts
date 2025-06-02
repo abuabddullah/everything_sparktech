@@ -2,6 +2,7 @@ import QueryBuilder from "../../../builder/QueryBuilder";
 import { VehicleSearchableFields } from "./vehicle.constants";
 import { IVehicle } from "./vehicle.interface";
 import { Vehicle } from "./vehicle.model";
+import { BookingModel } from "../booking_modules/booking.model";
 
 const createVehicleToDB = async (payload: Partial<IVehicle>): Promise<IVehicle> => {
     const vehicle = await Vehicle.create(payload);
@@ -30,7 +31,82 @@ const getAllVehiclesFromDB = async (query: Record<string, unknown>) => {
         result,
     };
 };
+
+const getSeatDoorLuggageMetaFromDB = async () => {
+    const seatCounts = await Vehicle.distinct('noOfSeats');
+    const doorCounts = await Vehicle.distinct('noOfDoors');
+    const luggageCounts = await Vehicle.distinct('noOfLuggages');
+    const brands = await Vehicle.distinct('brand');
+    return {
+        seatCounts,
+        doorCounts,
+        luggageCounts,
+        brands
+    };
+};
+
+const getAVehicleByIdFromDB = async (id: string): Promise<IVehicle | null> => {
+    const vehicle = await Vehicle.findById(id);
+    return vehicle;
+};
+
+const updateAVehicleByIdInDB = async (
+    id: string,
+    payload: Partial<IVehicle>
+): Promise<IVehicle | null> => {
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(id, payload, {
+        new: true,
+        runValidators: true,
+    });
+    return updatedVehicle;
+};
+
+const updateLastMaintenanceDateByIdInDB = async (
+    id: string,
+    lastMaintenanceDate: Date
+): Promise<IVehicle | null> => {
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(
+        id,
+        { lastMaintenanceDate },
+        { new: true, runValidators: true }
+    );
+    return updatedVehicle;
+};
+
+const updateVehicleStatusByIdInDB = async (
+    id: string,
+    status: string | unknown
+): Promise<IVehicle | null> => {
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true, runValidators: true }
+    );
+    return updatedVehicle;
+};
+
+const deletVehicleByIdFromDB = async (id: string): Promise<IVehicle | null> => {
+    const exists = await Vehicle.exists({ _id: id });
+    if (!exists) {
+        throw new Error('Vehicle not found');
+    }
+    const deletedVehicle = await Vehicle.findByIdAndDelete(id);
+    if (deletedVehicle) {
+        await BookingModel.updateMany(
+            { vehicle: id },
+            { $set: { vehicle: null } }
+        );
+    }
+    return deletedVehicle;
+};
+
 export const VehicleService = {
     createVehicleToDB,
-    getAllVehiclesFromDB
+    getAllVehiclesFromDB,
+    getSeatDoorLuggageMetaFromDB,
+    getAVehicleByIdFromDB,
+    updateAVehicleByIdInDB,
+    updateLastMaintenanceDateByIdInDB,
+    updateVehicleStatusByIdInDB,
+    deletVehicleByIdFromDB
 }
