@@ -10,6 +10,7 @@ import { ClientRoutes } from '../app/modules/app_modules/client_modules/client.r
 import { companyCMSRoutes } from '../app/modules/app_modules/cms_modules/cms.route';
 import { paymentRoutes } from '../app/modules/app_modules/payment/payment.route';
 import { ContactRoutes } from '../app/modules/app_modules/contcatus/contactus.route';
+import { DashboardRoutes } from '../app/modules/app_modules/dasboard/dasboard.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -56,6 +57,10 @@ const apiRoutes = [
   {
     path: '/contact',
     route: ContactRoutes,
+  },
+  {
+    path: '/dashboard',
+    route: DashboardRoutes,
   },
 ];
 
