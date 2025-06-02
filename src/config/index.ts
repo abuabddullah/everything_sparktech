@@ -38,5 +38,8 @@ export default {
     cancel_url: process.env.STRIPE_CANCLE_URL,
     webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
     home_url: process.env.HOME_CALLBACK_URL,
+  },
+  generic:{
+    otp_time:process.env.OTP_TIME
   }
 };
