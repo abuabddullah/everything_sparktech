@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import sendResponse from "../../../../shared/sendResponse";
 import { StatusCodes } from "http-status-codes";
 import { VehicleService } from "./vehicle.service";
+import { getSingleFilePath } from "../../../../shared/getFilePath";
+import { VehicleZodValidation } from "./vehicle.validation";
 const createVehicle = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await VehicleService.createVehicleToDB(req.body);
@@ -57,7 +59,24 @@ const getAVehicleById = catchAsync(
 
 const updateAVehicleById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body.data) {
+      throw new Error('No data found to update');
+    }
+
     const { id } = req.params;
+    const parsedData = JSON.parse(req.body.data);
+
+    // Attach image path or filename to parsed data
+    if (req.files) {
+      let image = getSingleFilePath(req.files, 'image');
+      parsedData.image = image;
+    }
+
+
+    // Validate and assign to req.body
+    req.body = VehicleZodValidation.createVehicleZodSchema.parse(parsedData);
+
+
     const result = await VehicleService.updateAVehicleByIdInDB(id, req.body);
 
     sendResponse(res, {
@@ -115,12 +134,12 @@ const deletVehicleById = catchAsync(
 );
 
 export const VehicleController = {
-    createVehicle,
-    getAllVehicles,
-    getSeatDoorLuggageMeta,
-    getAVehicleById,
-    updateAVehicleById,
-    updateLastMaintenanceDateById,
-    updateVehicleStatusById,
-    deletVehicleById
+  createVehicle,
+  getAllVehicles,
+  getSeatDoorLuggageMeta,
+  getAVehicleById,
+  updateAVehicleById,
+  updateLastMaintenanceDateById,
+  updateVehicleStatusById,
+  deletVehicleById
 }
