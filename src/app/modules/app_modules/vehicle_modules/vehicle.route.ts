@@ -40,18 +40,6 @@ router.route('/')
     )
     .get(VehicleController.getAllVehicles);
 
-
-
-router.get('/', (req: Request, res: Response, next: NextFunction) => {
-    // Handle fetching all vehicles
-});
-
-router.get('/available-vehicles', (req: Request, res: Response, next: NextFunction) => {
-    // Vehicle route e get /available-vehicle thakbe ja body te piktime and return time nibe ar service e unavilable slots er bahihre hole segulo retrieve korbe
-});
-
-
-
 router.get('/seat-door-luggage-brands', VehicleController.getSeatDoorLuggageMeta);
 
 router.get('/:id', VehicleController.getAVehicleById);

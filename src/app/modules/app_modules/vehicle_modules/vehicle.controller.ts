@@ -73,7 +73,7 @@ const updateAVehicleById = catchAsync(
     }
 
 
-    // Validate and assign to req.body
+    // Validate and assign req.body data to req.body
     req.body = VehicleZodValidation.createVehicleZodSchema.parse(parsedData);
 
 
