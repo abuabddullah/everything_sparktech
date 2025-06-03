@@ -242,4 +242,15 @@ const deleteADriver = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const UserController = { createUser, createTeamMember, updateTeamMemberById, deleteTeamMemberById,getTeamMemberById, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, updateAnAdminById, createDriver, getAllDriver, getADriver, getUserProfile, updateProfile, deleteADriver };
+const getAllTeamMember = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getAllTeamMemberFromDB(req.query);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Team members retrieved successfully',
+    data: result,
+  });
+});
+
+export const UserController = { createUser, createTeamMember, updateTeamMemberById, deleteTeamMemberById,getTeamMemberById, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, updateAnAdminById, createDriver, getAllDriver, getADriver, getUserProfile, updateProfile, deleteADriver,getAllTeamMember };

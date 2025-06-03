@@ -12,6 +12,7 @@ import config from '../../../config';
 import mongoose from 'mongoose';
 import { BookingModel } from '../app_modules/booking_modules/booking.model';
 import { BOOKING_STATUS } from '../../../enums/booking';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const createUserToDB = async (payload: Partial<IUser>) => {
   //set role
@@ -341,6 +342,28 @@ const deleteADriverFromDB = async (
   }
 };
 
+const getAllTeamMemberFromDB = async (query: Record<string, unknown>) => {
+  const allTeamMembersQueryBuilder = new QueryBuilder(User.find({
+    role: USER_ROLES.TEAM_MEMBER
+  }), query)
+    .search([
+      'name',
+      'designation'
+    ])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await allTeamMembersQueryBuilder.modelQuery;
+  const meta = await allTeamMembersQueryBuilder.getPaginationInfo();
+
+  return {
+    meta,
+    result,
+  };
+};
+
 export const UserService = {
   createUserToDB,
   createTeamMemberToDB,
@@ -357,5 +380,6 @@ export const UserService = {
   getADriverFromDB,
   getUserProfileFromDB,
   updateProfileToDB,
-  deleteADriverFromDB
+  deleteADriverFromDB,
+  getAllTeamMemberFromDB
 };

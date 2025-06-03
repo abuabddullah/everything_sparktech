@@ -16,10 +16,17 @@ const createClientToDB = async (payload: Partial<IClient>): Promise<IClient> => 
 
 const getAllClientsFromDB = async (query: Record<string, unknown>) => {
     const clientQuery = new QueryBuilder(
-        ClientModel.find(),
+        ClientModel.find().populate(
+            [
+                {
+                    path: 'bookings',
+                    select: ['_id', 'amount', 'status', 'createdAt'],
+                    options: { sort: { createdAt: -1 } } // Sort bookings newest to oldest
+                }
+            ]
+        ),
         query,
     )
-        .populate(['bookings'], { bookings: ['_id', 'amount', 'status'] })
         .search(ClientSearchableFields)
         .filter()
         .sort()
@@ -29,9 +36,18 @@ const getAllClientsFromDB = async (query: Record<string, unknown>) => {
     const result = await clientQuery.modelQuery;
     const meta = await clientQuery.getPaginationInfo();
 
+    const resultWithLastBooking = result.map((client: any) => {
+        const bookings = client.bookings || [];
+        const lastBooking = bookings.length > 0 ? bookings[0] : null;
+        return {
+            ...client.toObject(),
+            lastBooking,
+        };
+    });
+
     return {
         meta,
-        result,
+        result:resultWithLastBooking,
     };
 };
 

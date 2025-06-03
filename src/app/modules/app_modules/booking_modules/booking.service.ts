@@ -349,7 +349,7 @@ const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
             })
             .populate({
                 path: 'clientId',
-                select: 'firstName lastName'
+                select: 'firstName lastName email'
             })
             .populate({
                 path: 'vehicle',

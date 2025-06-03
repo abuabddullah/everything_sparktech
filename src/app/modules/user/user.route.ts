@@ -41,6 +41,8 @@ router
     }
   );
 
+router.route('/team-member').get(UserController.getAllTeamMember);
+
 router.route('/team-member/:id').patch(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), validateRequest(UserValidation.updateTeamMemberZodSchema), fileUploadHandler(), (req: Request, res: Response, next: NextFunction) => {
   if (req.body.data) {
     req.body = UserValidation.updateUserZodSchema.parse(

@@ -4,6 +4,7 @@ import { Review } from './review.model';
 import { StatusCodes } from 'http-status-codes';
 import { ClientModel } from '../client_modules/client.model';
 import ApiError from '../../../../errors/ApiError';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const createReviewToDB = async (payload: IReview): Promise<IReview> => {
      // check payload.rating range
@@ -38,10 +39,17 @@ const createReviewToDB = async (payload: IReview): Promise<IReview> => {
 };
 
 
-const getAllReviewsFromDB = async (): Promise<IReviewsWithMeta> => {
+const getAllReviewsFromDB = async (query: Record<string, unknown>) => {
 
      // Fetch reviews and let the pre('find') hook calculate rating stats
-     const reviews = await Review.find();
+    const reviewsQueryBuilder = new QueryBuilder(Review.find(), query)
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+
+    const reviews = await reviewsQueryBuilder.modelQuery;
+    const meta = await reviewsQueryBuilder.getPaginationInfo();
 
      const ratingValues = reviews.map(r => Number(r.rating)).filter(r => !isNaN(r));
      const totalRating = ratingValues.reduce((sum, r) => sum + r, 0);
@@ -53,7 +61,7 @@ const getAllReviewsFromDB = async (): Promise<IReviewsWithMeta> => {
           averageRating,
      };
      // You can return reviewsMetaData if needed, or just reviews
-     return { reviews, meta: reviewsMetaData };
+     return { reviews, reviewsMetaData,meta };
 };
 
 export const ReviewService = { createReviewToDB, getAllReviewsFromDB };
