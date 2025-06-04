@@ -36,7 +36,7 @@ const userSchema = new Schema<IUser, UserModal>(
     phone: {
       type: String,
       required: false,
-      default: null,
+      default: "+880-123-456-7",
     },
     address: {
       type: String,

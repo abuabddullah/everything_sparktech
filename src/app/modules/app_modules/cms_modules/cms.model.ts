@@ -9,7 +9,7 @@ const FaqSchema: Schema = new Schema<IFaq>({
 const ContactSchema: Schema = new Schema({
     phone: { type: String, required: true },
     email: { type: String, required: true },
-    whatsapp: { type: String, required: true },
+    whatsapp: { type: String, required: false},
     location: { type: String, required: true }
 });
 
