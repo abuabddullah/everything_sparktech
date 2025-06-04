@@ -75,6 +75,52 @@ const createPaymentService = async (payload: IPayment | any) => {
   }
 };
 
+/* 
+const createPaymentService = async (payload: IPayment | any) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const client = await ClientModel.findById(payload?.clientId?.toString()).session(session);
+
+    if (!client) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'CLIENT not found!');
+    }
+
+    if (client.role != USER_ROLES.CLIENT) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'User are not authorized!');
+    }
+
+    const createdPayment = await PaymentModel.create([payload], { session }) as (IPayment & { _id: mongoose.Types.ObjectId })[];
+    if (!createdPayment || createdPayment.length === 0) {
+      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to create payment!');
+    }
+
+    const booking = await BookingModel.findById(payload.bookingId).session(session);
+
+    if (!booking) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'booking not found!');
+    }
+
+    if (booking.isPaid == true) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Booking is already paid!');
+    }
+
+    booking.paymentId = createdPayment[0]._id;
+    booking.isPaid = true;
+    await booking.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return createdPayment[0];
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
+ */
+
 const getAllPaymentByUserId = async (
   userId: string,
   role: string,

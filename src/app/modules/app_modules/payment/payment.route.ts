@@ -24,5 +24,6 @@ paymentRoutes
 //     auth(USER_ROLE.BUSINESS, USER_ROLE.ADMIN),
 //     paymenController.getLast12MonthsEarnings,
 //   )
+  .patch('/:paymentId', paymenController.updatePaymentIntentById)
   .get('/success', paymenController.successPage)
   .get('/cancel', paymenController.cancelPage);

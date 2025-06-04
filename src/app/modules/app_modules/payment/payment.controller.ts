@@ -114,6 +114,22 @@ const getAllPaymentByAdmin = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+
+const updatePaymentIntentById = catchAsync(async (req: Request, res: Response) => {
+    const {paymentId} = req.params;
+    const { paymentIntent }: any = req.body;
+
+    const result = await paymentService.updatePaymentIntentById(paymentId, paymentIntent);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        data: result,
+        message: 'PaymentIntent updated successfully!',
+    });
+});
+
+
 export const paymenController = {
     createPayment,
     getPaymentByCustomer,
@@ -122,4 +138,5 @@ export const paymenController = {
     successPage,
     cancelPage,
     getAllPaymentByAdmin,
+    updatePaymentIntentById
 };

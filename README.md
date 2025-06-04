@@ -3,7 +3,7 @@ its *_car_rental_* dead line : **june 10 7 pm**
 <br/>
 This is a template project for backend development using Typescript, Node.js, Express, Mongoose, Bcrypt, JWT, NodeMailer, Multer, ESLint, and Prettier. The aim is to reduce setup time for new backend projects.
 
-
+stripe listen --forward-to=http://192.168.128.1:7000/api/v1/stripe/webhook
 ## Features
 
 - **Authentication API:** Complete authentication system using JWT for secure token-based authentication and bcrypt for password hashing.
