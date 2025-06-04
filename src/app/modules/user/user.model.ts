@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 import { model, Schema } from 'mongoose';
 import config from '../../../config';
-import { USER_ROLES } from '../../../enums/user';
+import { TEAM_ROLES, USER_ROLES } from '../../../enums/user';
 import ApiError from '../../../errors/ApiError';
 import { IUser, UserModal } from './user.interface';
 import { Vehicle } from '../app_modules/vehicle_modules/vehicle.model';
@@ -14,6 +14,13 @@ const userSchema = new Schema<IUser, UserModal>(
       required: true,
     },
     designation: {
+      type: String,
+    },
+    teamRole: {
+      type: String,
+      enum: Object.values(TEAM_ROLES),
+    },
+    teamDescription: {
       type: String,
     },
     dateOfBirth: {

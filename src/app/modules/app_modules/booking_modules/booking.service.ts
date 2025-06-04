@@ -24,6 +24,7 @@ import { IUser } from "../../user/user.interface";
 import { BOOKING_PAYMENT_METHOD, BOOKING_STATUS } from "../../../../enums/booking";
 import stripe from "../../../../config/stripe.config";
 import config from "../../../../config";
+import { paymentService } from "../payment/payment.service";
 
 
 
@@ -193,36 +194,36 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         let stripeCustomerId = thisClient?.stripeCustomerId;
         let stripeCustomer;
 
-        if (stripeCustomerId) {
-            try {
-                // Attempt to retrieve the Stripe customer
-                stripeCustomer = await stripe.customers.retrieve(stripeCustomerId);
+        // if (stripeCustomerId) {
+        //     try {
+        //         // Attempt to retrieve the Stripe customer
+        //         stripeCustomer = await stripe.customers.retrieve(stripeCustomerId);
 
-                // Check if the customer exists
-                if (!stripeCustomer || stripeCustomer.deleted) {
-                    throw new Error(`Customer with ID ${stripeCustomerId} no longer exists.`);
-                }
+        //         // Check if the customer exists
+        //         if (!stripeCustomer || stripeCustomer.deleted) {
+        //             throw new Error(`Customer with ID ${stripeCustomerId} no longer exists.`);
+        //         }
 
-                // If customer exists, proceed with your logic
-                console.log('Customer retrieved:', stripeCustomer);
+        //         // If customer exists, proceed with your logic
+        //         console.log('Customer retrieved:', stripeCustomer);
 
-            } catch (error: any) {
-                // Log detailed error for debugging
-                console.error('Stripe Error:', error.message);
-                console.error('Error details:', error); // Log full error object
+        //     } catch (error: any) {
+        //         // Log detailed error for debugging
+        //         console.error('Stripe Error:', error.message);
+        //         console.error('Error details:', error); // Log full error object
 
-                if (error.code === 'resource_missing') {
-                    console.log(`No such customer: ${stripeCustomerId}`);
-                    // Proceed to create a new customer
-                } else {
-                    // Handle other errors
-                    throw new ApiError(
-                        StatusCodes.INTERNAL_SERVER_ERROR,
-                        'Failed to retrieve Stripe customer',
-                    );
-                }
-            }
-        }
+        //         if (error.code === 'resource_missing') {
+        //             console.log(`No such customer: ${stripeCustomerId}`);
+        //             // Proceed to create a new customer
+        //         } else {
+        //             // Handle other errors
+        //             throw new ApiError(
+        //                 StatusCodes.INTERNAL_SERVER_ERROR,
+        //                 'Failed to retrieve Stripe customer',
+        //             );
+        //         }
+        //     }
+        // }
 
         if (!stripeCustomerId) {
             try {
@@ -266,6 +267,20 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         }
         const confirmBookingEmailTemplate = emailTemplate.confirmBookingEmail(values);
         emailHelper.sendEmail(confirmBookingEmailTemplate);
+
+        // create payment
+        const newPayment = await paymentService.createPaymentService({
+            bookingId: (createdBooking[0] as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
+            vehicleId: isExistingVehicle._id.toString(),
+            clientId: thisClient._id.toString(),
+            amount: amount.toFixed(2),
+            stripeCustomerId: stripeCustomer?.id,
+            paymentMethod: bookingDataWithClient.paymentMethod
+        });
+
+        if (!newPayment) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create payment for booking');
+        }
 
         // do the session creation acitivity if bookingdata.paymentmethod = STRIPE
         if (bookingdata.paymentMethod == BOOKING_PAYMENT_METHOD.STRIPE) {

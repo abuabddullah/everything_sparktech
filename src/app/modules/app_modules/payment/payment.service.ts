@@ -7,6 +7,9 @@ import { USER_ROLES } from '../../../../enums/user';
 import { User } from '../../user/user.model';
 import { ClientModel } from '../client_modules/client.model';
 import { BookingModel } from '../booking_modules/booking.model';
+import { PAYMENT_STATUS } from '../../../../enums/payment';
+import { BOOKING_PAYMENT_METHOD } from '../../../../enums/booking';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 // Create court
 const createPaymentService = async (payload: IPayment | any) => {
@@ -23,11 +26,6 @@ const createPaymentService = async (payload: IPayment | any) => {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'User are not authorized!');
     }
 
-    const createdPayment = await PaymentModel.create([payload], { session }) as (IPayment & { _id: mongoose.Types.ObjectId })[];
-    if (!createdPayment || createdPayment.length === 0) {
-      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to create payment!');
-    }
-
     const booking = await BookingModel.findById(payload.bookingId).session(session);
 
     if (!booking) {
@@ -38,14 +36,38 @@ const createPaymentService = async (payload: IPayment | any) => {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Booking is already paid!');
     }
 
+
+    // const isExistPayment = await PaymentModel.findOne({ bookingId: payload.bookingId as string }).session(session);
+    // if (isExistPayment) {
+    //   // If paymentIntent is provided in the payload, update the existing payment
+    //   if (isExistPayment?.paymentMethod == BOOKING_PAYMENT_METHOD.STRIPE) {
+    //     if (payload.paymentIntent) {
+    //       const updatedPayment = await PaymentModel.findByIdAndUpdate(
+    //         isExistPayment._id,
+    //         { $set: payload },
+    //         { new: true, session }
+    //       );
+    //       await session.commitTransaction();
+    //       session.endSession();
+    //       return updatedPayment;
+    //     }
+    //   }
+    // } else {
+    const createdPayment = await PaymentModel.create([payload], { session }) as (IPayment & { _id: mongoose.Types.ObjectId })[];
+    if (!createdPayment || createdPayment.length === 0) {
+      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to create payment!');
+    }
+
     booking.paymentId = createdPayment[0]._id;
-    booking.isPaid = true;
     await booking.save({ session });
 
     await session.commitTransaction();
     session.endSession();
 
     return createdPayment[0];
+    // }
+
+
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
@@ -335,6 +357,31 @@ const isPaymentExist = async (paymentIntent: string) => {
   return result;
 };
 
+const getAllPaymentByAdminService = async (query: Record<string, unknown>) => {
+  const payementQueryBuilder = new QueryBuilder(PaymentModel.find({}), query).paginate().fields().paginate();
+  const result = await payementQueryBuilder.modelQuery;
+  const meta = await payementQueryBuilder.getPaginationInfo();
+  return {
+    result,
+    meta
+  };
+};
+
+const updatePaymentIntentById = async (
+  paymentId: string | unknown,
+  paymentIntent: string
+) => {
+  const updatedPayment = await PaymentModel.findByIdAndUpdate(
+    paymentId,
+    { $set: { paymentIntent } },
+    { new: true }
+  );
+  if (!updatedPayment) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Payment not found!');
+  }
+  return updatedPayment;
+};
+
 export const paymentService = {
   createPaymentService,
   getAllPaymentByUserId,
@@ -342,4 +389,6 @@ export const paymentService = {
   getLast12MonthsEarningsService,
   getLast7DaysEarnings,
   isPaymentExist,
+  getAllPaymentByAdminService,
+  updatePaymentIntentById
 };

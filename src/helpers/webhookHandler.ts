@@ -7,6 +7,7 @@ import { ClientModel } from '../app/modules/app_modules/client_modules/client.mo
 import config from '../config';
 import stripe from '../config/stripe.config';
 import { PAYMENT_STATUS } from '../enums/payment';
+import { BookingModel } from '../app/modules/app_modules/booking_modules/booking.model';
 
 const webhookHandler = async (req: Request, res: Response): Promise<void> => {
     console.log('Webhook received');
@@ -97,10 +98,10 @@ const handlePaymentSucceeded = async (session: Stripe.Checkout.Session) => {
             throw new ApiError(StatusCodes.BAD_REQUEST, 'No payment intent found in session');
         }
 
-        const isPaymentExist = await paymentService.isPaymentExist(paymentIntent);
+        const isPaymentExistWithThisIntent = await paymentService.isPaymentExist(paymentIntent);
 
-        if (isPaymentExist) {
-            console.log('Payment already exists for intent:', paymentIntent);
+        if (isPaymentExistWithThisIntent) {
+            console.log('Payment already exists for this intent:', paymentIntent);
             return; // Don't throw error, just return - this is likely a duplicate webhook
         }
 
@@ -111,23 +112,28 @@ const handlePaymentSucceeded = async (session: Stripe.Checkout.Session) => {
         if (!client) {
             throw new ApiError(StatusCodes.NOT_FOUND, 'Client not found');
         }
+        // find paymentId from booking for updatePaymentIntentById
+        const booking = await BookingModel.findById(bookingId).select("paymentId")
 
-        const stripeCustomerId = client.stripeCustomerId;
+        // update payment intent in the payment
+        const result = await paymentService.updatePaymentIntentById(booking?.paymentId, paymentIntent)
 
-        const newPayment = await paymentService.createPaymentService({
-            bookingId,
-            vehicleId,
-            clientId,
-            stripeCustomerId,
-            amount,
-            paymentMethod,
-            paymentIntent,
-            status: PAYMENT_STATUS.PAID
-        });
+        /*  webhook issue faced so applied updating here and did creatintg in booking serice creating 
+        // const stripeCustomerId = client.stripeCustomerId;
+        // const newPayment = await paymentService.createPaymentService({
+        //     bookingId,
+        //     vehicleId,
+        //     clientId,
+        //     stripeCustomerId,
+        //     amount,
+        //     paymentMethod,
+        //     paymentIntent,
+        //     status: PAYMENT_STATUS.PAID
+        // });
 
-        console.log('Payment created successfully:', newPayment._id || 'ID not available');
-
-        return newPayment;
+        // console.log('Payment created successfully:', newPayment._id || 'ID not available');
+        // return newPayment;
+        */
     } catch (error) {
         console.error('Error in handlePaymentSucceeded:', error);
         throw error; // Re-throw to be caught by main handler

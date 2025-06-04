@@ -1,10 +1,12 @@
 import { Model, Types } from 'mongoose';
-import { USER_ROLES } from '../../../enums/user';
+import { TEAM_ROLES, USER_ROLES } from '../../../enums/user';
 import { IVehicle } from '../app_modules/vehicle_modules/vehicle.interface';
 
 export type IUser = {
   name: string;
   designation?: string;
+  teamRole?: TEAM_ROLES;
+  teamDescription?: string;
   dateOfBirth?: Date;
   licenseNumber?: string;
   phone?: string;

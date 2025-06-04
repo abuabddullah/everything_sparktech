@@ -6,3 +6,7 @@ export enum USER_ROLES {
   TEAM_MEMBER = 'TEAM MEMBER',
   CLIENT = 'CLIENT',
 }
+export enum TEAM_ROLES {
+  AUTHORITY = 'AUTHORITY',
+  MEMBER = 'MEMBER',
+}

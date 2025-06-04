@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { TEAM_ROLES } from '../../../enums/user';
 
 const createUserZodSchema = z.object({
   body: z.object({
@@ -13,11 +14,15 @@ const createUserZodSchema = z.object({
 
 const createTeamMemberZodSchema = z.object({
   name: z.string({ required_error: 'Name is required' }),
+  teamDescription: z.string({ required_error: 'description is required' }).optional(),
+  teamRole: z.enum([...Object.values(TEAM_ROLES)] as [string, ...string[]]).optional(),
   designation: z.string({ required_error: 'Designation is required' }),
 });
 const updateTeamMemberZodSchema = z.object({
   body: z.object({
     name: z.string({ required_error: 'Name is required' }).optional(),
+    teamDescription: z.string({ required_error: 'description is required' }).optional(),
+    teamRole: z.enum([...Object.values(TEAM_ROLES)] as [string, ...string[]]).optional(),
     designation: z.string({ required_error: 'Designation is required' }).optional(),
   })
 });

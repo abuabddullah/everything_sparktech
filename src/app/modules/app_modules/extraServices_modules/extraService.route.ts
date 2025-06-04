@@ -20,7 +20,7 @@ router.route('/').post(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), fileUploa
 router.get('/', ExtraServiceController.getAllExtraServices);
 router.patch('/status/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.updateExtraServiceStatus);
 router.get('/:id',ExtraServiceController.getExtraServiceById);
-router.patch('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.updateExtraService);
+router.patch('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),fileUploadHandler(), ExtraServiceController.updateExtraService);
 router.delete('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.deleteExtraService);
 
 export const ExtraServiceRoutes = router;

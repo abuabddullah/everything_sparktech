@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import ExtraServiceModel from './extraService.model';
-import { createExtraServiceZodSchema, IExtraServiceInput } from './extraService.validation';
+import { createExtraServiceZodSchema, ExtraServiceValidation, IExtraServiceInput } from './extraService.validation';
 import catchAsync from '../../../../shared/catchAsync';
 import { getSingleFilePath } from '../../../../shared/getFilePath';
 import sendResponse from '../../../../shared/sendResponse';
 import { ExtraService } from './ExtraService.service';
 import { StatusCodes } from 'http-status-codes';
 import { EXTRA_SERVICE_STATUS } from '../../../../enums/extraService';
+import ApiError from '../../../../errors/ApiError';
 
 export const createExtraService = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -41,8 +42,22 @@ export const getAllExtraServices = catchAsync(
 
 export const updateExtraService = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
+        if (!req.body.data) {
+            throw new ApiError(StatusCodes.CONFLICT, "Send the data in req.body.data")
+        }
+        if (req.body.data) {
+            req.body = ExtraServiceValidation.createExtraServiceZodSchema.parse(
+                JSON.parse(req.body.data)
+            );
+        }
         const { id } = req.params;
-        const result = await ExtraService.updateExtraServiceInDB(id, req.body);
+
+        let image = getSingleFilePath(req.files, 'image');
+        const serviceData = {
+            ...req.body,
+            image,
+        };
+        const result = await ExtraService.updateExtraServiceInDB(id, serviceData);
 
         sendResponse(res, {
             success: true,
@@ -96,4 +111,4 @@ export const getExtraServiceById = catchAsync(
     }
 );
 
-export const ExtraServiceController = { createExtraService, getAllExtraServices, updateExtraService, deleteExtraService, updateExtraServiceStatus,getExtraServiceById }
+export const ExtraServiceController = { createExtraService, getAllExtraServices, updateExtraService, deleteExtraService, updateExtraServiceStatus, getExtraServiceById }
