@@ -166,7 +166,6 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
 
         // total ammount for the booking
         amount = sumOfTotalRentOfCarForRentedDays + selectedExtraServicesAmount
-        console.log({ amount })
 
 
         // validate clientDetails is present or not then throw error
@@ -311,6 +310,9 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
             throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create payment for booking');
         }
 
+        createdBooking[0].paymentId = newPayment[0]._id as mongoose.Types.ObjectId;
+        await createdBooking[0].save({ session });
+
         // do the session creation acitivity if bookingdata.paymentmethod = STRIPE
         if (bookingdata.paymentMethod == BOOKING_PAYMENT_METHOD.STRIPE) {
             const stripeSession = await stripe.checkout.sessions.create({
@@ -332,7 +334,7 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
                     bookingId: (createdBooking[0] as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
                 },
                 success_url: `${config.stripe.success_url}?bookingId=${createdBooking[0]?._id}`,
-                cancel_url: config.stripe.cancel_url,
+                cancel_url: `${config.stripe.cancel_url}?bookingId=${createdBooking[0]?._id}`,
             });
             console.log({
                 url: stripeSession.url,

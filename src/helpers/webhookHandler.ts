@@ -104,7 +104,7 @@ const handlePaymentSucceeded = async (session: Stripe.Checkout.Session) => {
         console.log('Creating new payment record');
 
         // find paymentId from booking for updatePaymentIntentById
-        const booking = await BookingModel.findById(bookingId).select("paymentId")
+        const booking = await BookingModel.findById(bookingId)
 
         // update payment intent in the payment
         const result = await paymentService.updatePaymentIntentById(booking?.paymentId, paymentIntent)
