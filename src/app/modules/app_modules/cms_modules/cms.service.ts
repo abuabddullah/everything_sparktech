@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes';
+import ApiError from '../../../../errors/ApiError';
 import { IFaq, ICMSModel } from './cms.interface';
 import CMSModel from './cms.model';
 
@@ -11,6 +13,9 @@ const CMSService = {
   },
 
   updateTermsConditionsInDB: async (termsData: string | any) => {
+    if (!termsData.termsConditions) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "termsConditions is required")
+    }
     const updatedCms = await CMSModel.findOneAndUpdate(
       {},
       { $set: { termsConditions: termsData.termsConditions } },
@@ -21,6 +26,9 @@ const CMSService = {
   },
 
   updatePrivacyPolicyInDB: async (policyData: string | any) => {
+    if (!policyData.privacyPolicy) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "privacyPolicy is required")
+    }
     const updatedCms = await CMSModel.findOneAndUpdate(
       {},
       { $set: { privacyPolicy: policyData.privacyPolicy } },

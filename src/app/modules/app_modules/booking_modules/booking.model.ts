@@ -13,7 +13,12 @@ const BookingSchema = new Schema<IBooking>(
         returnTime: { type: Date, required: true },
         returnLocation: { type: Schema.Types.ObjectId, ref: 'Location', required: true },
         vehicle: { type: Schema.Types.ObjectId, ref: 'Vehicle', required: true },
-        extraServices: [{ type: Schema.Types.ObjectId, ref: 'ExtraService' }],
+        extraServices: [
+            {
+                serviceId: { type: Schema.Types.ObjectId, ref: 'ExtraService', required: true },
+                quantity: { type: Number, default: 1 }, // Default to 1 if not specified
+            },
+        ],
         clientId: { type: Schema.Types.ObjectId, ref: 'Client', required: false },
         driverId: { type: Schema.Types.ObjectId, ref: 'User', required: false },
         paymentMethod: { type: String, enum: Object.values(BOOKING_PAYMENT_METHOD), required: true },

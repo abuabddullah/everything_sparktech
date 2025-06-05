@@ -17,7 +17,14 @@ export const createBookingValidationSchema = z.object({
         returnTime: z.string().min(1, "returnTime is required"),
         returnLocation: objectIdSchema,
         vehicle: objectIdSchema,
-        extraServices: z.array(objectIdSchema).optional(),
+        extraServices: z
+            .array(
+                z.object({
+                    serviceId: objectIdSchema, // Reference to ExtraService
+                    quantity: z.number().int().positive().optional().default(1), // Quantity, default to 1
+                })
+            )
+            .optional(),
         clientDetails: z.object({
             firstName: z.string().min(1, "firstName is required"),
             lastName: z.string().min(1, "lastName is required"),

@@ -235,11 +235,46 @@ const getAllDriverFromDB = async () => {
   const allDriverArray = await User.find({
     role: "DRIVER"
   });
+
   if (!allDriverArray) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Driver Not Available!");
   }
 
-  return allDriverArray;
+  // For each driver, check their bookings and set driverStatus accordingly
+  const now = new Date();
+
+  // Populate bookings for each driver
+  const driversWithStatus = await Promise.all(
+    allDriverArray.map(async (driver: any) => {
+      // Find bookings for this driver
+      const bookings = await BookingModel.find({ driverId: driver._id }).populate("vehicle","name");
+
+      let driverCurrentStatus = "IDLE";
+      for (const booking of bookings) {
+        if (booking.pickupTime && booking.returnTime) {
+          const pickupTime = new Date(booking.pickupTime);
+          const returnTime = new Date(booking.returnTime);
+
+          if (now >= pickupTime && now <= returnTime) {
+            driverCurrentStatus = "ON RIDE";
+            break; // ON RIDE takes precedence
+          } else if (now > returnTime) {
+            driverCurrentStatus = "IDLE";
+            // Don't break, in case there's an ON RIDE booking
+          }
+        }
+      }
+
+      // Attach status and bookings if needed
+      return {
+        ...driver.toObject(),
+        driverCurrentStatus,
+        bookings
+      };
+    })
+  );
+
+  return driversWithStatus;
 };
 
 

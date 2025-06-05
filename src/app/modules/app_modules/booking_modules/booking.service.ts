@@ -54,7 +54,7 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         let amount = 0;
         let carRentedForInDays = 0;
         let sumOfTotalRentOfCarForRentedDays = 0;
-        let selectedExtraServices = []
+        // let selectedExtraServices = []
         let selectedExtraServicesAmount = 0;
         let { clientDetails, ...bookingdata } = payload;
 
@@ -115,21 +115,46 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
 
         //need to check if all the selected extra services are valid or not if valid then calculate the amount and update selectedExtraServicesAmount
 
-        if (payload?.extraServices!?.length > 0) {
-            // Ensure that extraServicesIds are converted to ObjectIds
-            const objectIds = payload.extraServices!.map(id => new mongoose.Types.ObjectId(id));
+        if (payload?.extraServices && payload?.extraServices!?.length > 0) {
+            // Step 1: Extract serviceId and quantity from the payload
+            const serviceDetails = payload.extraServices.map((extraService) => ({
+                serviceId: new mongoose.Types.ObjectId(extraService.serviceId),
+                quantity: extraService.quantity || 1,  // Default quantity to 1 if not provided
+            }));
 
-            // Query the Service collection for all services whose providerId is in the array
-            selectedExtraServices = await ExtraServiceModel.find({ _id: { $in: objectIds } });
+            // Step 2: Query the ExtraService collection to retrieve the extra services by their serviceId
+            const extraServiceIds = serviceDetails.map((service) => service.serviceId);
+            const selectedExtraServices = await ExtraServiceModel.find({ _id: { $in: extraServiceIds } });
 
-            // Check if the number of services found matches the number of extraServicesIds
-            if (selectedExtraServices.length !== payload.extraServices!.length) {
-                // Throw an error with the missing extraServicesIds
-                throw new Error(`The Services were not found in the database`);
+            // Step 3: Check if the selected extra services match the input serviceIds
+            if (selectedExtraServices.length !== serviceDetails.length) {
+                throw new Error('Some of the selected extra services were not found in the database');
             }
 
-            // Calculate the total cost of selected services
-            selectedExtraServicesAmount = selectedExtraServices.reduce((total: number, service: IExtraService) => total + (service.cost || 0), 0);
+            // Step 4: Calculate the total cost of the selected extra services
+            selectedExtraServices.forEach((service, index) => {
+                const serviceDetail = serviceDetails[index];
+
+                // Ensure that the service has a valid cost and quantity
+                const serviceAmount = (service.cost || 0) * serviceDetail.quantity; // Multiply cost by quantity
+                selectedExtraServicesAmount += serviceAmount; // Add to total cost
+            });
+
+
+            // // Ensure that extraServicesIds are converted to ObjectIds
+            // const objectIds = payload.extraServices!.map(id => new mongoose.Types.ObjectId(id));
+
+            // // Query the Service collection for all services whose providerId is in the array
+            // selectedExtraServices = await ExtraServiceModel.find({ _id: { $in: objectIds } });
+
+            // // Check if the number of services found matches the number of extraServicesIds
+            // if (selectedExtraServices.length !== payload.extraServices!.length) {
+            //     // Throw an error with the missing extraServicesIds
+            //     throw new Error(`The Services were not found in the database`);
+            // }
+
+            // // Calculate the total cost of selected services
+            // selectedExtraServicesAmount = selectedExtraServices.reduce((total: number, service: IExtraService) => total + (service.cost || 0), 0);
         }
 
         //Calculate the number of days the car is rented for
@@ -141,6 +166,7 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
 
         // total ammount for the booking
         amount = sumOfTotalRentOfCarForRentedDays + selectedExtraServicesAmount
+        console.log({ amount })
 
 
         // validate clientDetails is present or not then throw error
@@ -297,7 +323,7 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
                             product_data: {
                                 name: 'Amount',
                             },
-                            unit_amount: amount * 100,
+                            unit_amount: Math.round(amount * 100),
                         },
                         quantity: 1,
                     },
@@ -941,7 +967,7 @@ const assignDriverToBooking = async (driverId: string, bookingId: string) => {
 
         // Assign the driver to the booking
         booking.driverId = driver._id as mongoose.Types.ObjectId;
-        booking.status = BOOKING_STATUS.ON_RIDE;
+        booking.status = BOOKING_STATUS.CONFIRMED;
         await booking.save({ session });
 
         await session.commitTransaction();
@@ -1045,6 +1071,7 @@ const updateBookingIsPaid = async (bookingId: string, isPaid: boolean) => {
     await booking.save();
     return booking;
 };
+
 
 export const BookingService = {
     createBookingToDB,

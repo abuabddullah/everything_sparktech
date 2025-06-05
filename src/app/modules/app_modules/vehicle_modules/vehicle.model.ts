@@ -17,7 +17,7 @@ const vehicleSchema = new Schema<IVehicle>(
     noOfSeats: { type: Number, required: true, max: 7, min: 2 },
     noOfDoors: { type: Number, required: true },
     noOfLuggages: { type: Number, required: true },
-    image: { type: String,required:true },
+    image: { type: String,required:false },
     dailyRate: { type: Number, required: true },
     status: { type: String, enum: Object.values(VEHICLE_STATUS), default: VEHICLE_STATUS.AVAILABLE, required: true },
     lastMaintenanceDate: { type: Date },

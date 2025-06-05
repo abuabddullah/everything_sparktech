@@ -2,6 +2,13 @@
 // booking.interface.ts
 import { Document, Model, Types } from 'mongoose';
 import { BOOKING_PAYMENT_METHOD, BOOKING_STATUS } from '../../../../enums/booking';
+
+export interface IExtraServiceDetails {
+    serviceId: Types.ObjectId; // Reference to the ExtraService model
+    quantity?: number; // Quantity of this extra service being booked
+}
+
+
 export interface IBooking extends Document {
     pickupDate: Date;
     pickupTime: Date;
@@ -10,7 +17,7 @@ export interface IBooking extends Document {
     returnTime: Date;
     returnLocation: Types.ObjectId; // Assuming this is a reference to a location model
     vehicle: Types.ObjectId; // Reference to the vehicle being booked
-    extraServices: Types.ObjectId[]; // Array of extra services
+    extraServices: IExtraServiceDetails[];// Array of extra services
     clientId: Types.ObjectId; // Reference to the client making the booking
     driverId?: Types.ObjectId; // Reference to the driver assigned to the booking
     paymentMethod: BOOKING_PAYMENT_METHOD; // Payment method used for the booking
@@ -32,7 +39,7 @@ export interface IBookingRequestBody {
     returnTime: Date;
     returnLocation: Types.ObjectId;
     vehicle: Types.ObjectId;
-    extraServices?: Types.ObjectId[];
+    extraServices?: IExtraServiceDetails[];
     clientId?: Types.ObjectId; // Optional, if client already exists
     clientDetails: {
         firstName: string;
