@@ -27,7 +27,11 @@ const lastMaintenanceDate = z.object({
     )
   })
 })
+
+export const updateVehicleZodSchema = createVehicleZodSchema.partial();
+
 export const VehicleZodValidation = {
   createVehicleZodSchema,
+  updateVehicleZodSchema,
   lastMaintenanceDate
 }

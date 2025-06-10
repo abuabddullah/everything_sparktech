@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { BOOKING_PAYMENT_METHOD, BOOKING_STATUS } from "../../../../enums/booking";
+import { VEHICLE_TYPES } from "../../../../enums/vehicle";
 
 // Helper for MongoDB ObjectId validation (24 hex chars)
 const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i, { message: "Invalid ObjectId" });
@@ -7,6 +8,12 @@ const validEmailSchema = z.string().regex(
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     { message: "Invalid email address" }
 );
+
+const vehicleInfoStructureFromadminSideBooking = z.object({
+    vehicleId: objectIdSchema,
+    vehicleType: z.enum([...(Object.values(VEHICLE_TYPES) as [string, ...string[]])]),
+    rate: z.number().positive("ammount must be positive").optional(),
+})
 
 export const createBookingValidationSchema = z.object({
     body: z.object({
@@ -16,7 +23,7 @@ export const createBookingValidationSchema = z.object({
         returnDate: z.string().min(1, "returnDate is required"),
         returnTime: z.string().min(1, "returnTime is required"),
         returnLocation: objectIdSchema,
-        vehicle: objectIdSchema,
+        vehicle: z.union([objectIdSchema, vehicleInfoStructureFromadminSideBooking]),
         extraServices: z
             .array(
                 z.object({

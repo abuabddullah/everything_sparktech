@@ -1,6 +1,12 @@
 import { Types } from "mongoose";
 import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_STATUS, VEHICLE_TYPES } from "../../../../enums/vehicle";
 
+
+export type DailyRateVariant = {
+    vehicleType: VEHICLE_TYPES;
+    rate: number;
+};
+
 export type IVehicle = {
     _id?: Types.ObjectId;
     vehicleType: VEHICLE_TYPES;
@@ -17,6 +23,7 @@ export type IVehicle = {
     noOfLuggages: number;
     image?: string; // Optional field for vehicle image
     dailyRate: number;
+    dailyRates?: DailyRateVariant[];
     status: VEHICLE_STATUS; // e.g., 
     lastMaintenanceDate?: Date; // Optional field for last maintenance date
     [key: string]: any; // Allow additional properties

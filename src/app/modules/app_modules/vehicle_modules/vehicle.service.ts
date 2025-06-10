@@ -54,10 +54,10 @@ const updateAVehicleByIdInDB = async (
     id: string,
     payload: Partial<IVehicle>
 ): Promise<IVehicle | null> => {
-    const updatedVehicle = await Vehicle.findByIdAndUpdate(id, payload, {
-        new: true,
-        runValidators: true,
-    });
+    const updatedVehicle = await Vehicle.findById(id);
+    if (!updatedVehicle) return null;
+    Object.assign(updatedVehicle, payload);
+    await updatedVehicle.save();
     return updatedVehicle;
 };
 

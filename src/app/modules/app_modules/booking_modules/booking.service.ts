@@ -26,6 +26,7 @@ import stripe from "../../../../config/stripe.config";
 import config from "../../../../config";
 import { paymentService } from "../payment/payment.service";
 import { PaymentModel } from "../payment/payment.model";
+import { VEHICLE_TYPES } from "../../../../enums/vehicle";
 
 
 
@@ -54,7 +55,6 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         let amount = 0;
         let carRentedForInDays = 0;
         let sumOfTotalRentOfCarForRentedDays = 0;
-        // let selectedExtraServices = []
         let selectedExtraServicesAmount = 0;
         let { clientDetails, ...bookingdata } = payload;
 
@@ -82,8 +82,16 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
             throw new Error('Invalid booking data');
         }
         // check if the car status and bookings field in vehicle model. if status is AVAILABLE for that time period or not if not then throw error
-        // Fetch the vehicle document
-        const isExistingVehicle = await Vehicle.findById({ _id: bookingdata.vehicle }).session(session);
+        let isExistingVehicle;
+        if (
+            typeof bookingdata.vehicle === 'object' &&
+            bookingdata.vehicle !== null &&
+            'vehicleId' in bookingdata.vehicle
+        ) {
+            isExistingVehicle = await Vehicle.findById({ _id: bookingdata.vehicle.vehicleId }).session(session);
+        } else {
+            isExistingVehicle = await Vehicle.findById({ _id: bookingdata.vehicle }).session(session);
+        }
 
         // Check if vehicle exists
         if (!isExistingVehicle) {
@@ -161,7 +169,21 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         carRentedForInDays = Math.ceil((returnDateTime.getTime() - pickupDateTime.getTime()) / (1000 * 60 * 60 * 24));
 
         // Calculate the vehicleRentAmount based on the vehicle's daily rate 
-        sumOfTotalRentOfCarForRentedDays = isExistingVehicle.dailyRate * carRentedForInDays
+        if (
+            typeof bookingdata.vehicle === 'object' &&
+            bookingdata.vehicle !== null &&
+            'vehicleId' in bookingdata.vehicle
+        ) {
+            if ('vehicleType' in bookingdata.vehicle) {
+                // Check if the provided vehicleType matches one of the allowed VEHICLE_TYPES
+                if (!Object.values(VEHICLE_TYPES).includes(bookingdata.vehicle.vehicleType)) {
+                    throw new Error('Invalid vehicle type selected');
+                }
+            }
+            sumOfTotalRentOfCarForRentedDays = Number(bookingdata?.vehicle?.rate!) * carRentedForInDays
+        } else {
+            sumOfTotalRentOfCarForRentedDays = isExistingVehicle.dailyRate * carRentedForInDays
+        }
 
 
         // total ammount for the booking
@@ -182,6 +204,10 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
                 amount,
                 carRentedForInDays,
                 clientId: thisClient._id, // Assign the existing client ID to booking data
+                // Handle vehicleType if present in bookingdata.vehicle
+                ...(typeof bookingdata.vehicle === 'object' && bookingdata.vehicle !== null && 'vehicleId' in bookingdata.vehicle && 'vehicleType' in bookingdata.vehicle
+                    ? { vehicle: bookingdata.vehicle.vehicleId, vehicleType: bookingdata.vehicle.vehicleType }
+                    : {}),
             };
         } else {
             // create client in Client model
@@ -198,7 +224,11 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
                 ...bookingdata,
                 amount,
                 carRentedForInDays,
-                clientId: thisClient._id, // Assign the created client ID to booking data
+                clientId: thisClient._id, // Assign the existing client ID to booking data
+                // Handle vehicleType if present in bookingdata.vehicle
+                ...(typeof bookingdata.vehicle === 'object' && bookingdata.vehicle !== null && 'vehicleId' in bookingdata.vehicle && 'vehicleType' in bookingdata.vehicle
+                    ? { vehicle: bookingdata.vehicle.vehicleId, vehicleType: bookingdata.vehicle.vehicleType }
+                    : {}),
             };
         }
         const createdBooking = await BookingModel.create([bookingDataWithClient], { session });
@@ -372,311 +402,6 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         throw error;
     }
 };
-
-
-// const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
-//     const session = await BookingModel.startSession();
-//     session.startTransaction();
-//     try {
-
-//         /**
-//          *  validate and throw err for
-//          *  *  pickupLocation 🆗
-//          *  *  returnLocation 🆗
-//          *  *  vehicle 🆗 
-//          *  *  extraServices 🆗
-//          *  *  clientId 🆗
-//          *  need to check the time differnces is minimum 3 hrs returnTime - pickupTime > 3 hrs 🆗
-//          *  pickupDate and returnDate should be in future than now 🆗
-//          *  ammount calculation based on the selected vehicle.dailyRate extra services its a perday rate, extra services is a fixed rate 🆗
-//          *  check if the car status and bookings field in vehicle model. if status is AVAILABLE for that time period or not if not then throw error 🆗
-//          *  set the booking info in the vehicle model and set the response to BOOKED for that time period  🆗
-//          *  need to send email to the client with booking details specially the refferece id = booking._id 🆗
-//          *  sendnotification to the admin with booking details 
-//          */
-
-//         let bookingDataWithClient;
-//         let amount = 0;
-//         let carRentedForInDays = 0;
-//         let sumOfTotalRentOfCarForRentedDays = 0;
-//         let selectedExtraServices = []
-//         let selectedExtraServicesAmount = 0;
-//         let { clientDetails, ...bookingdata } = payload;
-
-//         // calculate returnTime & pickupTime must be in future than now and their difference should be minimum 3 hrs if true then calcualte the carRentedForInDays
-//         const pickupDateTime = new Date(`${bookingdata.pickupTime}`);
-//         const returnDateTime = new Date(`${bookingdata.returnTime}`);
-//         const currentTime = new Date();
-
-//         if (pickupDateTime <= currentTime || returnDateTime <= currentTime) {
-//             throw new Error('Pickup and return dates must be in the future');
-//         }
-//         if (returnDateTime <= pickupDateTime || (returnDateTime.getTime() - pickupDateTime.getTime()) < 3 * 60 * 60 * 1000) {
-//             throw new Error('Return date must be at least 3 hours after pickup date');
-//         }
-//         // validate locations is present or not then throw error
-//         if (!bookingdata.pickupLocation || !bookingdata.returnLocation || !bookingdata.vehicle) {
-//             throw new Error('Pickup location, return location, and vehicle are required');
-//         }
-//         // find pickupLocation and returnLocation and vehicle by id if exists then use that otherwise throw error
-
-//         const isExistingPickupLocation = await Location.findById({ _id: bookingdata.pickupLocation }).session(session);
-//         const isExistingReturnLocation = await Location.findById({ _id: bookingdata.returnLocation }).session(session);
-
-//         if (!isExistingPickupLocation || !isExistingReturnLocation) {
-//             throw new Error('Invalid booking data');
-//         }
-//         // check if the car status and bookings field in vehicle model. if status is AVAILABLE for that time period or not if not then throw error
-//         // Fetch the vehicle document
-//         const isExistingVehicle = await Vehicle.findById({ _id: bookingdata.vehicle }).session(session);
-
-//         // Check if vehicle exists
-//         if (!isExistingVehicle) {
-//             throw new Error("Vehicle not found");
-//         }
-
-//         // Check if the vehicle is available during the requested time period
-//         /**
-//          * get the bookings of  the vehicle for this specific isExistingVehicle
-//          * check and ensure pickupDateTime and returnDateTime doesn't overlap with these booked bookings
-//          */
-
-//         const existingBookings = await BookingModel.find({
-//             vehicle: isExistingVehicle._id,
-//             $or: [
-//                 { pickupTime: { $gte: pickupDateTime, $lt: returnDateTime } },  // Pickup is during an existing booking
-//                 { returnTime: { $gt: pickupDateTime, $lte: returnDateTime } },   // Return is during an existing booking
-//                 {
-//                     pickupTime: { $lt: pickupDateTime },  // Entire booking is before the requested time
-//                     returnTime: { $gt: returnDateTime }   // Entire booking is after the requested time
-//                 }
-//             ]
-//         }).session(session);
-
-//         // Check if any existing booking overlaps with the requested time period
-//         if (existingBookings.length > 0) {
-//             throw new Error("Vehicle is already booked during the requested time period");
-//         }
-
-//         //need to check if all the selected extra services are valid or not if valid then calculate the amount and update selectedExtraServicesAmount
-
-//         if (payload?.extraServices!?.length > 0) {
-//             // Ensure that extraServicesIds are converted to ObjectIds
-//             const objectIds = payload.extraServices!.map(id => new mongoose.Types.ObjectId(id));
-
-//             // Query the Service collection for all services whose providerId is in the array
-//             selectedExtraServices = await ExtraServiceModel.find({ _id: { $in: objectIds } });
-
-//             // Check if the number of services found matches the number of extraServicesIds
-//             if (selectedExtraServices.length !== payload.extraServices!.length) {
-//                 // Throw an error with the missing extraServicesIds
-//                 throw new Error(`The Services were not found in the database`);
-//             }
-
-//             // Calculate the total cost of selected services
-//             selectedExtraServicesAmount = selectedExtraServices.reduce((total: number, service: IExtraService) => total + (service.cost || 0), 0);
-//         }
-
-//         //Calculate the number of days the car is rented for
-//         carRentedForInDays = Math.ceil((returnDateTime.getTime() - pickupDateTime.getTime()) / (1000 * 60 * 60 * 24));
-
-//         // Calculate the vehicleRentAmount based on the vehicle's daily rate 
-//         sumOfTotalRentOfCarForRentedDays = isExistingVehicle.dailyRate * carRentedForInDays
-
-
-//         // total ammount for the booking
-//         amount = sumOfTotalRentOfCarForRentedDays + selectedExtraServicesAmount
-
-
-//         // validate clientDetails is present or not then throw error
-//         if (!clientDetails || !clientDetails.firstName || !clientDetails.lastName || !clientDetails.email || !clientDetails.phone) {
-//             throw new Error('Client details are incomplete');
-//         }
-//         // find client by email  if exists then use that client otherwise create new client
-//         let thisClient;
-//         thisClient = await ClientModel.findOne({ email: clientDetails.email }).session(session);
-//         if (thisClient) {
-//             // bookingdata.clientId = existingClient._id; // Assign existing client ID to booking data
-//             bookingDataWithClient = {
-//                 ...bookingdata,
-//                 amount,
-//                 carRentedForInDays,
-//                 clientId: thisClient._id, // Assign the existing client ID to booking data
-//             };
-//         } else {
-//             // create client in Client model
-//             const client = await ClientModel.create([clientDetails], { session });
-//             if (!client || client.length === 0) {
-//                 throw new Error('Failed to create client');
-//             }
-//             // Use the created client document
-//             thisClient = client[0];
-//             if (!client) {
-//                 throw new Error('Failed to create client');
-//             }
-//             bookingDataWithClient = {
-//                 ...bookingdata,
-//                 amount,
-//                 carRentedForInDays,
-//                 clientId: thisClient._id, // Assign the created client ID to booking data
-//             };
-//         }
-//         const createdBooking = await BookingModel.create([bookingDataWithClient], { session });
-
-//         if (!createdBooking || createdBooking.length === 0) {
-//             throw new Error('Failed to create booking');
-//         }
-
-
-//         // Update the vehicle's bookings field with this created booking id
-//         isExistingVehicle.bookings.push(createdBooking[0]._id);
-//         // save the isExistingVehicle with session
-//         await isExistingVehicle.save({ session });
-
-//         // Update the client's bookings field with this created booking id
-//         thisClient?.bookings?.push(createdBooking[0]._id as mongoose.Types.ObjectId);
-
-//         // check if client already has stripe account or need to be created and saved
-//         let stripeCustomerId = thisClient?.stripeCustomerId;
-//         let stripeCustomer;
-
-//         if (stripeCustomerId) {
-//             try {
-//                 // Attempt to retrieve the Stripe customer
-//                 stripeCustomer = await stripe.customers.retrieve(stripeCustomerId);
-
-//                 // Check if the customer exists
-//                 if (!stripeCustomer || stripeCustomer.deleted) {
-//                     throw new Error(`Customer with ID ${stripeCustomerId} no longer exists.`);
-//                 }
-
-//                 // If customer exists, proceed with your logic
-//                 console.log('Customer retrieved:', stripeCustomer);
-
-//             } catch (error: any) {
-//                 // Log detailed error for debugging
-//                 console.error('Stripe Error:', error.message);
-//                 console.error('Error details:', error); // Log full error object
-
-//                 if (error.code === 'resource_missing') {
-//                     console.log(`No such customer: ${stripeCustomerId}`);
-//                     // Proceed to create a new customer
-//                 } else {
-//                     // Handle other errors
-//                     throw new ApiError(
-//                         StatusCodes.INTERNAL_SERVER_ERROR,
-//                         'Failed to retrieve Stripe customer',
-//                     );
-//                 }
-//             }
-//         }
-
-//         if (!stripeCustomerId) {
-//             try {
-//                 // Create a new Stripe customer if it doesn't exist
-//                 stripeCustomer = await stripe.customers.create({
-//                     email: thisClient!.email,
-//                     name: `${thisClient?.firstName} ${thisClient?.lastName}`,
-//                 });
-
-//                 // Save the Stripe customer ID
-//                 thisClient!.stripeCustomerId = stripeCustomer?.id;
-//                 console.log('New customer created:', stripeCustomer);
-
-//             } catch (error: any) {
-//                 // Log error when creating customer
-//                 console.error('Stripe Error:', error.message);
-//                 console.error('Error details:', error); // Log full error
-
-//                 throw new ApiError(
-//                     StatusCodes.INTERNAL_SERVER_ERROR,
-//                     'Failed to create Stripe customer',
-//                 );
-//             }
-//         }
-
-
-//         await thisClient.save({ session });
-
-//         // need to send email to the client email with booking details specially the refferece id = booking._id
-//         const values: IConfirmBookingEmail = {
-//             name: `${clientDetails.firstName} ${clientDetails.lastName}`,
-//             email: clientDetails.email,
-//             phone: clientDetails.phone,
-//             pickupLocation: isExistingPickupLocation.location,
-//             returnLocation: isExistingReturnLocation.location,
-//             vehicle: isExistingVehicle.name,
-//             pickupTime: convertToReadableDate(bookingdata.pickupTime!),
-//             returnTime: convertToReadableDate(bookingdata.returnTime!),
-//             amount: amount.toFixed(2),
-//             bookingId: (createdBooking[0] as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
-//         }
-//         const confirmBookingEmailTemplate = emailTemplate.confirmBookingEmail(values);
-//         emailHelper.sendEmail(confirmBookingEmailTemplate);
-
-//         // do the session creation acitivity if bookingdata.paymentmethod = STRIPE
-//         if (bookingdata.paymentMethod == BOOKING_PAYMENT_METHOD.STRIPE) {
-//             const stripeSession = await stripe.checkout.sessions.create({
-//                 mode: 'payment',
-//                 customer: stripeCustomer?.id,
-//                 line_items: [
-//                     {
-//                         price_data: {
-//                             currency: 'usd',
-//                             product_data: {
-//                                 name: 'Amount',
-//                             },
-//                             unit_amount: amount * 100,
-//                         },
-//                         quantity: 1,
-//                     },
-//                 ],
-//                 metadata: {
-//                     bookingId: (createdBooking[0] as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
-//                     vehicleId: isExistingVehicle._id.toString(),
-//                     clientId: thisClient._id.toString(),
-//                     amount: amount.toFixed(2),
-//                     paymentMethod: bookingDataWithClient.paymentMethod || '',
-//                 },
-//                 success_url: `${config.stripe.success_url}?bookingId=${createdBooking[0]?._id}`,
-//                 cancel_url: config.stripe.cancel_url,
-//             });
-//             console.log({
-//                 url: stripeSession.url,
-//             });
-
-//             await session.commitTransaction();
-//             session.endSession();
-//             return {
-//                 url: stripeSession.url,
-//             };
-//         }
-
-//         // send notification to the admins with booking details
-//         // get all the admin users from the database
-//         const adminUsers = await User.find({ role: { $in: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN] } }).session(session);
-//         const adminUserIds = adminUsers.map(user => user._id);
-//         // create notification data
-//         const notificationData = {
-//             text: `New booking created by ${clientDetails.firstName} ${clientDetails.lastName} for vehicle ${isExistingVehicle.name}. Booking ID: ${createdBooking[0]._id}`,
-//             receiver: adminUserIds, // Send to all admin users
-//             read: false,
-//             referenceId: (createdBooking[0] as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
-//             category: NOTIFICATION_CATEGORIES.RESERVATION,
-//             type: NOTIFICATION_TYPE.ADMIN,
-//         };
-//         sendNotifications(notificationData);
-
-//         await session.commitTransaction();
-//         session.endSession();
-//         return createdBooking[0]; // but isPaid=false
-
-//     } catch (error) {
-//         await session.abortTransaction();
-//         session.endSession();
-//         throw error;
-//     }
-// };
 
 
 

@@ -60,7 +60,7 @@ const getAVehicleById = catchAsync(
 const updateAVehicleById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.body.data) {
-      throw new Error('No data found to update');
+      throw new Error('No req.body.data found to update');
     }
 
     const { id } = req.params;
@@ -74,7 +74,7 @@ const updateAVehicleById = catchAsync(
 
 
     // Validate and assign req.body data to req.body
-    req.body = VehicleZodValidation.createVehicleZodSchema.parse(parsedData);
+    req.body = VehicleZodValidation.updateVehicleZodSchema.parse(parsedData);
 
 
     const result = await VehicleService.updateAVehicleByIdInDB(id, req.body);

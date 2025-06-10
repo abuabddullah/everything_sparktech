@@ -17,7 +17,7 @@ paymentRoutes
   .get(
     '/admin',
     auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),
-    paymenController.getAllPaymentByOwnerId,
+    paymenController.getAllPaymentByAdmin,
   )
 //   .get(
 //     '/last-12-months-earnings',

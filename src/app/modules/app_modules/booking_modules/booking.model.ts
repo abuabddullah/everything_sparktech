@@ -1,6 +1,7 @@
 import { Schema, model, Document } from 'mongoose';
 import { IBooking } from './booking.interface';
 import { BOOKING_PAYMENT_METHOD, BOOKING_STATUS } from '../../../../enums/booking';
+import { VEHICLE_TYPES } from '../../../../enums/vehicle';
 
 // type BookingDocument = IBooking & Document;
 
@@ -13,6 +14,7 @@ const BookingSchema = new Schema<IBooking>(
         returnTime: { type: Date, required: true },
         returnLocation: { type: Schema.Types.ObjectId, ref: 'Location', required: true },
         vehicle: { type: Schema.Types.ObjectId, ref: 'Vehicle', required: true },
+        vehicleType: { type: String, enum: Object.values(VEHICLE_TYPES) }, // used if type === 'VehicleDetails'
         extraServices: [
             {
                 serviceId: { type: Schema.Types.ObjectId, ref: 'ExtraService', required: true },
