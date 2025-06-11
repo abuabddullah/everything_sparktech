@@ -83,14 +83,18 @@ const successPage = catchAsync(async (req, res) => {
             payment.status = PAYMENT_STATUS.PAID;
             await payment.save({ session });
         }
-        await BookingModel.findByIdAndUpdate(
+        const updatedBooking = await BookingModel.findByIdAndUpdate(
             bookingId as string,
             { isPaid: true },
-            { session }
-        );
+            { new: true, session }
+        ).populate('clientId'); // assuming 'client' is the field referencing the user
+
+        const clientEmail = (updatedBooking && typeof updatedBooking.clientId === 'object' && 'email' in updatedBooking.clientId)
+            ? (updatedBooking.clientId as { email?: string }).email
+            : undefined;
 
         await session.commitTransaction();
-        res.render('success.ejs');
+        res.render('success.ejs', { bookingId, clientEmail });
     } catch (error) {
         await session.abortTransaction();
         throw error;
@@ -116,7 +120,7 @@ const getAllPaymentByAdmin = catchAsync(async (req: Request, res: Response) => {
 
 
 const updatePaymentIntentById = catchAsync(async (req: Request, res: Response) => {
-    const {paymentId} = req.params;
+    const { paymentId } = req.params;
     const { paymentIntent }: any = req.body;
 
     const result = await paymentService.updatePaymentIntentById(paymentId, paymentIntent);

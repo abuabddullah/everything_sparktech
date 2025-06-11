@@ -7,6 +7,7 @@ import { UserController } from './user.controller';
 import { UserValidation } from './user.validation';
 import { getSingleFilePath } from '../../../shared/getFilePath';
 import { createLogger } from 'winston';
+import ApiError from '../../../errors/ApiError';
 const router = express.Router();
 
 router
@@ -44,8 +45,12 @@ router
 router.route('/team-member').get(UserController.getAllTeamMember);
 
 router.route('/team-member/:id').patch(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), validateRequest(UserValidation.updateTeamMemberZodSchema), fileUploadHandler(), (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.data) {
+    // Assuming you have an ApiError class and next() will handle it
+    return next(new ApiError(400, 'Missing required data in request body'));
+  }
   if (req.body.data) {
-    req.body = UserValidation.updateUserZodSchema.parse(
+    req.body = UserValidation.updateTeamMemberZodSchema.parse(
       JSON.parse(req.body.data)
     );
   }
