@@ -198,7 +198,22 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         let thisClient;
         thisClient = await ClientModel.findOne({ email: clientDetails.email }).session(session);
         if (thisClient) {
-            // bookingdata.clientId = existingClient._id; // Assign existing client ID to booking data
+            let existingClientBookings = await BookingModel.find({
+                clientId: thisClient._id,
+                $or: [
+                    { pickupTime: { $gte: pickupDateTime, $lt: returnDateTime } },
+                    { returnTime: { $gte: pickupDateTime, $lt: returnDateTime } }
+                ]
+            }).session(session);
+
+            if (existingClientBookings.length > 0) {
+                // If the client has a booking with an unpaid status, delete it
+                for (let booking of existingClientBookings) {
+                    if (!booking.isPaid) {
+                        throw new ApiError(StatusCodes.BAD_REQUEST, `You already have an inpaid booking in the same slot at '${booking._id}' so contact with the admin`)
+                    }
+                }
+            }
             bookingDataWithClient = {
                 ...bookingdata,
                 amount,
@@ -505,49 +520,39 @@ const deleteBookingFromDB = async (
 
         // 1. Find the vehicle and remove the booking from the vehicle's bookings array
         const isExistVehicle = await Vehicle.findById(isExistBooking.vehicle).session(session);
-        if (!isExistVehicle) {
-            throw new ApiError(StatusCodes.NOT_FOUND, "Vehicle not found");
-        }
+        if (isExistVehicle) {
+            const bookingIndex = isExistVehicle.bookings.indexOf(isExistBooking._id);
 
-        const bookingIndex = isExistVehicle.bookings.indexOf(isExistBooking._id);
+            if (bookingIndex !== -1) {
+                // Remove the booking ID from the bookings array
+                isExistVehicle.bookings.splice(bookingIndex, 1);
 
-        if (bookingIndex !== -1) {
-            // Remove the booking ID from the bookings array
-            isExistVehicle.bookings.splice(bookingIndex, 1);
-
-            // Save the updated vehicle document
-            await isExistVehicle.save({ session });
-        } else {
-            throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in vehicle's bookings array");
+                // Save the updated vehicle document
+                await isExistVehicle.save({ session });
+            }
         }
 
         // 2. Find the client and remove the booking from the client's bookings array
         const isExistClient = await ClientModel.findById(isExistBooking.clientId).session(session);
-        if (!isExistClient) {
-            throw new ApiError(StatusCodes.NOT_FOUND, "Client not found");
-        }
+        if (isExistClient) {
+            if (!isExistClient.bookings) {
+                isExistClient.bookings = [];
+            }
+            const clientBookingIndex = isExistClient.bookings.indexOf(isExistBooking._id as mongoose.Types.ObjectId);
 
+            if (clientBookingIndex !== -1) {
+                await ClientModel.updateOne(
+                    { _id: isExistBooking.clientId },
+                    { $pull: { bookings: isExistBooking._id } },
+                    { session }
+                );
+                // Remove the booking ID from the client's bookings array
+                isExistClient.bookings.splice(clientBookingIndex, 1);
 
+                // Save the updated client document
+                await isExistClient.save({ session });
+            }
 
-
-        if (!isExistClient.bookings) {
-            isExistClient.bookings = [];
-        }
-        const clientBookingIndex = isExistClient.bookings.indexOf(isExistBooking._id as mongoose.Types.ObjectId);
-
-        if (clientBookingIndex !== -1) {
-            await ClientModel.updateOne(
-                { _id: isExistBooking.clientId },
-                { $pull: { bookings: isExistBooking._id } },
-                { session }
-            );
-            // // Remove the booking ID from the client's bookings array
-            // isExistClient.bookings.splice(clientBookingIndex, 1);
-
-            // // Save the updated client document
-            // await isExistClient.save({ session });
-        } else {
-            throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found in client's bookings array");
         }
 
         if (isExistBooking.driverId) {
