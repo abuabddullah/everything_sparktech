@@ -8,36 +8,37 @@ import { USER_ROLES } from '../../../../enums/user';
 import { PAYMENT_STATUS } from '../../../../enums/payment';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../../shared/catchAsync';
+import ApiError from '../../../../errors/ApiError';
 
 const router = Router();
 
-router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async (req:Request, res:Response) => {
+router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async (req: Request, res: Response) => {
     // Get total reservations
     const totalReservationsPromise = BookingModel.countDocuments();
 
     // Get active cars (available, rented, or in maintenance)
-    const activeCarsPromise = Vehicle.countDocuments({ 
-        status: { 
+    const activeCarsPromise = Vehicle.countDocuments({
+        status: {
             $in: [
-                VEHICLE_STATUS.AVAILABLE, 
-                VEHICLE_STATUS.RENTED, 
+                VEHICLE_STATUS.AVAILABLE,
+                VEHICLE_STATUS.RENTED,
                 VEHICLE_STATUS.UNDER_MAINTENANCE
-            ] 
-        } 
+            ]
+        }
     });
 
     // Get total revenue from paid payments
     const totalRevenuePromise = PaymentModel.aggregate([
-        { 
-            $match: { 
-                status: PAYMENT_STATUS.PAID 
-            } 
+        {
+            $match: {
+                status: PAYMENT_STATUS.PAID
+            }
         },
-        { 
-            $group: { 
-                _id: null, 
-                total: { $sum: '$amount' } 
-            } 
+        {
+            $group: {
+                _id: null,
+                total: { $sum: '$amount' }
+            }
         }
     ]);
 
@@ -53,9 +54,9 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
             }
         },
         {
-            $sort: { 
-                '_id.year': -1, 
-                '_id.month': 1 
+            $sort: {
+                '_id.year': -1,
+                '_id.month': 1
             }
         }
     ]);
@@ -73,8 +74,8 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
     // Get revenue analytics grouped by year and month
     const revenueAnalyticsByMonthPromise = PaymentModel.aggregate([
         {
-            $match: { 
-                status: PAYMENT_STATUS.PAID 
+            $match: {
+                status: PAYMENT_STATUS.PAID
             }
         },
         {
@@ -87,9 +88,9 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
             }
         },
         {
-            $sort: { 
-                '_id.year': -1, 
-                '_id.month': 1 
+            $sort: {
+                '_id.year': -1,
+                '_id.month': 1
             }
         }
     ]);
@@ -129,11 +130,11 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
     const totalBookingsByMonth = totalBookingsByMonthAgg.reduce((acc, item) => {
         const year = item._id.year;
         const monthIndex = item._id.month - 1;
-        
+
         if (!acc[year]) {
             acc[year] = getEmptyMonthData();
         }
-        
+
         acc[year][monthNames[monthIndex]] = item.count;
         return acc;
     }, {} as Record<number, Record<string, number>>);
@@ -142,11 +143,11 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
     const revenueAnalyticsByMonth = revenueAnalyticsByMonthAgg.reduce((acc, item) => {
         const year = item._id.year;
         const monthIndex = item._id.month - 1;
-        
+
         if (!acc[year]) {
             acc[year] = getEmptyMonthData();
         }
-        
+
         acc[year][monthNames[monthIndex]] = Number(item.total.toFixed(2));
         return acc;
     }, {} as Record<number, Record<string, number>>);
@@ -159,7 +160,7 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
     };
 
     fleetOverviewAgg.forEach(item => {
-        switch(item._id) {
+        switch (item._id) {
             case VEHICLE_STATUS.AVAILABLE:
                 fleetOverview.available = item.count;
                 break;
@@ -186,10 +187,95 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
         totalReservations,
         activeCars,
         totalRevenue,
-        totalBookingsByMonth,
         fleetOverview,
-        revenueAnalyticsByMonth
     });
+}));
+
+
+
+router.get('/booking/:year', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
+    const year = parseInt(req.params.year);
+
+    if (isNaN(year)) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid year provided');
+    }
+
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year + 1, 0, 1);
+
+    const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+    const bookings = await BookingModel.aggregate([
+        {
+            $match: {
+                createdAt: { $gte: startDate, $lt: endDate }
+            }
+        },
+        {
+            $group: {
+                _id: { month: { $month: '$createdAt' } },
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { '_id.month': 1 }
+        }
+    ]);
+
+    const totalBookingsByMonth = monthNames.reduce((acc, month) => {
+        acc[month] = 0;
+        return acc;
+    }, {} as Record<string, number>);
+
+    bookings.forEach(b => {
+        const monthKey = monthNames[b._id.month - 1];
+        totalBookingsByMonth[monthKey] = b.count;
+    });
+
+    res.json({ totalBookingsByMonth });
+}));
+
+router.get('/revenue/:year', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
+    const year = parseInt(req.params.year);
+
+    if (isNaN(year)) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid year provided');
+    }
+
+    const startDate = new Date(year, 0, 1); // Jan 1
+    const endDate = new Date(year + 1, 0, 1); // Jan 1 of next year
+
+    const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+    const revenue = await PaymentModel.aggregate([
+        {
+            $match: {
+                status: PAYMENT_STATUS.PAID,
+                createdAt: { $gte: startDate, $lt: endDate }
+            }
+        },
+        {
+            $group: {
+                _id: { month: { $month: '$createdAt' } },
+                total: { $sum: '$amount' }
+            }
+        },
+        {
+            $sort: { '_id.month': 1 }
+        }
+    ]);
+
+    const revenueAnalyticsByMonth = monthNames.reduce((acc, month) => {
+        acc[month] = 0;
+        return acc;
+    }, {} as Record<string, number>);
+
+    revenue.forEach(r => {
+        const monthKey = monthNames[r._id.month - 1];
+        revenueAnalyticsByMonth[monthKey] = parseFloat(r.total.toFixed(2));
+    });
+
+    res.json({ revenueAnalyticsByMonth });
 }));
 
 export const DashboardRoutes = router;

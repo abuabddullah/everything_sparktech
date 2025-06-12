@@ -253,4 +253,15 @@ const getAllTeamMember = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const UserController = { createUser, createTeamMember, updateTeamMemberById, deleteTeamMemberById,getTeamMemberById, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, updateAnAdminById, createDriver, getAllDriver, getADriver, getUserProfile, updateProfile, deleteADriver,getAllTeamMember };
+const dateWiseBookingsStatusOfDrivers = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.dateWiseBookingsStatusOfDriversFromDB();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Date-wise bookings status of drivers retrieved successfully',
+    data: result,
+  });
+});
+
+export const UserController = { createUser, createTeamMember, updateTeamMemberById, deleteTeamMemberById,getTeamMemberById, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, updateAnAdminById, createDriver, getAllDriver, getADriver,dateWiseBookingsStatusOfDrivers, getUserProfile, updateProfile, deleteADriver,getAllTeamMember };

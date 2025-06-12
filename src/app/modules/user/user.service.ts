@@ -247,7 +247,7 @@ const getAllDriverFromDB = async () => {
   const driversWithStatus = await Promise.all(
     allDriverArray.map(async (driver: any) => {
       // Find bookings for this driver
-      const bookings = await BookingModel.find({ driverId: driver._id }).populate("vehicle","name");
+      const bookings = await BookingModel.find({ driverId: driver._id }).populate("vehicle", "name");
 
       let driverCurrentStatus = "IDLE";
       for (const booking of bookings) {
@@ -399,6 +399,76 @@ const getAllTeamMemberFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
+
+const dateWiseBookingsStatusOfDriversFromDB = async () => {
+  // Get all drivers
+  const drivers = await User.find({ role: USER_ROLES.DRIVER });
+
+  // Set a reasonable date range, e.g., last 30 days
+  const end = new Date();
+  const start = new Date();
+  start.setDate(end.getDate() - 29);
+  start.setHours(0, 0, 0, 0);
+  end.setHours(23, 59, 59, 999);
+
+  // For each driver, aggregate their bookings by date and status
+  const stats = await Promise.all(
+    drivers.map(async (driver) => {
+      const bookings = await BookingModel.aggregate([
+        {
+          $match: {
+            driverId: driver._id,
+            pickupTime: { $gte: start, $lte: end }
+          }
+        },
+        {
+          $group: {
+            _id: {
+              date: { $dateToString: { format: "%Y-%m-%d", date: "$pickupTime" } },
+              status: "$status"
+            },
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $group: {
+            _id: "$_id.date",
+            statuses: {
+              $push: {
+                status: "$_id.status",
+                count: "$count"
+              }
+            }
+          }
+        },
+        {
+          $sort: { _id: 1 }
+        }
+      ]);
+
+      // Format result as { date, statusCounts: { [status]: count } }
+      const dateWise = bookings.map(item => {
+        const statusCounts: Record<string, number> = {};
+        item.statuses.forEach((s: any) => {
+          statusCounts[s.status] = s.count;
+        });
+        return {
+          date: item._id,
+          statusCounts
+        };
+      });
+
+      return {
+        driverId: driver._id,
+        driverName: driver.name,
+        dateWise
+      };
+    })
+  );
+
+  return stats;
+};
+
 export const UserService = {
   createUserToDB,
   createTeamMemberToDB,
@@ -413,6 +483,7 @@ export const UserService = {
   createDriverToDB,
   getAllDriverFromDB,
   getADriverFromDB,
+  dateWiseBookingsStatusOfDriversFromDB,
   getUserProfileFromDB,
   updateProfileToDB,
   deleteADriverFromDB,
