@@ -81,7 +81,7 @@ const updateVehicleStatusByIdInDB = async (
 
 
     let updateData: any = { status };
-    if (status === 'MAINTENANCE' || status === VEHICLE_STATUS?.MAINTENANCE) {
+    if (status === 'MAINTENANCE' || status === VEHICLE_STATUS?.UNDER_MAINTENANCE) {
         updateData.lastMaintenanceDate = new Date();
     }
     const updatedVehicle = await Vehicle.findByIdAndUpdate(

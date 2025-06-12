@@ -21,7 +21,7 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
             $in: [
                 VEHICLE_STATUS.AVAILABLE, 
                 VEHICLE_STATUS.RENTED, 
-                VEHICLE_STATUS.MAINTENANCE
+                VEHICLE_STATUS.UNDER_MAINTENANCE
             ] 
         } 
     });
@@ -166,7 +166,7 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
             case VEHICLE_STATUS.RENTED:
                 fleetOverview.rented = item.count;
                 break;
-            case VEHICLE_STATUS.MAINTENANCE:
+            case VEHICLE_STATUS.UNDER_MAINTENANCE:
                 fleetOverview.maintenance = item.count;
                 break;
         }
