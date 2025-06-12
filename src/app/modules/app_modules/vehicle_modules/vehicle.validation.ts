@@ -28,10 +28,17 @@ const lastMaintenanceDate = z.object({
   })
 })
 
+const updateVehicleStatus = z.object({
+  body: z.object({
+    status: z.enum([...(Object.values(VEHICLE_STATUS) as [string, ...string[]])]).default(VEHICLE_STATUS.AVAILABLE),
+  })
+})
+
 export const updateVehicleZodSchema = createVehicleZodSchema.partial();
 
 export const VehicleZodValidation = {
   createVehicleZodSchema,
   updateVehicleZodSchema,
-  lastMaintenanceDate
+  lastMaintenanceDate,
+  updateVehicleStatus
 }

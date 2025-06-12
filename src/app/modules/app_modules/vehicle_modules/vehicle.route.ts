@@ -45,7 +45,7 @@ router.get('/seat-door-luggage-brands', VehicleController.getSeatDoorLuggageMeta
 router.get('/:id', VehicleController.getAVehicleById);
 
 router.patch('/:id', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), fileUploadHandler(), VehicleController.updateAVehicleById);
-router.patch('/:id/status', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), VehicleController.updateVehicleStatusById);
+router.patch('/:id/status', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),validateRequest(VehicleZodValidation.updateVehicleStatus), VehicleController.updateVehicleStatusById);
 router.patch('/:id/last-maintenance', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN, USER_ROLES.DRIVER), validateRequest(VehicleZodValidation.lastMaintenanceDate), VehicleController.updateLastMaintenanceDateById);
 
 router.delete('/:id', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), VehicleController.deletVehicleById);

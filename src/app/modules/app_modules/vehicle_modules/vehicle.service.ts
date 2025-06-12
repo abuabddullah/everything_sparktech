@@ -3,6 +3,7 @@ import { VehicleSearchableFields } from "./vehicle.constants";
 import { IVehicle } from "./vehicle.interface";
 import { Vehicle } from "./vehicle.model";
 import { BookingModel } from "../booking_modules/booking.model";
+import { VEHICLE_STATUS } from "../../../../enums/vehicle";
 
 const createVehicleToDB = async (payload: Partial<IVehicle>): Promise<IVehicle> => {
     const vehicle = await Vehicle.create(payload);
@@ -77,11 +78,18 @@ const updateVehicleStatusByIdInDB = async (
     id: string,
     status: string | unknown
 ): Promise<IVehicle | null> => {
+
+
+    let updateData: any = { status };
+    if (status === 'MAINTENANCE' || status === VEHICLE_STATUS?.MAINTENANCE) {
+        updateData.lastMaintenanceDate = new Date();
+    }
     const updatedVehicle = await Vehicle.findByIdAndUpdate(
         id,
-        { status },
+        updateData,
         { new: true, runValidators: true }
     );
+    console.log({updatedVehicle})
     return updatedVehicle;
 };
 
