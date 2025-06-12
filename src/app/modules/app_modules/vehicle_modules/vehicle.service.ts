@@ -89,7 +89,6 @@ const updateVehicleStatusByIdInDB = async (
         updateData,
         { new: true, runValidators: true }
     );
-    console.log({updatedVehicle})
     return updatedVehicle;
 };
 
