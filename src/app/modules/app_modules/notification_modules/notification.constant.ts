@@ -5,6 +5,7 @@ export enum NOTIFICATION_CATEGORIES {
     CHAT = 'CHAT',
     SYSTEM = 'SYSTEM',
     PROMOTION = 'PROMOTION',
+    CONTACT = 'CONTACT',
 }
 
 export enum NOTIFICATION_TYPE {
