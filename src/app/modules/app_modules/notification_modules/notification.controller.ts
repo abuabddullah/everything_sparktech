@@ -18,7 +18,7 @@ const getNotificationFromDB = catchAsync(async (req: Request, res: Response) => 
 );
 
 const adminNotificationFromDB = catchAsync(async (req: Request, res: Response) => {
-    const result = await NotificationService.adminNotificationFromDB();
+    const result = await NotificationService.adminNotificationFromDB(req.query);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
@@ -29,8 +29,8 @@ const adminNotificationFromDB = catchAsync(async (req: Request, res: Response) =
 });
 
 const readNotification = catchAsync(async (req: Request, res: Response) => {
-    const user = req.user;
-    const result = await NotificationService.readNotificationToDB(user);
+    const {id} = req.params;
+    const result = await NotificationService.readNotificationToDB(id);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
@@ -51,9 +51,22 @@ const adminReadNotification = catchAsync(async (req: Request, res: Response) => 
     });
 });
 
+const notificationReadUnreadCount = catchAsync(async (req: Request, res: Response) => {
+    const user = req.user;
+    const result = await NotificationService.notificationReadUnreadCount(user);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Notification read/unread count retrieved successfully',
+        data: result
+    });
+});
+
 export const NotificationController = {
     adminNotificationFromDB,
     getNotificationFromDB,
     readNotification,
-    adminReadNotification
+    adminReadNotification,
+    notificationReadUnreadCount
 };

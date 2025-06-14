@@ -12,11 +12,11 @@ export const sendNotifications = async (data: any): Promise<INotification> => {
         if (Array.isArray(data.receiver) && data.receiver.length > 0) {
             data.receiver.forEach((receiverId: string) => {
             // Emit the notification to the specific receiver
-            socketIo.emit(`get-notification::${receiverId}`, result);
+            socketIo.emit(`get-notification::${receiverId}`, result.text);
             });
         } else {
             // Emit to all connected clients if no receiverId is specified
-            socketIo.emit("get-notification::all", result);
+            socketIo.emit("get-notification::all", result.text);
         }
     }
 

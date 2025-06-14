@@ -409,7 +409,12 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
 
         await session.commitTransaction();
         session.endSession();
-        return createdBooking[0]; // but isPaid=false
+        const resposnseStructure = {
+            booking: createdBooking[0],
+            payment: newPayment[0],
+            url: `${config.frontend_url}/reservationdetails?bookingId=${createdBooking[0]?._id}&email=${clientDetails.email}`,
+        }
+        return { ...resposnseStructure };
 
     } catch (error) {
         await session.abortTransaction();

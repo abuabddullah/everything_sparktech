@@ -11,6 +11,7 @@ import { companyCMSRoutes } from '../app/modules/app_modules/cms_modules/cms.rou
 import { paymentRoutes } from '../app/modules/app_modules/payment/payment.route';
 import { ContactRoutes } from '../app/modules/app_modules/contcatus/contactus.route';
 import { DashboardRoutes } from '../app/modules/app_modules/dasboard/dasboard.route';
+import { NotificationRoutes } from '../app/modules/app_modules/notification_modules/notification.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -61,6 +62,10 @@ const apiRoutes = [
   {
     path: '/dashboard',
     route: DashboardRoutes,
+  },
+  {
+    path: '/notification',
+    route: NotificationRoutes,
   },
 ];
 
