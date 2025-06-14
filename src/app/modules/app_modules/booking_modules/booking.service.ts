@@ -621,9 +621,15 @@ const getABookingByEmailAndIDFromDB = async (clientEmail: string, bookingId: str
         .populate('pickupLocation')
         .populate('returnLocation')
         .populate('vehicle')
-        .populate('extraServices')
+        .populate(
+            {
+                path: 'extraServices.serviceId',
+                select: 'name cost _id'
+            },)
         .populate('clientId')
         .populate('paymentId');
+
+
 
     if (!booking) {
         throw new ApiError(StatusCodes.NOT_FOUND, "Booking not found for this client");
