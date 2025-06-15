@@ -33,6 +33,27 @@ const getAllVehiclesFromDB = async (query: Record<string, unknown>) => {
     };
 };
 
+
+const getAllAvailableVehiclesFromDB = async (query: Record<string, unknown>) => {
+    const vehicleQuery = new QueryBuilder(
+        Vehicle.find({ status: VEHICLE_STATUS.AVAILABLE }),
+        query,
+    )
+        .search(VehicleSearchableFields)
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+
+    const result = await vehicleQuery.modelQuery;
+    const meta = await vehicleQuery.getPaginationInfo();
+
+    return {
+        meta,
+        result,
+    };
+};
+
 const getSeatDoorLuggageMetaFromDB = async () => {
     const seatCounts = await Vehicle.distinct('noOfSeats');
     const doorCounts = await Vehicle.distinct('noOfDoors');
@@ -121,6 +142,7 @@ const deletVehicleByIdFromDB = async (id: string): Promise<IVehicle | null> => {
 export const VehicleService = {
     createVehicleToDB,
     getAllVehiclesFromDB,
+    getAllAvailableVehiclesFromDB,
     getSeatDoorLuggageMetaFromDB,
     getAVehicleByIdFromDB,
     updateAVehicleByIdInDB,

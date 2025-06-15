@@ -17,9 +17,23 @@ const createVehicle = catchAsync(
     });
   }
 );
+
 const getAllVehicles = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await VehicleService.getAllVehiclesFromDB(req.query);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Vehicles retrieved successfully',
+      data: result,
+    });
+  }
+);
+
+const getAllAvailableVehicles = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await VehicleService.getAllAvailableVehiclesFromDB(req.query);
 
     sendResponse(res, {
       success: true,
@@ -136,6 +150,7 @@ const deletVehicleById = catchAsync(
 export const VehicleController = {
   createVehicle,
   getAllVehicles,
+  getAllAvailableVehicles,
   getSeatDoorLuggageMeta,
   getAVehicleById,
   updateAVehicleById,
