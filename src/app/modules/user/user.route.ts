@@ -133,7 +133,7 @@ router
     }
   );
 
-  router.route("/driver/stat").get(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),UserController.dateWiseBookingsStatusOfDrivers)
+router.route("/driver/stat").get(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.dateWiseBookingsStatusOfDrivers)
 
 router
   .route('/driver/:id')
@@ -147,6 +147,32 @@ router
   .delete(
     auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
     UserController.deleteADriver
+  ).patch(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    fileUploadHandler(),
+    (req: Request, res: Response, next: NextFunction) => {
+      try {
+        if (req.body.data) {
+          const parsedData = JSON.parse(req.body.data);
+
+          // Attach image path or filename to parsed data
+          if (req.files) {
+            let image = getSingleFilePath(req.files, 'image');
+            parsedData.image = image;
+          }
+
+
+          // Validate and assign to req.body
+          req.body = UserValidation.updateDriverZodSchema.parse(parsedData);
+        }
+
+        // Proceed to controller
+        return UserController.updateDriver(req, res, next);
+
+      } catch (error) {
+        next(error); // Pass validation errors to error handler
+      }
+    }
   )
 
 

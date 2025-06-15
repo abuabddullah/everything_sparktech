@@ -231,6 +231,33 @@ const createDriverToDB = async (payload: Partial<IUser>) => {
   return createDriver;
 };
 
+
+const updateDriverToDB = async (payload: Partial<IUser>, id: string) => {
+  console.log({ id, payload })
+  // is alerady exist as driver check via lic
+  const isExistDriver = await User.findById(id)
+  if (!isExistDriver) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Driver not exist")
+  }
+  const updatedDriver = await User.findByIdAndUpdate(id, payload, {
+    new: true, // IMPORTANT: Returns the updated document
+    runValidators: true // IMPORTANT: Runs Mongoose schema validators on the update
+  });
+  if (!updatedDriver) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user2');
+  }
+
+  const values = {
+    name: updatedDriver.name,
+    email: updatedDriver.email!,
+    password: updatedDriver.password!,
+  };
+  const createAccountTemplate = emailTemplate.createDriverAccount(values);
+  emailHelper.sendEmail(createAccountTemplate);
+
+  return updatedDriver;
+};
+
 const getAllDriverFromDB = async () => {
   const allDriverArray = await User.find({
     role: "DRIVER"
@@ -481,6 +508,7 @@ export const UserService = {
   deleteAnAdminFromDB,
   updateAnAdminByIdToDB,
   createDriverToDB,
+  updateDriverToDB,
   getAllDriverFromDB,
   getADriverFromDB,
   dateWiseBookingsStatusOfDriversFromDB,

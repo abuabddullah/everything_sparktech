@@ -171,6 +171,21 @@ const createDriver = catchAsync(
 );
 
 
+
+const updateDriver = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const {id}= req.params
+    const result = await UserService.updateDriverToDB(req.body,id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Driver created successfully',
+      data: result,
+    });
+  }
+);
+
 const getAllDriver = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.getAllDriverFromDB();
 
@@ -264,4 +279,6 @@ const dateWiseBookingsStatusOfDrivers = catchAsync(async (req: Request, res: Res
   });
 });
 
-export const UserController = { createUser, createTeamMember, updateTeamMemberById, deleteTeamMemberById,getTeamMemberById, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, updateAnAdminById, createDriver, getAllDriver, getADriver,dateWiseBookingsStatusOfDrivers, getUserProfile, updateProfile, deleteADriver,getAllTeamMember };
+
+
+export const UserController = { createUser, createTeamMember, updateTeamMemberById, deleteTeamMemberById, getTeamMemberById, createAdmin, getAllAdmin, getAnAdmin, deleteAnAdmin, updateAnAdminById, createDriver, updateDriver, getAllDriver, getADriver, dateWiseBookingsStatusOfDrivers, getUserProfile, updateProfile, deleteADriver, getAllTeamMember };

@@ -61,12 +61,14 @@ const updateUserZodSchema = z.object({
   phone: z.string().optional(),
 });
 
+export const updateDriverZodSchema = createDriverZodSchema.partial();
 export const UserValidation = {
   createUserZodSchema,
   createTeamMemberZodSchema,
   updateUserZodSchema,
   createAdminZodSchema,
   createDriverZodSchema,
+  updateDriverZodSchema,
   updateAdminZodSchema,
   updateTeamMemberZodSchema
 };
