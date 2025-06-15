@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 1
+    },
+    "auditLog": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\.030bfbf1dfbf30ff9e73951a7222314f609a1c15-audit.json",
+    "files": [
+        {
+            "date": 1749956153122,
+            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\15-06-2025-08-success.log",
+            "hash": "2c13fa940fb80fc3011b6686497c3ff93133c5baa37f886042ea4bd99ffeacc3"
+        }
+    ],
+    "hashType": "sha256"
+}

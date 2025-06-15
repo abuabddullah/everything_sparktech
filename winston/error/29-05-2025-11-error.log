@@ -1,0 +1,4 @@
+Thu May 29 2025 11:18:16 [SERVER-NAME] error: 10.0.60.147 - PATCH /api/v1/notifications 403 - 292.438 ms
+Thu May 29 2025 11:32:44 [SERVER-NAME] error: 10.0.60.147 - PATCH /api/v1/notifications 403 - 284.272 ms
+Thu May 29 2025 11:41:25 [SERVER-NAME] error: 10.0.60.147 - PATCH /api/v1/notifications 403 - 296.785 ms
+Thu May 29 2025 11:57:10 [SERVER-NAME] error: 10.0.60.147 - PATCH /api/v1/notifications 403 - 290.252 ms

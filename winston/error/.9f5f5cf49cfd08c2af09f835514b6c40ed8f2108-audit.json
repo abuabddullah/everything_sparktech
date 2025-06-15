@@ -1,0 +1,70 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 1
+    },
+    "auditLog": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\.9f5f5cf49cfd08c2af09f835514b6c40ed8f2108-audit.json",
+    "files": [
+        {
+            "date": 1748422889173,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\28-05-2025-15-error.log",
+            "hash": "5e2bd3adc9e33766dbf064676d29e8f7a3da2fe808a7bfe8f931afa4afac5f59"
+        },
+        {
+            "date": 1748426743975,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\28-05-2025-16-error.log",
+            "hash": "5930c65500a3ad63ad9ab8a7b7c4c956a39be5f95cf9530fdc1759c14f4dd176"
+        },
+        {
+            "date": 1748430031747,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\28-05-2025-17-error.log",
+            "hash": "53b59c0bbdbbd8f6e86f710890d2ffe5488c49ab48e7abedd24a5e663d68bd00"
+        },
+        {
+            "date": 1748433610552,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\28-05-2025-18-error.log",
+            "hash": "652e3b667503a89f2abe429588c023dd7b4b8905063f74c36561094bf4623e27"
+        },
+        {
+            "date": 1748438926370,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\28-05-2025-19-error.log",
+            "hash": "37bdc4aff10ba8bca145a1e83a1cd1545f4b4dea77b8320d7680026dea269d58"
+        },
+        {
+            "date": 1748440873010,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\28-05-2025-20-error.log",
+            "hash": "9c36f814bb5c597b9ac8cd02d6bff0a90d8e2d8af393682d151fb8e82ddd43c9"
+        },
+        {
+            "date": 1748444420871,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\28-05-2025-21-error.log",
+            "hash": "713c2e4368b5642381f15bbad822f37fea170105afe216ea13953d359a703b87"
+        },
+        {
+            "date": 1748485325108,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\29-05-2025-08-error.log",
+            "hash": "012d7da0ebbda2f8c2e725e57f19387d82d857dd728a0bb0d4d936c6030a52c6"
+        },
+        {
+            "date": 1748491313414,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\29-05-2025-10-error.log",
+            "hash": "276547f73d679c7a300ba58800ecf4e05f6ea826aa6ed3525e27f66791f40693"
+        },
+        {
+            "date": 1748494822592,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\29-05-2025-11-error.log",
+            "hash": "6bf1e7dcbd1efc4fd98a88103ecd1991940e67a957c42861bf71b4727c9faff2"
+        },
+        {
+            "date": 1748498403392,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\29-05-2025-12-error.log",
+            "hash": "5f7afaf5ac39343352ac1abedf3bead0ef525d4e565664559f05bfa0834aa2db"
+        },
+        {
+            "date": 1748507657131,
+            "name": "C:\\Users\\Rakib\\OneDrive\\Desktop\\projects\\yoga-with-jen\\winston\\error\\29-05-2025-14-error.log",
+            "hash": "72d41aa7ba142bf348179e270aa8adccedad93b9615ae750584fcff39c8a5669"
+        }
+    ],
+    "hashType": "sha256"
+}

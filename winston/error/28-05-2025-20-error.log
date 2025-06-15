@@ -1,0 +1,24 @@
+Wed May 28 2025 20:1:13 [SERVER-NAME] error: 10.0.60.147 - GET /favicon.ico 404 - 0.528 ms
+Wed May 28 2025 20:54:46 [SERVER-NAME] error: 10.0.60.147 - POST /api/v1/auth/login 400 - 791.759 ms
+Wed May 28 2025 20:59:2 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-746e340fe74sm1372741b3a.91 - gsmtp
+Wed May 28 2025 20:59:4 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-234d2fe1eccsm12963585ad.79 - gsmtp
+Wed May 28 2025 20:59:6 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-746e340f86csm1323431b3a.116 - gsmtp
+Wed May 28 2025 20:59:8 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-746e340f86csm1323462b3a.116 - gsmtp
+Wed May 28 2025 20:59:9 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-234d35ac754sm12812505ad.165 - gsmtp
+Wed May 28 2025 20:59:11 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-746d6048336sm1374140b3a.50 - gsmtp
+Wed May 28 2025 20:59:13 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-234d35ccfe9sm12757375ad.229 - gsmtp
+Wed May 28 2025 20:59:15 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-746e345e842sm1323794b3a.168 - gsmtp
+Wed May 28 2025 20:59:17 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 41be03b00d2f7-b2d99edf09csm1255572a12.77 - gsmtp
+Wed May 28 2025 20:59:18 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-746d6048247sm1373405b3a.59 - gsmtp
+Wed May 28 2025 20:59:20 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-234d2fe1ed7sm12955655ad.77 - gsmtp

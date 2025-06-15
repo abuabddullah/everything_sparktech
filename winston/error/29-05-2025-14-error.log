@@ -1,0 +1,4 @@
+Thu May 29 2025 14:34:17 [SERVER-NAME] error: 10.0.60.147 - GET /favicon.ico 404 - 0.506 ms
+Thu May 29 2025 14:34:36 [SERVER-NAME] error: 10.0.60.147 - PATCH /api/v1/notifications 403 - 295.339 ms
+Thu May 29 2025 14:46:42 [SERVER-NAME] error: 10.0.60.147 - POST /api/v1/admin/quotation/managment/create 401 - 3.149 ms
+Thu May 29 2025 14:51:3 [SERVER-NAME] error: 10.0.60.240 - POST /api/v1/comments/reply/683700426b8356cb8c21631c 404 - 585.294 ms

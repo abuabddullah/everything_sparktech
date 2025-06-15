@@ -1,0 +1,11 @@
+Thu May 29 2025 12:0:3 [SERVER-NAME] error: 10.0.60.147 - POST /api/v1/auth/login 400 - 1.530 ms
+Thu May 29 2025 12:1:23 [SERVER-NAME] error: 10.0.60.147 - GET /api/v1/notifications/admin 403 - 307.979 ms
+Thu May 29 2025 12:31:32 [SERVER-NAME] error: 10.0.60.147 - GET /api/v1/notifications/admin?page=1&limit=5 403 - 284.623 ms
+Thu May 29 2025 12:31:45 [SERVER-NAME] error: 10.0.60.147 - GET /api/v1/notifications/admin?page=1&limit=5 403 - 287.654 ms
+Thu May 29 2025 12:38:27 [SERVER-NAME] error: 10.0.60.147 - PATCH /api/v1/notifications/admin/single/6837f7ecf12e655e9b29fa6d 403 - 286.552 ms
+Thu May 29 2025 12:47:31 [SERVER-NAME] error: 10.0.60.147 - PATCH /api/v1/notifications 403 - 286.625 ms
+Thu May 29 2025 12:52:57 [SERVER-NAME] error: 10.0.60.114 - GET /rakib.b-cdn.net/thumbnails/1748243407677-class1.png 404 - 0.675 ms
+Thu May 29 2025 12:53:18 [SERVER-NAME] error: 10.0.60.114 - GET /rakib.b-cdn.net/thumbnails/1748243407677-class1.png 404 - 0.311 ms
+Thu May 29 2025 12:53:37 [SERVER-NAME] error: 10.0.60.114 - GET /api/v1/rakib.b-cdn.net/thumbnails/1748243407677-class1.png 404 - 0.352 ms
+Thu May 29 2025 12:53:41 [SERVER-NAME] error: 10.0.60.114 - GET /api/v1/rakib.b-cdn.net/thumbnails/1748243407677-class1.png 404 - 0.856 ms
+Thu May 29 2025 12:55:28 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/subscription/create-checkout-session/68353e7aeafbc39c158e4ebc 403 - 286.960 ms
