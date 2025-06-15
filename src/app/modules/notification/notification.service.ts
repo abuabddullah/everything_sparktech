@@ -6,7 +6,7 @@ import AppError from '../../../errors/AppError';
 import { StatusCodes } from 'http-status-codes';
 import { User } from '../user/user.model';
 import QueryBuilder from '../../builder/QueryBuilder';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 
 // get notifications
 const getNotificationFromDB = async (user: JwtPayload, query: Record<string, unknown>) => {

@@ -1,5 +1,5 @@
 import express from 'express';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 import { PackageController } from './package.controller';
 import { PackageValidation } from './package.validation';
 import validateRequest from '../../middleware/validateRequest';

@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 import { ReservationController } from './reservation.controller';
 import auth from '../../middleware/auth';
 const router = express.Router();

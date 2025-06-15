@@ -1,6 +1,6 @@
 import express from 'express';
 import auth from '../../middleware/auth';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 import { FavouritVideosController } from './favourit.controller';
 
 const router = express.Router();

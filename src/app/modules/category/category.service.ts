@@ -6,7 +6,7 @@ import AppError from '../../../errors/AppError';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { User } from '../user/user.model';
 import { SubCategory } from '../subCategorys/subCategory.model';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 import { Video } from '../admin/videosManagement/videoManagement.model';
 import { Favourite } from '../favourit/favourit.model';
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import auth from '../../middleware/auth';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 import { CommunityController } from './community.controller';
 const router = express.Router();
 // Define routes

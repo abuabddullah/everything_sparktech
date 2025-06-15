@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { User } from '../app/modules/user/user.model';
 import { Category } from '../app/modules/category/category.model'; // adjust the import path if needed
 import config from '../config';
-import { USER_ROLES } from '../enums/user';
+import { USER_ROLES } from '../app/modules/user/user.enums';
 import { logger } from '../shared/logger';
 import bcrypt from 'bcrypt';
 

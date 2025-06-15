@@ -1,5 +1,5 @@
 import express from 'express';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 import { settingsController } from './sattings.controller';
 import auth from '../../middleware/auth';
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 import { AuthController } from './auth.controller';
 import { AuthValidation } from './auth.validation';
 import validateRequest from '../../middleware/validateRequest';

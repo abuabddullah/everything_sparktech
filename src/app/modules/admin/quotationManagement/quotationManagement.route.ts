@@ -1,7 +1,7 @@
 import express from 'express';
 import { QuotationManagementController } from './quotationManagement.controller';
 import auth from '../../../middleware/auth';
-import { USER_ROLES } from '../../../../enums/user';
+import { USER_ROLES } from '../../user/user.enums';
 const router = express.Router();
 
 // Routes for handling quotations

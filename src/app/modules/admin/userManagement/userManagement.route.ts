@@ -1,7 +1,7 @@
 import express from 'express';
 import { userManagementController } from './userManagement.controller';
 import auth from '../../../middleware/auth';
-import { USER_ROLES } from '../../../../enums/user';
+import { USER_ROLES } from '../../user/user.enums';
 import validateRequest from '../../../middleware/validateRequest';
 import { userManagementValidation } from './userManagement.validation';
 

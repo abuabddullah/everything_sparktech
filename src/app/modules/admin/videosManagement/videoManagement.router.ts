@@ -1,6 +1,6 @@
 import express from 'express';
 import auth from '../../../middleware/auth';
-import { USER_ROLES } from '../../../../enums/user';
+import { USER_ROLES } from '../../user/user.enums';
 import { videoManagementController } from './videoManagement.controller';
 import fileUploadHandlerbunny from '../../../middleware/fileUploadHandlerbunny';
 import validateRequest from '../../../middleware/validateRequest';

@@ -1,6 +1,6 @@
 import express from 'express';
 import { BookmarkController } from './bookmark.controller';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 import auth from '../../middleware/auth';
 
 const router = express.Router();

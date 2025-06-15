@@ -1,27 +1,34 @@
 import { Model, Schema } from 'mongoose';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from './user.enums';
+import { IGeoLocation } from '../business/business.interface';
+
+
+export interface IRecentSearchLocation {
+     locationName: string; // e.g., "New York City", "My Home Address"
+     geoLocation?: IGeoLocation; // The coordinates (optional if only text searched)
+     searchDate: Date; // When the search was performed
+}
+
+
 export type IUser = {
-     name: string;
+     full_name: string;
      role: USER_ROLES;
      email: string;
      password: string;
      image?: string;
      phone?: string;
      joinDate: Date;
-     subscriptionTitle: string;
-     trialExpireAt: Date;
-     matTime: string;
-     subscription: Schema.Types.ObjectId;
-     completedSessions: Schema.Types.ObjectId[];
-     packageName: string;
-     earlyWarningEmailSent: boolean;
-     isFreeTrial: boolean;
      isDeleted: boolean;
-     isSubscribed: boolean;
-     hasAccess: boolean;
-     address: string;
+     address?: {
+          province: string;
+          territory: string;
+          city: string;
+          country?: string;
+          detail_address?: string;
+     };
+     business_informations: Schema.Types.ObjectId[];
      lastLogin: Date;
-     tokenVersion : number;
+     tokenVersion: number;
      loginCount: number;
      stripeCustomerId: string;
      status: 'active' | 'blocked';
@@ -31,6 +38,7 @@ export type IUser = {
           oneTimeCode: number;
           expireAt: Date;
      };
+     recentSearchLocations?: IRecentSearchLocation[];
 };
 
 export type UserModel = {

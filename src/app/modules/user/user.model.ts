@@ -2,14 +2,25 @@ import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 import { model, Schema } from 'mongoose';
 import config from '../../../config';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from './user.enums';
 import AppError from '../../../errors/AppError';
 import { IUser, UserModel } from './user.interface';
+
+
+
+const RecentSearchLocationSchema = new Schema({
+     locationName: { type: String, required: true },
+     geoLocation: {
+          type: { type: String, enum: ['Point'] },
+          coordinates: { type: [Number] }, // [longitude, latitude]
+     },
+     searchDate: { type: Date, default: Date.now },
+}, { _id: false }); // No _id for sub-documents
 
 // Define the user schema
 const userSchema = new Schema<IUser, UserModel>(
      {
-          name: {
+          full_name: {
                type: String,
                required: true,
                trim: true,
@@ -41,47 +52,33 @@ const userSchema = new Schema<IUser, UserModel>(
                default: '',
           },
           address: {
-               type: String,
-               default: '',
+               province: {
+                    type: String,
+                    required: true,
+               },
+               territory: {
+                    type: String,
+                    required: true,
+               },
+               city: {
+                    type: String,
+                    required: true,
+               },
+               country: {
+                    type: String,
+               },
+               detail_address: {
+                    type: String,
+               },
           },
+          business_informations: [{
+               type: Schema.Types.ObjectId,
+               ref: 'Business',
+          }],
 
           joinDate: {
                type: Date,
                default: Date.now,
-          },
-          subscriptionTitle: {
-               type: String,
-               default: '',
-          },
-          subscription: {
-               type: Schema.Types.ObjectId,
-               ref: 'Subscription',
-          },
-          packageName: {
-               type: String,
-               default: 'N/A',
-          },
-          trialExpireAt: {
-               type: Date,
-               default: function () {
-                    return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
-               },
-          },
-          isSubscribed: {
-               type: Boolean,
-               default: false,
-          },
-          hasAccess: {
-               type: Boolean,
-               default: true,
-          },
-          isFreeTrial: {
-               type: Boolean,
-               default: true,
-          },
-          matTime: {
-               type: String,
-               default: '0',
           },
           status: {
                type: String,
@@ -100,17 +97,12 @@ const userSchema = new Schema<IUser, UserModel>(
                type: String,
                default: '',
           },
-          earlyWarningEmailSent: {
-               type: Boolean,
-               default: false,
-          },
-          tokenVersion : {
+          tokenVersion: {
                type: Number,
                default: 0,
           },
           lastLogin: { type: Date },
           loginCount: { type: Number, default: 0 }, // Track total logins (1 per day)
-          completedSessions: [{ type: Schema.Types.ObjectId, ref: 'Video' }], // Track completed sessions by video IDs
           authentication: {
                type: {
                     isResetPassword: {
@@ -128,6 +120,7 @@ const userSchema = new Schema<IUser, UserModel>(
                },
                select: false,
           },
+          recentSearchLocations: [RecentSearchLocationSchema], 
      },
      { timestamps: true },
 );
@@ -150,25 +143,25 @@ userSchema.statics.isMatchPassword = async (password: string, hashPassword: stri
 };
 
 // Static function to check if a user is in free trial
-userSchema.statics.isInFreeTrial = async (userId: string) => {
-     const user = await User.findById(userId);
-     if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
-     return user.isFreeTrial && user.trialExpireAt > new Date();
-};
+// userSchema.statics.isInFreeTrial = async (userId: string) => {
+//      const user = await User.findById(userId);
+//      if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+//      return user.isFreeTrial && user.trialExpireAt > new Date();
+// };
 
-// Static function to check if the user's subscription is active
-userSchema.statics.hasActiveSubscription = async (userId: string) => {
-     const user = await User.findById(userId);
-     if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
-     return user.hasAccess;
-};
+// // Static function to check if the user's subscription is active
+// userSchema.statics.hasActiveSubscription = async (userId: string) => {
+//      const user = await User.findById(userId);
+//      if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+//      return user.hasAccess;
+// };
 
-// Static function to check if the user's free trial has expired
-userSchema.statics.hasTrialExpired = async (userId: string) => {
-     const user = await User.findById(userId);
-     if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
-     return user.trialExpireAt < new Date();
-};
+// // Static function to check if the user's free trial has expired
+// userSchema.statics.hasTrialExpired = async (userId: string) => {
+//      const user = await User.findById(userId);
+//      if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+//      return user.trialExpireAt < new Date();
+// };
 
 // Pre-save hook to hash the user's password and check email uniqueness
 userSchema.pre('save', async function (next) {

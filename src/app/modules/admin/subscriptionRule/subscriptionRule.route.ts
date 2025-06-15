@@ -3,7 +3,7 @@ import validateRequest from '../../../middleware/validateRequest';
 import { SubscriptionRuleValidation } from './subscriptionRule.validation';
 import { subscriptionRuleController } from './subscriptionRule.controller';
 import auth from '../../../middleware/auth';
-import { USER_ROLES } from '../../../../enums/user';
+import { USER_ROLES } from '../../user/user.enums';
 const router = express.Router();
 router.post('/create', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), validateRequest(SubscriptionRuleValidation.subscriptionRuleSchema), subscriptionRuleController.addSubscriptionRule);
 router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), subscriptionRuleController.getSubscriptionRule);

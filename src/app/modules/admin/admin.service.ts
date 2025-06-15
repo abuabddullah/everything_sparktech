@@ -4,7 +4,7 @@ import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 import config from '../../../config';
 import bcrypt from 'bcrypt';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 const createAdminToDB = async (payload: IUser): Promise<IUser> => {
      const createAdmin: any = await User.create(payload);
      if (!createAdmin) {

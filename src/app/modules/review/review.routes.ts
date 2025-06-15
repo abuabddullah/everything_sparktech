@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import auth from '../../middlewares/auth';
-import { USER_ROLES } from '../../../enums/user';
+import { USER_ROLES } from '../user/user.enums';
 import { ReviewController } from './review.controller';
 import validateRequest from '../../middlewares/validateRequest';
 import { ReviewValidation } from './review.validation';
