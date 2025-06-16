@@ -9,8 +9,8 @@ export interface ICategory {
      name: string;
      thumbnail: string;
      subCategory: ISubCategory[] | [];
-     videoCount: number;
-     categoryType: string;
+     description: string;
      status: string;
      isDeleted: boolean;
+     ctgViewCount:number;
 }

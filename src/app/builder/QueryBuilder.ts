@@ -1,73 +1,104 @@
 import { FilterQuery, Query } from 'mongoose';
-import AppError from '../../errors/AppError';
-import { StatusCodes } from 'http-status-codes';
 
 class QueryBuilder<T> {
-     public modelQuery: Query<T[], T>;
-     public query: Record<string, unknown>;
+  public modelQuery: Query<T[], T>;
+  public query: Record<string, unknown>;
 
-     constructor(modelQuery: Query<T[], T>, query: Record<string, unknown>) {
-          this.modelQuery = modelQuery;
-          this.query = query;
-     }
+  constructor(modelQuery: Query<T[], T>, query: Record<string, unknown>) {
+    this.modelQuery = modelQuery;
+    this.query = query;
+  }
 
-     search(searchableFields: string[]) {
-          const searchTerm = this.query?.searchTerm as string;
-          if (searchTerm) {
-               this.modelQuery = this.modelQuery.find({
-                    $or: searchableFields.map(
-                         (field) =>
-                              ({
-                                   [field]: { $regex: searchTerm, $options: 'i' },
-                              }) as FilterQuery<T>,
-                    ),
-               });
-          }
-          return this;
-     }
-     filter() {
-          const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
-          const queryObj = { ...this.query };
-          excludeFields.forEach((el) => delete queryObj[el]);
+  //searching
+  search(searchableFields: string[]) {
+    if (this?.query?.searchTerm) {
+      this.modelQuery = this.modelQuery.find({
+        $or: searchableFields.map(
+          field =>
+            ({
+              [field]: {
+                $regex: this.query.searchTerm,
+                $options: 'i',
+              },
+            } as FilterQuery<T>)
+        ),
+      });
+    }
+    return this;
+  }
 
-          this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
-          return this;
-     }
+  //filtering
+  filter() {
+    const queryObj = { ...this.query };
+    const excludeFields = ['searchTerm', 'sort', 'page', 'limit', 'fields'];
+    excludeFields.forEach(el => delete queryObj[el]);
 
-     sort() {
-          const sort = (this.query?.sort as string)?.split(',')?.join(' ') || '-createdAt';
-          this.modelQuery = this.modelQuery.sort(sort as string);
-          return this;
-     }
+    // this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>); // this line of code is for strict value filtering but considering rangeable filter like filtering for price range or rating range this line will fail soo need ot comment out and work as bellow
 
-     paginate(defaultLimit = 10) {
-          const page = Number(this.query?.page) || 1;
-          const limit = Number(this.query?.limit) || defaultLimit;
-          const skip = (page - 1) * limit;
+    
+    // Filter For Price and Rating
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
+    this.modelQuery = this.modelQuery.find(JSON.parse(queryStr));
 
-          this.modelQuery = this.modelQuery.skip(skip).limit(limit).sort();
-          return this;
-     }
+    return this;
+  }
 
-     fields() {
-          const fields = (this.query?.fields as string)?.split(',')?.join(' ') || '-__v';
-          this.modelQuery = this.modelQuery.select(fields);
-          return this;
-     }
+  //sorting
+  sort() {
+    let sort = (this?.query?.sort as string) || '-createdAt';
+    this.modelQuery = this.modelQuery.sort(sort);
 
-     async countTotal() {
-          try {
-               const totalQueries = this.modelQuery.getFilter();
-               const total = await this.modelQuery.model.countDocuments(totalQueries);
-               const page = Number(this.query?.page) || 1;
-               const limit = Number(this.query?.limit) || 10;
-               const totalPage = Math.ceil(total / limit);
+    return this;
+  }
 
-               return { page, limit, total, totalPage };
-          } catch (error) {
-               throw new AppError(StatusCodes.SERVICE_UNAVAILABLE, error as string);
-          }
-     }
+  //pagination
+  paginate() {
+    let limit = Number(this?.query?.limit) || 10;
+    let page = Number(this?.query?.page) || 1;
+    let skip = (page - 1) * limit;
+
+    this.modelQuery = this.modelQuery.skip(skip).limit(limit);
+
+    return this;
+  }
+
+  //fields filtering
+  fields() {
+    let fields =
+      (this?.query?.fields as string)?.split(',').join(' ') || '-__v';
+    this.modelQuery = this.modelQuery.select(fields);
+
+    return this;
+  }
+
+  //populating
+  populate(populateFields: string[], selectFields: Record<string, unknown>) {
+    this.modelQuery = this.modelQuery.populate(
+      populateFields.map(field => ({
+        path: field,
+        select: selectFields[field],
+      }))
+    );
+    return this;
+  }
+
+  //pagination information
+  async countTotal() {
+    const total = await this.modelQuery.model.countDocuments(
+      this.modelQuery.getFilter()
+    );
+    const limit = Number(this?.query?.limit) || 10;
+    const page = Number(this?.query?.page) || 1;
+    const totalPage = Math.ceil(total / limit);
+
+    return {
+      total,
+      limit,
+      page,
+      totalPage,
+    };
+  }
 }
 
 export default QueryBuilder;

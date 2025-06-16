@@ -83,10 +83,8 @@ const getSubcategorisByCategoris = catchAsync(async (req, res) => {
           data: result,
      });
 });
-const getVideosByCategory = catchAsync(async (req, res) => {
-     const { id } = req.params;
-     const { id: userId }: any = req.user;
-     const result = await CategoryService.getCategoryRelatedSubCategory(id, userId, req.query);
+const getPopularCategoris = catchAsync(async (req, res) => {
+     const result = await CategoryService.getPopularCategorisFromDB(req.query);
      sendResponse(res, {
           success: true,
           statusCode: StatusCodes.OK,
@@ -94,6 +92,9 @@ const getVideosByCategory = catchAsync(async (req, res) => {
           data: result,
      });
 });
+
+
+
 export const CategoryController = {
      createCategory,
      getCategories,
@@ -102,5 +103,5 @@ export const CategoryController = {
      updateCategoryStatus,
      getSingleCategory,
      getSubcategorisByCategoris,
-     getVideosByCategory,
+     getPopularCategoris
 };

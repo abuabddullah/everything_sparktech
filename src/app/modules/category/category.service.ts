@@ -11,7 +11,7 @@ import { Video } from '../admin/videosManagement/videoManagement.model';
 import { Favourite } from '../favourit/favourit.model';
 
 const createCategoryToDB = async (payload: ICategory) => {
-     const { name, thumbnail } = payload;
+     const { name, thumbnail, description } = payload;
      const isExistName = await Category.findOne({ name });
 
      if (isExistName) {
@@ -21,6 +21,7 @@ const createCategoryToDB = async (payload: ICategory) => {
      const newCategory = new Category({
           name,
           thumbnail,
+          description
      });
 
      const createdCategory = await newCategory.save();
@@ -118,7 +119,9 @@ const getSingleCategoryFromDB = async (id: string, userId: string) => {
      if (!isExist) {
           throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
      }
-     if ((await User.hasActiveSubscription(userId)) || isExist?.role === USER_ROLES.SUPER_ADMIN) {
+     if (isExist?.role === USER_ROLES.SUPER_ADMIN) {
+          result.ctgViewCount += 1;
+          await result.save();
           return result;
      }
      throw new AppError(StatusCodes.FORBIDDEN, 'You have to subscribe to access this category');
@@ -148,29 +151,21 @@ const getFevVideosOrNot = async (videoId: string, userId: string) => {
      const favorite = await Favourite.findOne({ videoId, userId });
      return favorite ? true : false;
 };
-const getCategoryRelatedSubCategory = async (id: string, userId: string, query: Record<string, unknown>) => {
-     const isExistCategory = await Category.findById(id);
-     if (!isExistCategory) {
-          throw new AppError(StatusCodes.NOT_FOUND, 'Category not found');
-     }
-     const queryBuilder = new QueryBuilder(Video.find({ categoryId: isExistCategory._id, subCategoryId: '', status: 'active' }), query);
+
+
+
+const getPopularCategorisFromDB = async (query: Record<string, unknown>) => {
+     const queryBuilder = new QueryBuilder(Category.find(), query);
      const result = await queryBuilder.fields().filter().paginate().search(['name']).sort().modelQuery.exec();
      const meta = await queryBuilder.countTotal();
-
-     const postsWithFavorites = await Promise.all(
-          result.map(async (post: any) => {
-               const isFevorite = await getFevVideosOrNot(post._id, userId);
-               return {
-                    ...post.toObject(),
-                    isFevorite,
-               };
-          }),
-     );
      return {
-          result: postsWithFavorites,
+          result,
           meta,
      };
 };
+
+
+
 export const CategoryService = {
      createCategoryToDB,
      getCategoriesFromDB,
@@ -179,5 +174,5 @@ export const CategoryService = {
      updateCategoryStatusToDB,
      getSingleCategoryFromDB,
      getSubcategoryWithCategoryIdFromDB,
-     getCategoryRelatedSubCategory,
+     getPopularCategorisFromDB
 };

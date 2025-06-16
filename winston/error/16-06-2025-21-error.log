@@ -1,0 +1,3 @@
+Mon Jun 16 2025 21:1:6 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/category/create 406 - 169.744 ms
+Mon Jun 16 2025 21:40:53 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category/single 404 - 4.282 ms
+Mon Jun 16 2025 21:42:38 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category/single/685032e79fb13f3b5cc68738 400 - 416.269 ms

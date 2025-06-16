@@ -17,7 +17,6 @@ router.post(
      validateRequest(CategoryValidation.createCategoryZodSchema),
      CategoryController.createCategory,
 );
-router.get('/get-videos/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER), CategoryController.getVideosByCategory);
 router.get('/single/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER), CategoryController.getSingleCategory);
 router.route('/:id').patch(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), fileUploadHandler(), parseFileData(FOLDER_NAMES.THUMBNAIL), CategoryController.updateCategory);
 router
@@ -27,5 +26,6 @@ router
 
 router.get('/', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER), CategoryController.getCategories);
 router.get('/subcategory/:id', auth(USER_ROLES.USER), CategoryController.getSubcategorisByCategoris);
+router.get('/popular/:id', auth(USER_ROLES.USER), CategoryController.getPopularCategoris);
 
 export const CategoryRoutes = router;

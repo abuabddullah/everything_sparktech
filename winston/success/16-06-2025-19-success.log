@@ -55,3 +55,8 @@ Mon Jun 16 2025 19:44:33 [SERVER-NAME] info: [32mConfig validation successful.
 Mon Jun 16 2025 19:44:34 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
 Mon Jun 16 2025 19:44:34 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
 Mon Jun 16 2025 19:44:34 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 19:47:20 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/forget-password 200 - 190.077 ms
+Mon Jun 16 2025 19:47:23 [SERVER-NAME] info: Mail send successfully
+Mon Jun 16 2025 19:47:50 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/verify-email 200 - 249.618 ms
+Mon Jun 16 2025 19:47:57 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/reset-password 200 - 566.532 ms
+Mon Jun 16 2025 19:49:24 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/users/profile 200 - 164.454 ms

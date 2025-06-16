@@ -10,10 +10,10 @@ const categorySchema = new Schema<ICategory>(
                ref: 'SubCategory',
                default: [],
           },
-          videoCount: { type: Number, default: 0 },
-          categoryType: { type: String, required: true, enum: ['class', 'course'] },
+          description: { type: String, required: true },
           status: { type: String, enum: ['active', 'inactive'], default: 'active' },
           isDeleted: { type: Boolean, default: false },
+          ctgViewCount: { type: Number, default: 0 },
      },
      { timestamps: true },
 );
