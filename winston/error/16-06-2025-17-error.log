@@ -1,0 +1,4 @@
+Mon Jun 16 2025 17:44:44 [SERVER-NAME] error: 10.0.60.110 - GET /favicon.ico 404 - 1.875 ms
+Mon Jun 16 2025 17:52:49 [SERVER-NAME] error: [31mDatabase connection error[39m seedSuperAdmin is not defined
+Mon Jun 16 2025 17:53:17 [SERVER-NAME] error: [31mDatabase connection error[39m seedSuperAdmin is not defined
+Mon Jun 16 2025 17:58:46 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/users 400 - 143.783 ms

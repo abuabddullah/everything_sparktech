@@ -46,7 +46,7 @@ const createCommentToDB = async (commentCreatorId: string, postId: string, conte
      // send notifications
      if (commentCreatorId !== postCreator._id.toString()) {
           await sendNotifications({
-               title: `${user.name}`,
+               title: `${user.full_name}`,
                receiver: postCreator._id,
                message: `A new comment has been posted`,
                type: 'MESSAGE',
@@ -204,7 +204,7 @@ const replyToComment = async (commentId: string, commentCreatorId: string, conte
      // Send notification to the person being replied to
      if (commentCreatorId !== parentComment.commentCreatorId.toString()) {
           await sendNotifications({
-               title: `${user.name}`,
+               title: `${user.full_name}`,
                receiver: parentComment.commentCreatorId,
                message: `A new reply has been posted`,
                type: 'MESSAGE',

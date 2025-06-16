@@ -89,9 +89,9 @@ export const handleSubscriptionCreated = async (data: Stripe.Subscription) => {
                          );
 
                          await sendNotifications({
-                              title: `${existingUser.name}`,
+                              title: `${existingUser.full_name}`,
                               receiver: getAdmin._id,
-                              message: `A new subscription has been purchase for ${existingUser.name}`,
+                              message: `A new subscription has been purchase for ${existingUser.full_name}`,
                               type: 'ORDER',
                          });
                     } else {

@@ -7,33 +7,33 @@ import { logger } from '../shared/logger';
 import bcrypt from 'bcrypt';
 
 // Category data for seeding
-const categoriesData = [
-     {
-          name: 'Video',
-          categoryType: 'media',
-          status: 'active',
-     },
-     {
-          name: 'Photo',
-          categoryType: 'media',
-          status: 'active',
-     },
-     {
-          name: 'Upcoming',
-          categoryType: 'event',
-          status: 'active',
-     },
-     {
-          name: 'Inspiration',
-          categoryType: 'content',
-          status: 'active',
-     },
-];
+// const categoriesData = [
+//      {
+//           name: 'Video',
+//           categoryType: 'media',
+//           status: 'active',
+//      },
+//      {
+//           name: 'Photo',
+//           categoryType: 'media',
+//           status: 'active',
+//      },
+//      {
+//           name: 'Upcoming',
+//           categoryType: 'event',
+//           status: 'active',
+//      },
+//      {
+//           name: 'Inspiration',
+//           categoryType: 'content',
+//           status: 'active',
+//      },
+// ];
 
 // User data for seeding
 const usersData = [
      {
-          name: 'Administrator',
+          full_name: 'Administrator',
           email: config.super_admin.email,
           role: USER_ROLES.SUPER_ADMIN,
           password: config.super_admin.password, // No need to hash here
@@ -65,22 +65,22 @@ const seedUsers = async () => {
 };
 
 // Function to seed categories
-const seedCategories = async () => {
-     try {
-          await Category.deleteMany();
-          await Category.insertMany(categoriesData);
-          console.log('Categories seeded successfully!');
-     } catch (err) {
-          console.error('Error seeding categories:', err);
-     }
-};
+// const seedCategories = async () => {
+//      try {
+//           await Category.deleteMany();
+//           await Category.insertMany(categoriesData);
+//           console.log('Categories seeded successfully!');
+//      } catch (err) {
+//           console.error('Error seeding categories:', err);
+//      }
+// };
 
 // Main seeding function
 const seedSuperAdmin = async () => {
      try {
           console.log('--------------> Database seeding start <--------------');
           await seedUsers();
-          await seedCategories(); // Seed categories after users
+          // await seedCategories(); // Seed categories after users
           console.log('--------------> Database seeding completed <--------------');
      } catch (error) {
           logger.error('Error creating Super Admin:', error);

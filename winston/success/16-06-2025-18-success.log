@@ -1,0 +1,66 @@
+Mon Jun 16 2025 18:1:44 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:1:45 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:1:45 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:1:45 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:1:46 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/users 200 - 1613.675 ms
+Mon Jun 16 2025 18:1:49 [SERVER-NAME] info: Mail send successfully
+Mon Jun 16 2025 18:2:48 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:2:49 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:2:49 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:2:49 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:2:56 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:2:57 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:2:57 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:2:57 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:3:2 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:3:2 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:3:2 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:3:2 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:6:45 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:6:46 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:6:46 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:6:46 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:7:30 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:7:31 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:7:31 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:7:31 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:7:55 [SERVER-NAME] info: [34mSIGINT received. Shutting down gracefully...[39m
+Mon Jun 16 2025 18:8:12 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:8:13 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:8:13 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:8:13 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:8:36 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:8:37 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:8:37 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:8:37 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:8:50 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:8:50 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:8:50 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:8:50 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:9:4 [SERVER-NAME] info: [34mSIGINT received. Shutting down gracefully...[39m
+Mon Jun 16 2025 18:9:11 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Mon Jun 16 2025 18:9:12 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Mon Jun 16 2025 18:9:12 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Mon Jun 16 2025 18:9:12 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Mon Jun 16 2025 18:11:2 [SERVER-NAME] info: [32mMongoDB reconnected successfully[39m
+Mon Jun 16 2025 18:11:2 [SERVER-NAME] info: [32mMongoDB reconnected successfully[39m
+Mon Jun 16 2025 18:11:32 [SERVER-NAME] warn: [33mMongoDB disconnected. Attempting to reconnect...[39m
+Mon Jun 16 2025 18:11:32 [SERVER-NAME] info: [32mMongoDB reconnected successfully[39m
+Mon Jun 16 2025 18:12:11 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/resend-otp 200 - 233.578 ms
+Mon Jun 16 2025 18:12:15 [SERVER-NAME] info: Mail send successfully
+Mon Jun 16 2025 18:12:42 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/verify-email 200 - 271.780 ms
+Mon Jun 16 2025 18:17:47 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/resend-otp 200 - 243.753 ms
+Mon Jun 16 2025 18:17:49 [SERVER-NAME] info: Mail send successfully
+Mon Jun 16 2025 18:18:7 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/verify-email 200 - 255.175 ms
+Mon Jun 16 2025 18:24:15 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/resend-otp 200 - 192.668 ms
+Mon Jun 16 2025 18:24:18 [SERVER-NAME] info: Mail send successfully
+Mon Jun 16 2025 18:24:31 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/verify-email 200 - 259.699 ms
+Mon Jun 16 2025 18:26:11 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/resend-otp 200 - 169.280 ms
+Mon Jun 16 2025 18:26:14 [SERVER-NAME] info: Mail send successfully
+Mon Jun 16 2025 18:26:27 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/verify-email 200 - 279.951 ms
+Mon Jun 16 2025 18:27:24 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/resend-otp 200 - 171.804 ms
+Mon Jun 16 2025 18:27:26 [SERVER-NAME] info: Mail send successfully
+Mon Jun 16 2025 18:27:44 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/verify-email 200 - 253.343 ms
+Mon Jun 16 2025 18:32:34 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/resend-otp 200 - 198.563 ms
+Mon Jun 16 2025 18:32:37 [SERVER-NAME] info: Mail send successfully
+Mon Jun 16 2025 18:32:57 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/verify-email 200 - 251.259 ms

@@ -10,6 +10,7 @@ import AppError from '../../../errors/AppError';
 import generateOTP from '../../../utils/generateOTP';
 import stripe from '../../../config/stripe';
 import mongoose from 'mongoose';
+import config from '../../../config';
 // create user
 const createUserToDB = async (payload: IUser): Promise<IUser> => {
      //set role
@@ -26,7 +27,7 @@ const createUserToDB = async (payload: IUser): Promise<IUser> => {
      //send email
      const otp = generateOTP(4);
      const values = {
-          name: createUser.name,
+          name: createUser.full_name,
           otp: otp,
           email: createUser.email!,
      };
@@ -36,7 +37,7 @@ const createUserToDB = async (payload: IUser): Promise<IUser> => {
      //save to DB
      const authentication = {
           oneTimeCode: otp,
-          expireAt: new Date(Date.now() + 3 * 60000),
+          expireAt: new Date(Date.now() + Number(config.otp.otpExpiryTimeInMin) * 60000),
      };
      await User.findOneAndUpdate({ _id: createUser._id }, { $set: { authentication } });
 
@@ -44,7 +45,7 @@ const createUserToDB = async (payload: IUser): Promise<IUser> => {
      try {
           stripeCustomer = await stripe.customers.create({
                email: createUser.email,
-               name: createUser.name,
+               name: createUser.full_name,
           });
      } catch (error) {
           throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to create Stripe customer');
@@ -67,7 +68,7 @@ const createVendorToDB = async (payload: IUser): Promise<IUser> => {
      //send email
      const otp = generateOTP(4);
      const values = {
-          name: createUser.name,
+          name: createUser.full_name,
           otp: otp,
           email: createUser.email!,
      };
@@ -97,7 +98,7 @@ const createVendorToDB = async (payload: IUser): Promise<IUser> => {
 //   //send email
 //   const otp = generateOTP(6);
 //   const values = {
-//     name: createAdmin.name,
+//     name: createAdmin.full_name,
 //     otp: otp,
 //     email: createAdmin.email!,
 //   };

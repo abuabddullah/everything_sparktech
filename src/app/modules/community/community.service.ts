@@ -105,7 +105,7 @@ const likePost = async (postId: string, userId: string) => {
      //  if (updatedComment) {
      //       await sendNotifications({
      //            receiver: updatedComment.userId,
-     //            message: `User '${user.name}' liked your comment`,
+     //            message: `User '${user.full_name}' liked your comment`,
      //            type: 'MESSAGE',
      //       });
      //  }

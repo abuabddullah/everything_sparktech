@@ -54,15 +54,12 @@ const userSchema = new Schema<IUser, UserModel>(
           address: {
                province: {
                     type: String,
-                    required: true,
                },
                territory: {
                     type: String,
-                    required: true,
                },
                city: {
                     type: String,
-                    required: true,
                },
                country: {
                     type: String,

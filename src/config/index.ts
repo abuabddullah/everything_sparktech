@@ -14,6 +14,9 @@ export default {
      bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
      socket_port: process.env.SOCKET_PORT,
      allowed_origins: process.env.ALLOWED_ORIGINS,
+     otp: {
+          otpExpiryTimeInMin: process.env.OTP_EXPIRY_TIME_IN_MIN,
+     },
      jwt: {
           jwt_secret: process.env.JWT_SECRET,
           jwt_expire_in: process.env.JWT_EXPIRE_IN,

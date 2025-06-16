@@ -1,0 +1,4 @@
+Mon Jun 16 2025 18:1:16 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/users 400 - 84.768 ms
+Mon Jun 16 2025 18:3:14 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/users 409 - 109.743 ms
+Mon Jun 16 2025 18:5:16 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/auth/verify-email 400 - 96.919 ms
+Mon Jun 16 2025 18:15:27 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/auth/reset-password 401 - 396.717 ms

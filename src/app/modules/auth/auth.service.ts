@@ -34,7 +34,7 @@ const loginUserFromDB = async (payload: ILoginData) => {
      }
      // Check if the user is verified
      if (!isExistUser.verified) {
-          const otp = generateOTP(6);
+          const otp = generateOTP(4);
           const value = { otp, email: isExistUser.email };
           const forgetPassword = emailTemplate.resetPassword(value);
           emailHelper.sendEmail(forgetPassword);
@@ -77,26 +77,26 @@ const loginUserFromDB = async (payload: ILoginData) => {
      };
      if (isExistUser.role === USER_ROLES.ADMIN) {
           await sendNotifications({
-               title: `${isExistUser.name}`,
+               title: `${isExistUser.full_name}`,
                receiver: getAdmin._id,
-               message: `Admin ${isExistUser.name} has just logged into the dashboard.`,
+               message: `Admin ${isExistUser.full_name} has just logged into the dashboard.`,
                type: 'MESSAGE',
           });
      }
      if (isExistUser.role === USER_ROLES.SUPER_ADMIN) {
           await sendNotifications({
-               title: `${isExistUser.name}`,
+               title: `${isExistUser.full_name}`,
                receiver: isExistUser._id,
-               message: `Hay super admin ${isExistUser.name} wellcome back to the dashboard.`,
+               message: `Hay super admin ${isExistUser.full_name} wellcome back to the dashboard.`,
                type: 'MESSAGE',
           });
      }
 
      if (isExistUser.role === USER_ROLES.USER) {
           await sendNotifications({
-               title: `${isExistUser.name}`,
+               title: `${isExistUser.full_name}`,
                receiver: isExistUser._id,
-               message: `Wellcome ${isExistUser.name} to the app.`,
+               message: `Wellcome ${isExistUser.full_name} to the app.`,
                type: 'MESSAGE',
           });
      }
@@ -114,7 +114,7 @@ const forgetPasswordToDB = async (email: string) => {
      }
 
      //send mail
-     const otp = generateOTP(6);
+     const otp = generateOTP(4);
      const value = {
           otp,
           email: isExistUser.email,
@@ -138,9 +138,9 @@ const resendOtpFromDb = async (email: string) => {
      }
 
      // send email
-     const otp = generateOTP(6);
+     const otp = generateOTP(4);
      const values = {
-          name: isExistUser.name,
+          name: isExistUser.full_name,
           otp: otp,
           email: isExistUser.email!,
      };

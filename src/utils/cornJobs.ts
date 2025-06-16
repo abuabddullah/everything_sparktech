@@ -144,7 +144,7 @@ const scheduleEarlyWarningCheck = () => {
                     await sendNotifications({
                          title: `3 Days Left in Your Free Trial! 🚀`,
                          receiver: user._id,
-                         message: `You have 3 days remaining in your free trial ${user.name}`,
+                         message: `You have 3 days remaining in your free trial ${user.full_name}`,
                          type: 'MESSAGE',
                     });
                     await User.findByIdAndUpdate(user._id, {
