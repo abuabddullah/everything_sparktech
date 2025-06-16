@@ -18,6 +18,7 @@ router.route('/').post(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), fileUploa
         return ExtraServiceController.createExtraService(req, res, next);
     });
 router.get('/', ExtraServiceController.getAllExtraServices);
+router.get('/protection', ExtraServiceController.getAllProtectionExtraServices);
 router.patch('/status/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.updateExtraServiceStatus);
 router.get('/:id',ExtraServiceController.getExtraServiceById);
 router.patch('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),fileUploadHandler(), ExtraServiceController.updateExtraService);

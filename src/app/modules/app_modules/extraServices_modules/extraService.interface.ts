@@ -5,5 +5,6 @@ export interface IExtraService  {
   description: string;
   image: string;
   cost: number;
+  type?: "PROTECTION"
   status: EXTRA_SERVICE_STATUS;
 }
