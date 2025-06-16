@@ -127,7 +127,7 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
             // Step 1: Extract serviceId and quantity from the payload
             const serviceDetails = payload.extraServices.map((extraService) => ({
                 serviceId: new mongoose.Types.ObjectId(extraService.serviceId),
-                quantity: extraService.quantity || 1,  // Default quantity to 1 if not provided
+                quantity: extraService.qty || 1,  // Default quantity to 1 if not provided
             }));
 
             // Step 2: Query the ExtraService collection to retrieve the extra services by their serviceId

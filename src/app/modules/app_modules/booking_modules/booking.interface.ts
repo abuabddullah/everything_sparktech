@@ -6,7 +6,7 @@ import { VEHICLE_TYPES } from '../../../../enums/vehicle';
 
 export interface IExtraServiceDetails {
     serviceId: Types.ObjectId; // Reference to the ExtraService model
-    quantity?: number; // Quantity of this extra service being booked
+    qty?: number; // Quantity of this extra service being booked
 }
 
 
