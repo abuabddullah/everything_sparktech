@@ -1,0 +1,11 @@
+Tue Jun 17 2025 13:3:44 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category/subcategory/68503169c6422f6f44e4dd8b 403 - 117.327 ms
+Tue Jun 17 2025 13:9:35 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 403 - 202.891 ms
+Tue Jun 17 2025 13:9:46 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 400 - 83.218 ms
+Tue Jun 17 2025 13:10:5 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 400 - 102.037 ms
+Tue Jun 17 2025 13:10:29 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 400 - 102.712 ms
+Tue Jun 17 2025 13:11:20 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 400 - 322.919 ms
+Tue Jun 17 2025 13:12:35 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 400 - 142.479 ms
+Tue Jun 17 2025 13:13:6 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 406 - 301.667 ms
+Tue Jun 17 2025 13:14:8 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 406 - 297.689 ms
+Tue Jun 17 2025 13:26:1 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 406 - 297.043 ms
+Tue Jun 17 2025 13:26:41 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 406 - 328.951 ms

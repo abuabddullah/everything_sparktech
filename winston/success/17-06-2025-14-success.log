@@ -1,0 +1,44 @@
+Tue Jun 17 2025 14:28:59 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 17 2025 14:29:0 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 17 2025 14:29:0 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 17 2025 14:29:0 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Tue Jun 17 2025 14:29:40 [SERVER-NAME] warn: [33mMongoDB disconnected. Attempting to reconnect...[39m
+Tue Jun 17 2025 14:29:41 [SERVER-NAME] info: [32mMongoDB reconnected successfully[39m
+Tue Jun 17 2025 14:29:42 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant 200 - 6267.315 ms
+Tue Jun 17 2025 14:30:4 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 17 2025 14:30:5 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 17 2025 14:30:5 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 17 2025 14:30:5 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Tue Jun 17 2025 14:30:32 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant 200 - 243.865 ms
+Tue Jun 17 2025 14:31:21 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 17 2025 14:31:22 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 17 2025 14:31:22 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 17 2025 14:31:22 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Tue Jun 17 2025 14:32:18 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 17 2025 14:32:19 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 17 2025 14:32:19 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 17 2025 14:32:19 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Tue Jun 17 2025 14:32:36 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 17 2025 14:32:37 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 17 2025 14:32:37 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 17 2025 14:32:37 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Tue Jun 17 2025 14:33:52 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 17 2025 14:33:53 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 17 2025 14:33:53 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 17 2025 14:33:53 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Tue Jun 17 2025 14:33:54 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant 200 - 425.130 ms
+Tue Jun 17 2025 14:37:3 [SERVER-NAME] warn: [33mMongoDB disconnected. Attempting to reconnect...[39m
+Tue Jun 17 2025 14:37:3 [SERVER-NAME] info: [32mMongoDB reconnected successfully[39m
+Tue Jun 17 2025 14:47:47 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 17 2025 14:47:48 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 17 2025 14:47:48 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 17 2025 14:47:48 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Tue Jun 17 2025 14:49:1 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 17 2025 14:49:1 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 17 2025 14:49:2 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 17 2025 14:49:2 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Tue Jun 17 2025 14:53:5 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant/single/68511895d0099ae382d3752f 200 - 187.756 ms
+Tue Jun 17 2025 14:56:23 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 17 2025 14:56:24 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 17 2025 14:56:24 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 17 2025 14:56:24 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m

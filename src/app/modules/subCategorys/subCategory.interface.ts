@@ -5,6 +5,7 @@ export interface ISubCategory {
      thumbnail: string;
      description: string;
      categoryId: Types.ObjectId;
+     variants?: Types.ObjectId[];
      status: string;
      isDeleted: boolean;
 }

@@ -59,24 +59,13 @@ const deleteSubCategory = catchAsync(async (req, res) => {
           data: result,
      });
 });
-const getCategoryRelatedSubCategory = catchAsync(async (req, res) => {
-     const result = await CategoryService.getCategoryReletedSubcategory(req.params.id);
+const getSubCategoryReletedToCategory = catchAsync(async (req, res) => {
+     const result = await CategoryService.getSubCategoryReletedToCategory(req.params.id);
 
      sendResponse(res, {
           success: true,
           statusCode: StatusCodes.OK,
           message: 'Sub category retrive successfully',
-          data: result,
-     });
-});
-const getVideosBySubCategiry = catchAsync(async (req, res) => {
-     const { id }: any = req.user;
-     const result = await CategoryService.getSubCategoryRelatedVideo(req.params.id, id, req.query);
-
-     sendResponse(res, {
-          success: true,
-          statusCode: StatusCodes.OK,
-          message: 'Videos retrive successfully',
           data: result,
      });
 });
@@ -86,7 +75,6 @@ export const CategoryController = {
      getSubCategories,
      updateSubCategory,
      deleteSubCategory,
-     getCategoryRelatedSubCategory,
-     getVideosBySubCategiry,
+     getSubCategoryReletedToCategory,
      getSubcategorisById
 };

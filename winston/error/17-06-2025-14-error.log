@@ -1,0 +1,2 @@
+Tue Jun 17 2025 14:30:6 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 406 - 629.834 ms
+Tue Jun 17 2025 14:32:19 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/variant 400 - 18.857 ms

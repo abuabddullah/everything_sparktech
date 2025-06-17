@@ -24,6 +24,7 @@ import { TodayVideoRoutes } from '../app/modules/todayVideo/today.route';
 import { DailyInspirationRoutes } from '../app/modules/admin/dailyInspiration/dailyInspiration.router';
 import { ChallengeRoutes } from '../app/modules/admin/challanges/challanges.router';
 import { VideoCommentRouter } from '../app/modules/vidoeComments/vidoeComments.router';
+import { VariantRoutes } from '../app/modules/variant/variant.routes';
 
 const router = express.Router();
 const routes = [
@@ -178,6 +179,10 @@ const routes = [
      {
           path: '/explore',
           route: ExploreRoutes,
+     },
+     {
+          path: '/variant',
+          route: VariantRoutes,
      },
 ];
 

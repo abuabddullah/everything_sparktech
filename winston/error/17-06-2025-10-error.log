@@ -1,0 +1,3 @@
+Tue Jun 17 2025 10:0:3 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/subcategory/6850e7f260deab04f4578f1a 400 - 77.061 ms
+Tue Jun 17 2025 10:0:57 [SERVER-NAME] error: 10.0.60.110 - DELETE /api/v1/subcategory/6850e7f260deab04f4578f1b 400 - 152.393 ms
+Tue Jun 17 2025 10:1:55 [SERVER-NAME] error: 10.0.60.110 - DELETE /api/v1/subcategory/6850e7f260deab04f4578f1b 400 - 161.496 ms
