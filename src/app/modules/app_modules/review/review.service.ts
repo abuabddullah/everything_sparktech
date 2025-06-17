@@ -42,14 +42,14 @@ const createReviewToDB = async (payload: IReview): Promise<IReview> => {
 const getAllReviewsFromDB = async (query: Record<string, unknown>) => {
 
      // Fetch reviews and let the pre('find') hook calculate rating stats
-    const reviewsQueryBuilder = new QueryBuilder(Review.find(), query)
-        .filter()
-        .sort()
-        .paginate()
-        .fields();
+     const reviewsQueryBuilder = new QueryBuilder(Review.find(), query)
+          .filter()
+          .sort()
+          .paginate()
+          .fields();
 
-    const reviews = await reviewsQueryBuilder.modelQuery;
-    const meta = await reviewsQueryBuilder.getPaginationInfo();
+     const reviews = await reviewsQueryBuilder.modelQuery;
+     const meta = await reviewsQueryBuilder.getPaginationInfo();
 
      const ratingValues = reviews.map(r => Number(r.rating)).filter(r => !isNaN(r));
      const totalRating = ratingValues.reduce((sum, r) => sum + r, 0);
@@ -61,7 +61,12 @@ const getAllReviewsFromDB = async (query: Record<string, unknown>) => {
           averageRating,
      };
      // You can return reviewsMetaData if needed, or just reviews
-     return { reviews, reviewsMetaData,meta };
+     return { reviews, reviewsMetaData, meta };
 };
 
-export const ReviewService = { createReviewToDB, getAllReviewsFromDB };
+const deleteReviewByIdToDB = async (id: string) => {
+     const result = await Review.findByIdAndDelete(id)
+     return result
+};
+
+export const ReviewService = { createReviewToDB, getAllReviewsFromDB, deleteReviewByIdToDB };

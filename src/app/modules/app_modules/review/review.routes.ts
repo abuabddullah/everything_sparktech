@@ -23,7 +23,8 @@ router.post("/admin", auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
                console.log(error);
                return res.status(500).json({ message: 'Failed to convert string to number' });
           }
-     }, ReviewController.createReiviewByAdmin)
+     }, ReviewController.createReiviewByAdmin);
+router.delete("/:id", auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), ReviewController.deleteReviewById)
 router.post(
      '/:clientEmail',
      validateRequest(ReviewValidation.reviewZodSchema),

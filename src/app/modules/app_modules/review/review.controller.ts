@@ -16,7 +16,7 @@ const createReview = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllReviews = catchAsync(async (req: Request, res: Response) => {
-     const result = await ReviewService.getAllReviewsFromDB();
+     const result = await ReviewService.getAllReviewsFromDB(req.query);
 
      sendResponse(res, {
           statusCode: StatusCodes.OK,
@@ -39,4 +39,16 @@ const createReiviewByAdmin = catchAsync(async (req: Request, res: Response) => {
 });
 
 
-export const ReviewController = { createReview,getAllReviews,createReiviewByAdmin };
+const deleteReviewById = catchAsync(async (req: Request, res: Response) => {
+     const result = await ReviewService.deleteReviewByIdToDB(req.params.id);
+
+     sendResponse(res, {
+          statusCode: StatusCodes.OK,
+          success: true,
+          message: 'Review Created by Admin Successfully',
+          data: result,
+     });
+});
+
+
+export const ReviewController = { createReview, getAllReviews, createReiviewByAdmin, deleteReviewById };
