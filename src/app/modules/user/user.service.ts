@@ -282,7 +282,7 @@ const getAllDriverFromDB = async () => {
           const pickupTime = new Date(booking.pickupTime);
           const returnTime = new Date(booking.returnTime);
 
-          if (now >= pickupTime && now <= returnTime) {
+          if (now >= pickupTime && now <= returnTime || booking.status == BOOKING_STATUS.ON_RIDE) {
             driverCurrentStatus = "ON RIDE";
             break; // ON RIDE takes precedence
           } else if (now > returnTime) {
