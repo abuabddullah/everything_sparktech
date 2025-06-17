@@ -5,8 +5,6 @@ export interface ISubCategory {
      thumbnail: string;
      description: string;
      categoryId: Types.ObjectId;
-     videoCount: number;
-     equipment: string[];
      status: string;
-     categoryType: string;
+     isDeleted: boolean;
 }

@@ -39,7 +39,7 @@ const createSubCategoryToDB = async (payload: ISubCategory) => {
 };
 // get sub category
 const getCategoriesFromDB = async (query: Record<string, unknown>) => {
-     const queryBuilder = new QueryBuilder(SubCategory.find({}), query);
+     const queryBuilder = new QueryBuilder(SubCategory.find({}).populate("categoryId", "name"), query);
      const subCategorys = await queryBuilder.fields().filter().paginate().search(['name']).sort().modelQuery.exec();
      const meta = await queryBuilder.countTotal();
      return {
@@ -192,7 +192,7 @@ const getSubCategoryRelatedVideo = async (id: string, userId: string, query: Rec
      };
 };
 const getSubCategoryDetails = async (id: string) => {
-     const result = await SubCategory.findById(id);
+     const result = await SubCategory.findById(id).populate("categoryId","name");
      if (!result) {
           throw new AppError(StatusCodes.NOT_FOUND, 'SubCategory not found');
      }

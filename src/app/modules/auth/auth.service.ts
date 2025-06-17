@@ -361,7 +361,7 @@ const refreshToken = async (token: string) => {
           throw new AppError(StatusCodes.BAD_REQUEST, 'Token not found');
      }
 
-     const decoded = verifyToken(token, config.jwt.jwt_refresh_expire_in as string);
+     const decoded = verifyToken(token, config.jwt.jwt_refresh_secret as string);
 
      const { id } = decoded;
 

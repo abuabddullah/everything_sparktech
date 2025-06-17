@@ -1,0 +1,2 @@
+Tue Jun 17 2025 9:17:9 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category/single/685032ed9fb13f3b5cc6873c 403 - 256.029 ms
+Tue Jun 17 2025 9:17:16 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/category/single/685032ed9fb13f3b5cc6873c 403 - 225.939 ms

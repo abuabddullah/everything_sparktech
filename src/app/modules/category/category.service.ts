@@ -122,9 +122,8 @@ const getSingleCategoryFromDB = async (id: string, userId: string) => {
      if (isExist?.role === USER_ROLES.SUPER_ADMIN) {
           result.ctgViewCount += 1;
           await result.save();
-          return result;
      }
-     throw new AppError(StatusCodes.FORBIDDEN, 'You have to subscribe to access this category');
+     return result;
 };
 const getSubcategoryWithCategoryIdFromDB = async (id: string, query: Record<string, unknown>) => {
      const queryBuilder = new QueryBuilder(SubCategory.find({ categoryId: id }), query);
