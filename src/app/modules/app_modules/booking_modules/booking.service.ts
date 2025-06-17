@@ -742,7 +742,7 @@ const updateBookingStatusInDB = async (id: string, status: BOOKING_STATUS) => {
             if (status === BOOKING_STATUS.CONFIRMED || status === BOOKING_STATUS.CANCELLED) {
                 booking.status = status;
             } else {
-                throw new ApiError(StatusCodes.BAD_REQUEST, "Status can only be updated to CONFIRMED or CANCELLED from NOT_CONFIRMED");
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Status can only be updated to CONFIRMED or CANCELLED from NOT CONFIRMED");
             }
             break;
         case BOOKING_STATUS.CONFIRMED:
@@ -752,14 +752,14 @@ const updateBookingStatusInDB = async (id: string, status: BOOKING_STATUS) => {
             if (status === BOOKING_STATUS.ON_RIDE) {
                 booking.status = status;
             } else {
-                throw new ApiError(StatusCodes.BAD_REQUEST, "Status can only be updated to ON_RIDE from CONFIRMED");
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Status can only be updated to ON RIDE from CONFIRMED");
             }
             break;
         case BOOKING_STATUS.ON_RIDE:
             if (status === BOOKING_STATUS.COMPLETED) {
                 booking.status = status;
             } else {
-                throw new ApiError(StatusCodes.BAD_REQUEST, "Status can only be updated to COMPLETED from ON_RIDE");
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Status can only be updated to COMPLETED from ON RIDE");
             }
             break;
         case BOOKING_STATUS.COMPLETED:
