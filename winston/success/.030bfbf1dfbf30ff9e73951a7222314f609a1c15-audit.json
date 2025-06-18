@@ -6,61 +6,6 @@
     "auditLog": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\.030bfbf1dfbf30ff9e73951a7222314f609a1c15-audit.json",
     "files": [
         {
-            "date": 1750073488337,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\16-06-2025-17-success.log",
-            "hash": "2bfac322b6ac6d2cd1cd108b7ffdf953187468d2bca22accf5a472506243fb2c"
-        },
-        {
-            "date": 1750075303277,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\16-06-2025-18-success.log",
-            "hash": "08f74747c3d7e82673a089b8d3acc041af8da05ab3ed29f916039fc6ff04d9f4"
-        },
-        {
-            "date": 1750079829134,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\16-06-2025-19-success.log",
-            "hash": "fe53bc7a8d58f13e5beeecfd01f80f71a56f8d3eebdbdb02cf16f49996075c0a"
-        },
-        {
-            "date": 1750084640068,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\16-06-2025-20-success.log",
-            "hash": "a7e78a8bea4de74278d93395ee73e0c4ba03bd5310e671558039b6997599544d"
-        },
-        {
-            "date": 1750086058992,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\16-06-2025-21-success.log",
-            "hash": "3b2f9a6ba0dde2e9c9ecdca0d12b41a35e8a42ea2b847548c4c76e44daf2a31a"
-        },
-        {
-            "date": 1750125178552,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\17-06-2025-07-success.log",
-            "hash": "e6e66b422af189538e6149489f6516987a4c67cefd66c5f2adc26677e470b31e"
-        },
-        {
-            "date": 1750125610251,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\17-06-2025-08-success.log",
-            "hash": "3bc47a5e142edaa39357184424ab8dc23bed310cd5268c980ca00855cbdd0c09"
-        },
-        {
-            "date": 1750130288068,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\17-06-2025-09-success.log",
-            "hash": "7816bf4c7b8926c8c181edf4b290afa39edc99725b527c4d85a2a506a2805b78"
-        },
-        {
-            "date": 1750132811209,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\17-06-2025-10-success.log",
-            "hash": "6c8895eb0c1f2c87e7800464c62e9c2d05904e68383d1da9b02a6588c8dd2d26"
-        },
-        {
-            "date": 1750140412583,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\17-06-2025-12-success.log",
-            "hash": "1ab5db6066c48b23d460029af6bb117d3a4d23a5a79e38488cfb18c6db15d221"
-        },
-        {
-            "date": 1750143670601,
-            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\17-06-2025-13-success.log",
-            "hash": "d864772f85781c6593f0cc43a25faf3bcfd98b2509d4dc38156ed4ea31f0b46a"
-        },
-        {
             "date": 1750148295382,
             "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\17-06-2025-14-success.log",
             "hash": "23d699167cfd245b74f3edf421fda764d909e33fcdeee1f555524c9821212023"
@@ -69,6 +14,11 @@
             "date": 1750150802297,
             "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\17-06-2025-15-success.log",
             "hash": "5e8d34335e5ca5cb487e5816a276228981d0f654937d6bb2bc45b78765898a42"
+        },
+        {
+            "date": 1750231495629,
+            "name": "C:\\Users\\Asif Abdul Owadud\\Desktop\\everything_asif\\everything_office\\everything_sparktech\\kappes\\winston\\success\\18-06-2025-13-success.log",
+            "hash": "e43dcf60a484c3c95329ec893e39d868845978c4f653f15633db19a57a54f076"
         }
     ],
     "hashType": "sha256"

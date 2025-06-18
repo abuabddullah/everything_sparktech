@@ -1,0 +1,7 @@
+Wed Jun 18 2025 8:23:53 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 400 - 120.899 ms
+Wed Jun 18 2025 8:24:49 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 400 - 242.213 ms
+Wed Jun 18 2025 8:31:22 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 406 - 309.592 ms
+Wed Jun 18 2025 8:56:48 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/variant/68522527dbe22de106523652 400 - 2.900 ms
+Wed Jun 18 2025 8:56:53 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/variant/68522527dbe22de106523652 400 - 91.272 ms
+Wed Jun 18 2025 8:58:20 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/variant/68522527dbe22de106523652 400 - 83.583 ms
+Wed Jun 18 2025 8:58:45 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/variant/685137753c918a353f3732f0 400 - 83.116 ms

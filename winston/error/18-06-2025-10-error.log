@@ -1,0 +1,4 @@
+Wed Jun 18 2025 10:2:10 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/variant/685239d3c41a33727daa1ff5 406 - 517.655 ms
+Wed Jun 18 2025 10:47:13 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/variant/slug/electronics-mobiles- 404 - 2.256 ms
+Wed Jun 18 2025 10:56:36 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/variant/685224f2dbe22de106523643 404 - 234.048 ms
+Wed Jun 18 2025 10:57:57 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 406 - 317.577 ms
