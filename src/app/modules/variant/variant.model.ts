@@ -31,6 +31,7 @@ const variantSchema = new Schema<IVariant & Document>({
     dimensions: { type: String, required: false },
     capacity: { type: String, required: false },
     options: { type: String, enum: Object.values(VARIANT_OPTIONS) },
+    isDelete:{ type: Boolean, default: false }
 }, {
     timestamps: true,
 });

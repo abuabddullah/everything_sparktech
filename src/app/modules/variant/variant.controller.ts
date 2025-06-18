@@ -64,7 +64,7 @@ const updateVariantController = catchAsync(async (req, res) => {
 
 const deleteVariantController = catchAsync(async (req, res) => {
     const id = req.params.id;
-    const result = await VariantService.deleteVariant(id);
+    const result = await VariantService.deleteVariant(id,req.user as IJwtPayload);
 
     sendResponse(res, {
         success: true,

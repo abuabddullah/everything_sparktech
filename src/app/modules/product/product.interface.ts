@@ -4,6 +4,7 @@ export interface IProductSingleVariant {
     variantId: mongoose.Types.ObjectId;
     variantQuantity: number;
     variantPrice: number;
+    productVariantImage: string;
 }
 
 export interface IProduct {

@@ -168,19 +168,33 @@ export const updateVariant = async (id: string, data: Partial<IVariant>, user: I
 };
 
 // Delete Variant
-export const deleteVariant = async (id: string) => {
+export const deleteVariant = async (id: string, user: IJwtPayload) => {
+    // Find and delete the variant
+    const deletedVariant = await Variant.findById(id);
+    // If no variant was found, throw an error
+    if (!deletedVariant) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Variant not found');
+    }
+
+    if (
+        user.role === USER_ROLES.SHOP_ADMIN || user.role === USER_ROLES.VENDOR &&
+        deletedVariant.createdBy.toString() !== user.id
+    ) {
+        throw new AppError(
+            StatusCodes.BAD_REQUEST,
+            'You are not able to delete the brand!'
+        );
+    }
     // Check if the variant is related to any product by variantId
     const product = await Product.findOne({ "product_variant_Details.variantId": id });
     if (product) {
         throw new AppError(StatusCodes.BAD_REQUEST, "You cannot delete the variant because it is associated with a product.");
     }
-    // Find and delete the variant
-    const deletedVariant = await Variant.findByIdAndDelete(id);
 
-    // If no variant was found, throw an error
-    if (!deletedVariant) {
-        throw new AppError(StatusCodes.NOT_FOUND, 'Variant not found');
-    }
+    deletedVariant.set({
+        isDelete: true
+    });
+    await deletedVariant.save();
 
     return deletedVariant;
 };
