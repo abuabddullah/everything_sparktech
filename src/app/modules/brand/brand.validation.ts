@@ -6,7 +6,6 @@ const createBrandValidationSchema = z.object({
       .string()
       .nonempty("Brand name is required")
       .max(100, "Brand name should not exceed 100 characters"),
-    createdBy: z.string()
   })
 });
 

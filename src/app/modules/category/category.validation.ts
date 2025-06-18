@@ -5,7 +5,6 @@ const createCategoryZodSchema = z.object({
      body: z.object({
           name: z.string({ required_error: 'Category name is required' }),
           description: z.string({ required_error: 'Category name is required' }),
-          createdBy: objectIdSchema, // Same as categoryId for subCategory
      }),
 });
 

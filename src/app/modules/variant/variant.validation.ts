@@ -8,7 +8,6 @@ export const createVariantSchema = z.object({
     body: z.object({
         categoryId: objectIdSchema, // Assuming categoryId is a UUID (change to ObjectId if necessary)
         subCategoryId: objectIdSchema, // Same as categoryId for subCategory
-        createdBy: objectIdSchema, // Same as categoryId for subCategory
         color: z.object({
             name: z.string().optional(),
             // code: z.string().optional(),
