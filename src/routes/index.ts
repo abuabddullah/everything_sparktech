@@ -25,6 +25,7 @@ import { DailyInspirationRoutes } from '../app/modules/admin/dailyInspiration/da
 import { ChallengeRoutes } from '../app/modules/admin/challanges/challanges.router';
 import { VideoCommentRouter } from '../app/modules/vidoeComments/vidoeComments.router';
 import { VariantRoutes } from '../app/modules/variant/variant.routes';
+import { BrandRoutes } from '../app/modules/brand/brand.routes';
 
 const router = express.Router();
 const routes = [
@@ -183,6 +184,10 @@ const routes = [
      {
           path: '/variant',
           route: VariantRoutes,
+     },
+     {
+          path: '/brand',
+          route: BrandRoutes,
      },
 ];
 

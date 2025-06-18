@@ -70,7 +70,7 @@ const loginUserFromDB = async (payload: ILoginData) => {
 
      // Generate JWT tokens including tokenVersion
      const jwtData = {
-          id: isExistUser._id,
+          id: isExistUser._id.toString() as string,
           role: isExistUser.role,
           email: isExistUser.email,
           tokenVersion: isExistUser.tokenVersion ?? 0, // <-- include tokenVersion here
@@ -216,7 +216,7 @@ const verifyEmailToDB = async (payload: IVerifyEmail) => {
      if (!isExistUser.verified) {
           await User.findOneAndUpdate({ _id: isExistUser._id }, { verified: true, authentication: { oneTimeCode: null, expireAt: null } });
           //create token
-          accessToken = jwtHelper.createToken({ id: isExistUser._id, role: isExistUser.role, email: isExistUser.email }, config.jwt.jwt_secret as Secret, config.jwt.jwt_expire_in as string);
+          accessToken = jwtHelper.createToken({ id: isExistUser._id.toString() as string, role: isExistUser.role, email: isExistUser.email }, config.jwt.jwt_secret as Secret, config.jwt.jwt_expire_in as string);
           message = 'Email verify successfully';
           user = await User.findById(isExistUser._id);
      } else {

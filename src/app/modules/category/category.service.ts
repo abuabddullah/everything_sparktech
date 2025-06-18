@@ -9,8 +9,10 @@ import { SubCategory } from '../subCategorys/subCategory.model';
 import { USER_ROLES } from '../user/user.enums';
 import { Video } from '../admin/videosManagement/videoManagement.model';
 import { Favourite } from '../favourit/favourit.model';
+import { Product } from '../product/product.model';
+import { IJwtPayload } from '../auth/auth.interface';
 
-const createCategoryToDB = async (payload: ICategory) => {
+const createCategoryToDB = async (payload: ICategory, user: IJwtPayload) => {
      const { name, thumbnail, description } = payload;
      const isExistName = await Category.findOne({ name });
 
@@ -21,7 +23,8 @@ const createCategoryToDB = async (payload: ICategory) => {
      const newCategory = new Category({
           name,
           thumbnail,
-          description
+          description,
+          createdBy: user.id
      });
 
      const createdCategory = await newCategory.save();
@@ -56,11 +59,21 @@ const getCategoriesFromDB = async (query: Record<string, unknown>) => {
      };
 };
 // update catgeory
-const updateCategoryToDB = async (id: string, payload: ICategory) => {
+const updateCategoryToDB = async (id: string, payload: ICategory, user: IJwtPayload) => {
      const isExistCategory: any = await Category.findById(id);
 
      if (!isExistCategory) {
           throw new AppError(StatusCodes.BAD_REQUEST, "Category doesn't exist");
+     }
+
+     if (
+          user.role === USER_ROLES.SHOP_ADMIN || user.role === USER_ROLES.VENDOR &&
+          isExistCategory.createdBy.toString() !== user.id
+     ) {
+          throw new AppError(
+               StatusCodes.BAD_REQUEST,
+               'You are not able to update the Category!'
+          );
      }
 
      if (payload.thumbnail && isExistCategory?.thumbnail) {
@@ -101,14 +114,30 @@ const updateCategoryStatusToDB = async (id: string, payload: string) => {
 };
 
 // delete category
-const deleteCategoryToDB = async (id: string) => {
-     const deleteCategory = await Category.findByIdAndUpdate(id, {
-          $set: { isDeleted: true },
-     });
-     if (!deleteCategory) {
+const deleteCategoryToDB = async (id: string, user: IJwtPayload) => {
+
+     const product = await Product.findOne({ categoryId: id })
+     if (product) throw new AppError(StatusCodes.BAD_REQUEST, "You can not delete the Category. Because the Category is related to products.");
+
+     const isExistCategory = await Category.findById(id);
+     if (!isExistCategory) {
           throw new AppError(StatusCodes.BAD_REQUEST, "Category doesn't exist");
      }
-     return deleteCategory;
+
+     if (
+          user.role === USER_ROLES.SHOP_ADMIN || user.role === USER_ROLES.VENDOR &&
+          isExistCategory.createdBy.toString() !== user.id
+     ) {
+          throw new AppError(
+               StatusCodes.BAD_REQUEST,
+               'You are not able to delete the Category!'
+          );
+     }
+     isExistCategory.set({ isDeleted: true });
+     // Save the updated variant
+     await isExistCategory.save();
+
+     return isExistCategory;
 };
 const getSingleCategoryFromDB = async (id: string, userId: string) => {
      const result = await Category.findById(id).populate('subCategory');
@@ -145,10 +174,6 @@ const getSubcategoryWithCategoryIdFromDB = async (id: string, query: Record<stri
           result,
           meta,
      };
-};
-const getFevVideosOrNot = async (videoId: string, userId: string) => {
-     const favorite = await Favourite.findOne({ videoId, userId });
-     return favorite ? true : false;
 };
 
 

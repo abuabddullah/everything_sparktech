@@ -1,61 +1,17 @@
 import { Schema } from "mongoose";
-
-export enum NETWOR_TYPE {
-    THREE_G = "3G",
-    FOUR_G = "4G",
-    FIVE_G = "5G"
-}
-
-export enum OS_TYPE {
-    IOS = "IOS",
-    WINDOWS = "WINDOWS",
-    ANDROID = "ANDROID",
-    LINUX = "LINUX",
-}
-
-export enum RAM_OR_STORAGE_OR_GRAPHICS_CARD {
-    TWOGB = "2GB",
-    FOURGB = "4GB",
-    EIGHTGB = "8GB",
-    ONE6GB = "16GB",
-    THREE2GB = "32GB",
-    SIX4GB = "64GB",
-    ONE28GB = "128GB",
-    TWO56GB = "256GB",
-    FIVE12GB = "512GB",
-    ONETB = "1TB",
-}
-
-export enum STORAGE_TYPE {
-    SSD = "SSD",
-    HDD = "HDD",
-    NVME = "NVME",
-    M_2 = "M.2",
-}
-
-export enum PROCESSOR_TYPE {
-    AMD = "AMD",
-    INTEL = "INTEL",
-}
-
-export enum GRAPHICS_CARD_TYPE {
-    INTEGRATED = "INTEGRATED",
-    DEDICATED = "DEDICATED",
-}
-
-export enum RESOLUTION_TYPE {
-    HD = "HD",
-    Full_HD = "Full HD",
-    FOURK_UHD = "4K UHD",
-}
+import { GRAPHICS_CARD_TYPE, NETWOR_TYPE, OS_TYPE, PROCESSOR_TYPE, RAM_OR_STORAGE_OR_GRAPHICS_CARD, RESOLUTION_TYPE, STORAGE_TYPE, VARIANT_OPTIONS } from "./variant.enums";
 
 
 
 export interface IVariant {
     categoryId: Schema.Types.ObjectId;
     subCategoryId: Schema.Types.ObjectId;
+    createdBy: Schema.Types.ObjectId;
     slug: string; // replacing all space by - of category-subCategory and make small letter
-    color?: string;
+    color?: {
+        name: string;
+        code: string;
+    };
     storage?: RAM_OR_STORAGE_OR_GRAPHICS_CARD | string;
     ram?: RAM_OR_STORAGE_OR_GRAPHICS_CARD | string;
     network_type?: NETWOR_TYPE[] | string[];
@@ -74,4 +30,5 @@ export interface IVariant {
     weight?: number; // Optional weight for products like dumbbells, sports equipment, etc.
     dimensions?: string;// Single, Queen, King for beds
     capacity?: string; // 1L, 2L
+    options?: VARIANT_OPTIONS;
 }

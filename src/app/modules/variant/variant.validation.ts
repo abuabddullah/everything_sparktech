@@ -1,13 +1,19 @@
 import { z } from "zod";
-import { NETWOR_TYPE, RAM_OR_STORAGE_OR_GRAPHICS_CARD, STORAGE_TYPE, PROCESSOR_TYPE, GRAPHICS_CARD_TYPE, RESOLUTION_TYPE, OS_TYPE } from "./variant.interfaces";
+import { NETWOR_TYPE, RAM_OR_STORAGE_OR_GRAPHICS_CARD, STORAGE_TYPE, PROCESSOR_TYPE, GRAPHICS_CARD_TYPE, RESOLUTION_TYPE, OS_TYPE, VARIANT_OPTIONS } from "./variant.enums";
 
-const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i, { message: "Invalid ObjectId" });
+export const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i, { message: "Invalid ObjectId" });
+const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
 // Zod schema for Variant validation
 export const createVariantSchema = z.object({
     body: z.object({
         categoryId: objectIdSchema, // Assuming categoryId is a UUID (change to ObjectId if necessary)
         subCategoryId: objectIdSchema, // Same as categoryId for subCategory
-        color: z.string().optional(),
+        createdBy: objectIdSchema, // Same as categoryId for subCategory
+        color: z.object({
+            name: z.string().optional(),
+            // code: z.string().optional(),
+            code: z.string().regex(hexColorRegex, { message: "Invalid hex color code format" }).optional(),
+        }).optional(),
         storage: z.union([z.enum([...(Object.values(RAM_OR_STORAGE_OR_GRAPHICS_CARD) as [string, ...string[]])]), z.string()]).optional(),
         ram: z.union([z.enum([...(Object.values(RAM_OR_STORAGE_OR_GRAPHICS_CARD) as [string, ...string[]])]), z.string()]).optional(),
         network_type: z.array(z.union([z.enum([...(Object.values(NETWOR_TYPE) as [string, ...string[]])]), z.string()])).optional(),
@@ -26,6 +32,7 @@ export const createVariantSchema = z.object({
         weight: z.number().positive().optional(),
         dimensions: z.string().optional(),
         capacity: z.string().optional(),
+        options: z.union([z.enum([...(Object.values(VARIANT_OPTIONS) as [string, ...string[]])]), z.string()]).optional(),
     })
 });
 const updateVariantSchema = createVariantSchema.partial()

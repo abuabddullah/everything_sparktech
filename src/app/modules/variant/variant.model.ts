@@ -1,12 +1,17 @@
 import { Schema, model, Document } from "mongoose";
 import { IVariant } from "./variant.interfaces"; // Import IVariant interface
+import { VARIANT_OPTIONS } from "./variant.enums";
 
 // Define Mongoose Schema based on IVariant interface
 const variantSchema = new Schema<IVariant & Document>({
     categoryId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     subCategoryId: { type: Schema.Types.ObjectId, ref: 'SubCategory', required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     slug: { type: String, required: true, unique: true },
-    color: { type: String, required: false },
+    color: {
+        name: { type: String, required: false },
+        code: { type: String, required: false },
+    },
     storage: { type: String, required: false },
     ram: { type: String, required: false },
     network_type: { type: [String], required: false },
@@ -25,6 +30,7 @@ const variantSchema = new Schema<IVariant & Document>({
     weight: { type: Number, required: false },
     dimensions: { type: String, required: false },
     capacity: { type: String, required: false },
+    options: { type: String, enum: Object.values(VARIANT_OPTIONS) },
 }, {
     timestamps: true,
 });

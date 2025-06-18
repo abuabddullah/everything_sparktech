@@ -8,8 +8,11 @@ import { Category } from '../category/category.model';
 import { Video } from '../admin/videosManagement/videoManagement.model';
 import { Favourite } from '../favourit/favourit.model';
 import { User } from '../user/user.model';
+import { Product } from '../product/product.model';
+import { IJwtPayload } from '../auth/auth.interface';
+import { USER_ROLES } from '../user/user.enums';
 // create sub category
-const createSubCategoryToDB = async (payload: ISubCategory) => {
+const createSubCategoryToDB = async (payload: ISubCategory, user: IJwtPayload) => {
      const { name, thumbnail, categoryId } = payload;
      const isExistCategory = await Category.findById(categoryId);
      if (!isExistCategory) {
@@ -21,7 +24,7 @@ const createSubCategoryToDB = async (payload: ISubCategory) => {
           throw new AppError(StatusCodes.NOT_ACCEPTABLE, 'This SubCategory Name Already Exists');
      }
 
-     const createSubCategory = await SubCategory.create(payload);
+     const createSubCategory = await SubCategory.create({ ...payload, createdBy: user.id });
      if (!createSubCategory) {
           unlinkFile(thumbnail);
           throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to create subcategory');
@@ -47,11 +50,21 @@ const getCategoriesFromDB = async (query: Record<string, unknown>) => {
      };
 };
 // update sub category
-const updateCategoryToDB = async (id: string, payload: ISubCategory) => {
+const updateSubCategoryToDB = async (id: string, payload: ISubCategory, user: IJwtPayload) => {
      const isExistSubCategory: any = await SubCategory.findById(id);
 
      if (!isExistSubCategory) {
-          throw new AppError(StatusCodes.BAD_REQUEST, "Category doesn't exist");
+          throw new AppError(StatusCodes.BAD_REQUEST, "SubCategory doesn't exist");
+     }
+
+     if (
+          user.role === USER_ROLES.SHOP_ADMIN || user.role === USER_ROLES.VENDOR &&
+          isExistSubCategory.createdBy.toString() !== user.id
+     ) {
+          throw new AppError(
+               StatusCodes.BAD_REQUEST,
+               'You are not able to update the SubCategory!'
+          );
      }
 
      if (payload.thumbnail && isExistSubCategory.thumbnail) {
@@ -62,18 +75,38 @@ const updateCategoryToDB = async (id: string, payload: ISubCategory) => {
           new: true,
      });
 
+     if (!updateSubCategory) {
+          throw new AppError(StatusCodes.BAD_REQUEST, 'Faield to update SubCategory!');
+     }
+
      return updateSubCategory;
 };
 
-const deleteCategoryToDB = async (id: string) => {
-     const deleteCategory = await SubCategory.findByIdAndDelete(id);
-     if (!deleteCategory) {
-          throw new AppError(StatusCodes.BAD_REQUEST, "subcategory doesn't exist");
+const deleteSubCategoryToDB = async (id: string, user: IJwtPayload) => {
+     const product = await Product.findOne({ subcategoryId: id })
+     if (product) throw new AppError(StatusCodes.BAD_REQUEST, "You can not delete the subcategory. Because the subcategory is related to products.");
+
+     const isExistSubCategory = await SubCategory.findById(id);
+     if (!isExistSubCategory) {
+          throw new AppError(StatusCodes.BAD_REQUEST, "SubCategory doesn't exist");
      }
-     return deleteCategory;
+     if (
+          user.role === USER_ROLES.SHOP_ADMIN || user.role === USER_ROLES.VENDOR &&
+          isExistSubCategory.createdBy.toString() !== user.id
+     ) {
+          throw new AppError(
+               StatusCodes.BAD_REQUEST,
+               'You are not able to delete the Category!'
+          );
+     }
+     isExistSubCategory.set({ isDeleted: true });
+     // Save the updated variant
+     await isExistSubCategory.save();
+
+     return isExistSubCategory;
 };
 // update catgeory status
-const updateCategoryStatusToDB = async (id: string, payload: string) => {
+const updateSubCategoryStatusToDB = async (id: string, payload: string) => {
      const isExistCategory: any = await SubCategory.findById(id);
 
      if (!isExistCategory) {
@@ -118,9 +151,9 @@ const getSubCategoryDetails = async (id: string) => {
 export const CategoryService = {
      createSubCategoryToDB,
      getCategoriesFromDB,
-     updateCategoryToDB,
-     deleteCategoryToDB,
-     updateCategoryStatusToDB,
+     updateSubCategoryToDB,
+     deleteSubCategoryToDB,
+     updateSubCategoryStatusToDB,
      getSubCategoryReletedToCategory,
      getSubCategoryDetails,
 };

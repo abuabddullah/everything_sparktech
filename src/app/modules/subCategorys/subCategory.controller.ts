@@ -2,10 +2,11 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { CategoryService } from './subCategory.service';
+import { IJwtPayload } from '../auth/auth.interface';
 
 const createSubCategory = catchAsync(async (req, res) => {
      const serviceData = req.body;
-     const result = await CategoryService.createSubCategoryToDB(serviceData);
+     const result = await CategoryService.createSubCategoryToDB(serviceData,req.user as IJwtPayload);
      sendResponse(res, {
           success: true,
           statusCode: StatusCodes.OK,
@@ -38,7 +39,7 @@ const updateSubCategory = catchAsync(async (req, res) => {
      const id = req.params.id;
      const updateCategoryData = req.body;
 
-     const result = await CategoryService.updateCategoryToDB(id, updateCategoryData);
+     const result = await CategoryService.updateSubCategoryToDB(id, updateCategoryData,req.user as IJwtPayload);
 
      sendResponse(res, {
           success: true,
@@ -50,7 +51,7 @@ const updateSubCategory = catchAsync(async (req, res) => {
 
 const deleteSubCategory = catchAsync(async (req, res) => {
      const id = req.params.id;
-     const result = await CategoryService.deleteCategoryToDB(id);
+     const result = await CategoryService.deleteSubCategoryToDB(id, req.user as IJwtPayload);
 
      sendResponse(res, {
           success: true,

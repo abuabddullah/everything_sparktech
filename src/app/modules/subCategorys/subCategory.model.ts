@@ -12,6 +12,7 @@ const subCategorySchema = new Schema<ISubCategory>(
                ref: 'Category',
                required: true,
           },
+          createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
           variants: [{
                type: Schema.Types.ObjectId,
                ref: 'Variant',

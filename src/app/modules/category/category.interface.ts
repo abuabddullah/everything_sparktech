@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 export interface ISubCategory {
      name: string;
      thumbnail: string;
@@ -12,5 +12,6 @@ export interface ICategory {
      description: string;
      status: string;
      isDeleted: boolean;
-     ctgViewCount:number;
+     ctgViewCount: number;
+     createdBy: Schema.Types.ObjectId;
 }
