@@ -18,8 +18,7 @@ const getSubscriptionRule = catchAsync(async (req, res) => {
           statusCode: StatusCodes.CREATED,
           success: true,
           message: 'Subscription rule retrived successfully',
-          data: result.rules,
-          pagination: result.meta,
+          data: result,
      });
 });
 const updateSubscriptionRule = catchAsync(async (req, res) => {

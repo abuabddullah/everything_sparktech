@@ -10,8 +10,7 @@ const getAllUsers = catchAsync(async (req, res) => {
           success: true,
           statusCode: StatusCodes.OK,
           message: 'Users retrived successfuly',
-          data: result.users,
-          pagination: result.meta,
+          data: result,
      });
 });
 // get single user

@@ -12,10 +12,10 @@ const getNotificationFromDB = catchAsync(async (req, res) => {
           success: true,
           message: 'Notifications Retrieved Successfully',
           data: {
-               result,
+               meta: result?.meta,
                unreadCount: result?.unreadCount,
+               result,
           },
-          pagination: result?.meta,
      });
 });
 
@@ -27,8 +27,7 @@ const adminNotificationFromDB = catchAsync(async (req, res) => {
           statusCode: StatusCodes.OK,
           success: true,
           message: 'Notifications Retrieved Successfully',
-          data: result?.result,
-          pagination: result?.meta,
+          data: result,
      });
 });
 

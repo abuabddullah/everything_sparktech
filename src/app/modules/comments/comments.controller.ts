@@ -24,8 +24,7 @@ const getComments = catchAsync(async (req, res) => {
           statusCode: StatusCodes.OK,
           success: true,
           message: 'Comments retrieved successfully',
-          data: result.comments,
-          pagination: result.meta,
+          data: result,
      });
 });
 // like comments

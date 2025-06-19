@@ -21,8 +21,7 @@ const getCategories = catchAsync(async (req, res) => {
           success: true,
           statusCode: StatusCodes.OK,
           message: 'Category retrieved successfully',
-          data: result.categorys,
-          pagination: result.meta,
+          data: result,
      });
 });
 // update categorys

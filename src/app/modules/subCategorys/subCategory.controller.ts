@@ -21,8 +21,7 @@ const getSubCategories = catchAsync(async (req, res) => {
           success: true,
           statusCode: StatusCodes.OK,
           message: 'Sub category retrieved successfully',
-          data: result.subCategorys,
-          pagination: result.meta,
+          data: result,
      });
 });
 const getSubcategorisById = catchAsync(async (req, res) => {

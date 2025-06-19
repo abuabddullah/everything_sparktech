@@ -19,9 +19,9 @@ const getNotificationFromDB = async (user: JwtPayload, query: Record<string, unk
      });
 
      const data: any = {
-          result,
           meta,
           unreadCount,
+          result,
      };
 
      return data;

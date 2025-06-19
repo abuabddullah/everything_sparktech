@@ -28,8 +28,7 @@ const getAllCreatePost = catchAsync(async (req, res) => {
           statusCode: StatusCodes.OK,
           success: true,
           message: 'Post retrieved successfully',
-          data: result.result,
-          pagination: result.meta,
+          data: result,
      });
 });
 const getAllCreatePostForApp = catchAsync(async (req, res) => {

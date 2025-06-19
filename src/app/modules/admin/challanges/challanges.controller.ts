@@ -28,8 +28,7 @@ const getAllCreateChallenge = catchAsync(async (req, res) => {
           statusCode: StatusCodes.OK,
           success: true,
           message: 'Challenge retrieved successfully',
-          data: result.result,
-          pagination: result.meta,
+          data: result,
      });
 });
 

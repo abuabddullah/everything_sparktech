@@ -9,8 +9,7 @@ const getAllVideos = catchAsync(async (req, res) => {
           success: true,
           statusCode: StatusCodes.OK,
           message: 'Videos retrived successfuly',
-          data: result.videos,
-          pagination: result.meta,
+          data: result,
      });
 });
 const getAllVideosByCourse = catchAsync(async (req, res) => {
@@ -19,8 +18,7 @@ const getAllVideosByCourse = catchAsync(async (req, res) => {
           success: true,
           statusCode: StatusCodes.OK,
           message: 'Videos retrived successfuly',
-          data: result.videos,
-          pagination: result.meta,
+          data: result,
      });
 });
 // get all videos

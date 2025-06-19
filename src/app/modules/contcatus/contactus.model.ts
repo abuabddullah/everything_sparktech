@@ -21,11 +21,11 @@ const contactSchema = new Schema<TContact>(
           },
           refferenceId: {
                type: Schema.Types.ObjectId,
-               required: true,
+               required: false, 
           },
           contact_type: {
                type: String,
-               enum: ['Shop', 'Business'], // IMPORTANT: Defines the allowed models
+               enum: ['Shop', 'Business', 'Website'], // IMPORTANT: Defines the allowed models
                required: false,
           },
      },

@@ -28,8 +28,7 @@ const getAllComingSoon = catchAsync(async (req, res) => {
           statusCode: StatusCodes.OK,
           success: true,
           message: 'Coming Soon retrieved successfully',
-          data: result.result,
-          pagination: result.meta,
+          data: result,
      });
 });
 
