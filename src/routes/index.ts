@@ -26,6 +26,7 @@ import { ChallengeRoutes } from '../app/modules/admin/challanges/challanges.rout
 import { VideoCommentRouter } from '../app/modules/vidoeComments/vidoeComments.router';
 import { VariantRoutes } from '../app/modules/variant/variant.routes';
 import { BrandRoutes } from '../app/modules/brand/brand.routes';
+import { ShopCategoryRoutes } from '../app/modules/shopCategory/shopCategory.routes';
 
 const router = express.Router();
 const routes = [
@@ -188,6 +189,10 @@ const routes = [
      {
           path: '/brand',
           route: BrandRoutes,
+     },
+     {
+          path: '/shopCategory',
+          route: ShopCategoryRoutes,
      },
 ];
 

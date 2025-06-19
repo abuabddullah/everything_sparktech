@@ -23,7 +23,7 @@ import { IJwtPayload } from '../auth/auth.interface';
 
 const createBrand = catchAsync(async (req, res) => {
      const categoryData = req.body;
-     const result = await BrandService.createBrandToDB(categoryData);
+     const result = await BrandService.createBrandToDB(categoryData,req.user as IJwtPayload);
      sendResponse(res, {
           success: true,
           statusCode: StatusCodes.OK,

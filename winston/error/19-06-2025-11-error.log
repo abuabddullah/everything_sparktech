@@ -1,0 +1,4 @@
+Thu Jun 19 2025 11:13:7 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shopCategory/create 406 - 165.863 ms
+Thu Jun 19 2025 11:16:33 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/brand/68539c7c2f195c9f63eeaf20 404 - 554.500 ms
+Thu Jun 19 2025 11:17:37 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/shopCategory/68539c7c2f195c9f63eeaf20 400 - 299.519 ms
+Thu Jun 19 2025 11:18:23 [SERVER-NAME] error: 10.0.60.110 - DELETE /api/v1/shopCategory/685374bbcdf9f2ba6dae9460 404 - 157.986 ms

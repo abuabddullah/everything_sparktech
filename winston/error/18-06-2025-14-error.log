@@ -1,0 +1,4 @@
+Wed Jun 18 2025 14:55:26 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/category/create 400 - 240.272 ms
+Wed Jun 18 2025 14:55:41 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/category/create 400 - 106.756 ms
+Wed Jun 18 2025 14:56:57 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/category/create 406 - 188.217 ms
+Wed Jun 18 2025 14:57:32 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/category/create 406 - 180.462 ms

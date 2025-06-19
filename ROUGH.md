@@ -1,4 +1,5 @@
-# user model (ongoing) // vendor and shop admin role to handled
+# user model (ongoing) // vendor and shop admin role to handled 
+ ## createSellerAccount route এ একইসাথে Vender account + Shop Create করতে হবে
 # auth model (done)
 # category model (done)
 # subcategory model (done)

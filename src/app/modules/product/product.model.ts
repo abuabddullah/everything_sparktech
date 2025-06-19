@@ -7,7 +7,6 @@ export interface IProductSingleVariant {
     variantId: mongoose.Types.ObjectId;
     variantQuantity: number;
     variantPrice: number;
-    productVariantImage: string;
 },{_id:false}
     product_variant_Details: IProductSingleVariant[];
 */

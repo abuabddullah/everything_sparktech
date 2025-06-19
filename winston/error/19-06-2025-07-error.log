@@ -1,0 +1,12 @@
+Thu Jun 19 2025 7:48:46 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/variant/single/6850cae8cf603bafa9860df6 404 - 490.324 ms
+Thu Jun 19 2025 7:50:16 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/variant/subcategory/6850cae8cf603bafa9860df6 404 - 96.000 ms
+Thu Jun 19 2025 7:52:6 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/variant/variant-subcategory/6850cae8cf603bafa9860df6 404 - 97.926 ms
+Thu Jun 19 2025 7:52:28 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 404 - 238.500 ms
+Thu Jun 19 2025 7:53:15 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/subcategory/create 404 - 158.694 ms
+Thu Jun 19 2025 7:54:27 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/subcategory/create 404 - 172.517 ms
+Thu Jun 19 2025 7:54:35 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/subcategory/create 404 - 159.335 ms
+Thu Jun 19 2025 7:54:51 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/subcategory/create 404 - 157.506 ms
+Thu Jun 19 2025 7:55:22 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/subcategory/create 404 - 602.506 ms
+Thu Jun 19 2025 7:56:8 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/subcategory/create 404 - 161.998 ms
+Thu Jun 19 2025 7:56:50 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/subcategory/create 404 - 186.591 ms
+Thu Jun 19 2025 7:57:43 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/subcategory/create 404 - 201.425 ms

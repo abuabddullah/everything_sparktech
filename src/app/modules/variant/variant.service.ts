@@ -44,7 +44,7 @@ const createVariant = async (payload: IVariant, user: IJwtPayload) => {
         // Check if variant with same slug already exists
         const isVariantExistSlug = await Variant.findOne({ slug: variantSlug }).session(session); // Use session for transaction
         if (isVariantExistSlug) {
-            throw new AppError(StatusCodes.NOT_ACCEPTABLE, `This Variant Already Exists under ${isExistSubCategory.name} subcategory`);
+            throw new AppError(StatusCodes.NOT_ACCEPTABLE, `This ${variantSlug} Variant Already Exists under ${isExistSubCategory.name} subcategory`);
         }
 
         // Set the generated slug
@@ -101,6 +101,10 @@ export const getSingleVariantByIdFromDB = async (id: string) => {
         { path: "categoryId", select: "name" },  // Only populate the "name" field of categoryId
         { path: "subCategoryId", select: "name" } // Only populate the "name" field of subCategoryId
     ])
+    // If no variant was found, throw an error
+    if (!result) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Variant not found');
+    }
     return {
         result
     }
@@ -112,6 +116,11 @@ export const getSingleVariantBySlugFromDB = async (slug: string) => {
         { path: "categoryId", select: "name" },  // Only populate the "name" field of categoryId
         { path: "subCategoryId", select: "name" } // Only populate the "name" field of subCategoryId
     ])
+
+    // If no variant was found, throw an error
+    if (!result) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Variant not found');
+    }
     return {
         result
     }
@@ -192,7 +201,7 @@ export const deleteVariant = async (id: string, user: IJwtPayload) => {
     }
 
     deletedVariant.set({
-        isDelete: true
+        isDeleted: true
     });
     await deletedVariant.save();
 
@@ -207,12 +216,41 @@ export const getVariantsBySubCategoryIdFromDB = async (id: string, query: Record
         { path: "subCategoryId", select: "name" } // Only populate the "name" field of subCategoryId
     ]), query)
     const result = await variantQuery.fields().sort().paginate().filter().search(['slug']).modelQuery
+    // handle case where no variants are found throw error
+    if (result.length === 0) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'No variants found for this subcategory');
+    }
     const meta = await variantQuery.countTotal();
     return {
         meta,
         result
     }
 };
+
+
+export const getVariantFieldsBySubCategoryIdFromDB = async (id: string, query: Record<string, unknown>) => {
+    const variantQuery = new QueryBuilder(Variant.find({ subCategoryId: id }), query);
+
+    const result = await variantQuery.fields().sort().paginate().filter().search(['slug']).modelQuery;
+
+    // handle case where no variants are found throw error
+    if (result.length === 0) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'No variants found for this subcategory');
+    }
+
+    // Extract unique field names from the result
+    const variantFields = [...new Set(result.flatMap(variant => Object.keys(variant)))];
+
+    // Return the response with the unique field names
+    const meta = await variantQuery.countTotal();
+
+    return {
+        meta,
+        variant_fields: variantFields,
+        // result,
+    };
+};
+
 
 export const VariantService = {
     createVariant,
@@ -221,5 +259,6 @@ export const VariantService = {
     getSingleVariantBySlugFromDB,
     updateVariant,
     deleteVariant,
-    getVariantsBySubCategoryIdFromDB
+    getVariantsBySubCategoryIdFromDB,
+    getVariantFieldsBySubCategoryIdFromDB
 }

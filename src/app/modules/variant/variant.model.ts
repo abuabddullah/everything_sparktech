@@ -31,11 +31,26 @@ const variantSchema = new Schema<IVariant & Document>({
     dimensions: { type: String, required: false },
     capacity: { type: String, required: false },
     options: { type: String, enum: Object.values(VARIANT_OPTIONS) },
-    isDelete:{ type: Boolean, default: false }
+    isDeleted: { type: Boolean, default: false }
 }, {
     timestamps: true,
 });
 
+// Query Middleware to exclude deleted users
+variantSchema.pre('find', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+variantSchema.pre('findOne', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+variantSchema.pre('aggregate', function (next) {
+    this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+    next();
+});
 // Define the model with the interface and document type
 const Variant = model<IVariant & Document>("Variant", variantSchema);
 

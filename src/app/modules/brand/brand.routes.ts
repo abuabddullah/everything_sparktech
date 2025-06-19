@@ -13,7 +13,7 @@ const router = Router();
 router.get("/", BrandController.getAllBrand)
 
 router.post(
-    '/',
+    '/create',
     auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN, USER_ROLES.VENDOR, USER_ROLES.SHOP_ADMIN),
     fileUploadHandler(), parseFileData(FOLDER_NAMES.LOGO),
     validateRequest(brandValidation.createBrandValidationSchema),

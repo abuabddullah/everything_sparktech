@@ -11,7 +11,7 @@ import { IUser } from '../user/user.interface';
 import { IJwtPayload } from '../auth/auth.interface';
 
 
-const createBrandToDB = async (payload: IBrand) => {
+const createBrandToDB = async (payload: IBrand,user: IJwtPayload) => {
    const { name, logo, createdBy } = payload;
    const isExistBrand = await Brand.findOne({ name });
 
@@ -20,7 +20,7 @@ const createBrandToDB = async (payload: IBrand) => {
       throw new AppError(StatusCodes.NOT_ACCEPTABLE, 'This Brand Name Already Exists');
    }
 
-   const isExistUser = await User.findById(createdBy)
+   const isExistUser = await User.findById(user.id)
 
    if (!isExistUser) {
       throw new AppError(StatusCodes.NOT_ACCEPTABLE, 'This User not Exists');
@@ -29,7 +29,7 @@ const createBrandToDB = async (payload: IBrand) => {
    const newBrand = new Brand({
       name,
       logo,
-      createdBy
+      createdBy: isExistUser._id,
    });
 
    const createdBrand = await newBrand.save();

@@ -144,13 +144,15 @@ const getSingleCategoryFromDB = async (id: string, userId: string) => {
      if (!result) {
           throw new AppError(StatusCodes.NOT_FOUND, 'Category not found');
      }
-     const isExist = await User.findById(userId);
-     if (!isExist) {
-          throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
-     }
-     if (isExist?.role === USER_ROLES.SUPER_ADMIN) {
-          result.ctgViewCount += 1;
-          await result.save();
+     if (userId) {
+          const isExist = await User.findById(userId);
+          if (!isExist) {
+               throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+          }
+          if (isExist?.role === USER_ROLES.SUPER_ADMIN || isExist?.role === USER_ROLES.ADMIN) {
+               result.ctgViewCount += 1;
+               await result.save();
+          }
      }
      return result;
 };

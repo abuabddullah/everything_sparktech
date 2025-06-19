@@ -1,0 +1,47 @@
+Thu Jun 19 2025 9:3:13 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant/variant-subcategory/68537923fff80c11a3d5153e 200 - 185.723 ms
+Thu Jun 19 2025 9:4:4 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/variant 200 - 592.361 ms
+Thu Jun 19 2025 9:4:48 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/variant 200 - 550.665 ms
+Thu Jun 19 2025 9:5:19 [SERVER-NAME] info: 10.0.60.110 - PATCH /api/v1/variant/68537e50e29ca583f713ceaf 200 - 561.925 ms
+Thu Jun 19 2025 9:5:59 [SERVER-NAME] info: 10.0.60.110 - DELETE /api/v1/variant/68537e50e29ca583f713ceaf 200 - 314.084 ms
+Thu Jun 19 2025 9:6:8 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant 200 - 235.326 ms
+Thu Jun 19 2025 9:8:55 [SERVER-NAME] warn: [33mMongoDB disconnected. Attempting to reconnect...[39m
+Thu Jun 19 2025 9:8:55 [SERVER-NAME] info: [32mMongoDB reconnected successfully[39m
+Thu Jun 19 2025 9:9:1 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant/single/68537ca0e2e3ca4bfccb8adf 200 - 158.834 ms
+Thu Jun 19 2025 9:9:45 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant/single/68537ca0e2e3ca4bfccb8adf 200 - 158.432 ms
+Thu Jun 19 2025 9:10:18 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant/slug/fashion-women's-fdddfd-328gb 200 - 158.353 ms
+Thu Jun 19 2025 9:11:45 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Thu Jun 19 2025 9:11:46 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Thu Jun 19 2025 9:11:46 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Thu Jun 19 2025 9:11:46 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Thu Jun 19 2025 9:12:9 [SERVER-NAME] info: 10.0.60.110 - DELETE /api/v1/variant/68537e50e29ca583f713ceaf 200 - 368.885 ms
+Thu Jun 19 2025 9:12:22 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant 200 - 265.567 ms
+Thu Jun 19 2025 9:12:39 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/subcategory 200 - 338.217 ms
+Thu Jun 19 2025 9:13:3 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Thu Jun 19 2025 9:13:4 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Thu Jun 19 2025 9:13:4 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Thu Jun 19 2025 9:13:4 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Thu Jun 19 2025 9:13:19 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Thu Jun 19 2025 9:13:20 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Thu Jun 19 2025 9:13:20 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Thu Jun 19 2025 9:13:20 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Thu Jun 19 2025 9:13:29 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant 200 - 289.313 ms
+Thu Jun 19 2025 9:13:39 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant 200 - 250.907 ms
+Thu Jun 19 2025 9:14:1 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Thu Jun 19 2025 9:14:2 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Thu Jun 19 2025 9:14:2 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Thu Jun 19 2025 9:14:2 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Thu Jun 19 2025 9:14:3 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant 200 - 925.390 ms
+Thu Jun 19 2025 9:14:33 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant/single/68537ca0e2e3ca4bfccb8adf 200 - 168.891 ms
+Thu Jun 19 2025 9:14:36 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/variant/slug/fashion-women's-fdddfd-328gb 200 - 85.793 ms
+Thu Jun 19 2025 9:15:0 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Thu Jun 19 2025 9:15:1 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Thu Jun 19 2025 9:15:1 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Thu Jun 19 2025 9:15:1 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Thu Jun 19 2025 9:15:14 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Thu Jun 19 2025 9:15:15 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Thu Jun 19 2025 9:15:15 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Thu Jun 19 2025 9:15:15 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Thu Jun 19 2025 9:20:41 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Thu Jun 19 2025 9:20:42 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Thu Jun 19 2025 9:20:42 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Thu Jun 19 2025 9:20:42 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m

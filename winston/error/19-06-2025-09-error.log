@@ -1,0 +1,5 @@
+Thu Jun 19 2025 9:5:4 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/variant/68537e50e29ca583f713ceaf 404 - 160.811 ms
+Thu Jun 19 2025 9:12:45 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/subcategory/single/68537923fff80c11a3d5153e 404 - 165.845 ms
+Thu Jun 19 2025 9:12:51 [SERVER-NAME] error: 10.0.60.110 - DELETE /api/v1/subcategory/68537923fff80c11a3d5153e 400 - 247.626 ms
+Thu Jun 19 2025 9:14:8 [SERVER-NAME] error: 10.0.60.110 - DELETE /api/v1/variant/68537e50e29ca583f713ceaf 404 - 173.498 ms
+Thu Jun 19 2025 9:15:15 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/variant/slug/fashion-women's-fdddfd-328gb 404 - 445.350 ms

@@ -41,7 +41,6 @@ const getSingleVariantById = catchAsync(async (req, res) => {
 
 const getSingleVariantBySlug = catchAsync(async (req, res) => {
     const { slug } = req.params;
-    console.log('Captured slug:', slug);
     const result = await VariantService.getSingleVariantBySlugFromDB(slug);
     sendResponse(res, {
         success: true,
@@ -84,7 +83,15 @@ const getVariantsBySubCategoryId = catchAsync(async (req, res) => {
     });
 });
 
-
+const getVariantFieldsBySubCategoryId = catchAsync(async (req, res) => {
+    const result = await VariantService.getVariantFieldsBySubCategoryIdFromDB(req.params.id, req.query);
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Variant fields retrieved successfully',
+        data: result,
+    });
+});
 
 export const variantController = {
     createVariantController,
@@ -94,4 +101,5 @@ export const variantController = {
     updateVariantController,
     deleteVariantController,
     getVariantsBySubCategoryId,
+    getVariantFieldsBySubCategoryId,
 }

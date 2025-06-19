@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { BUSINESS_TYPES } from "./business.enums";
 
 interface ITimeSlot {
@@ -6,7 +6,7 @@ interface ITimeSlot {
     end: string;   // e.g., "17:00"
 }
 
-interface IBusinessHours {
+export interface IBusinessHours {
     monday: ITimeSlot[];
     tuesday: ITimeSlot[];
     wednesday: ITimeSlot[];
@@ -24,30 +24,31 @@ export interface IGeoLocation {
 export interface IBusinessSearchParams {
     latitude?: number;
     longitude?: number;
-    radius?: number; 
+    radius?: number;
     searchByLocationText?: string;
 }
 
-export interface IBusiness  {
-    b_name: string;
-    b_type: BUSINESS_TYPES;
-    b_email: string;
-    b_phone: string;
-    b_description: string;
-    b_address?: {
+export interface IBusiness {
+    name: string;
+    type: BUSINESS_TYPES;
+    email: string;
+    phone: string;
+    description: string;
+    address?: {
         province: string;
         city: string;
         territory: string;
         country?: string;
         detail_address?: string;
     };
-    b_location: IGeoLocation;
-    b_service: string;
-    b_working_hours: IBusinessHours;
-    b_logo: string;
-    b_cover_photo: string;
-    b_promot_banner: string;
-    b_reviews: Schema.Types.ObjectId[];
+    location: IGeoLocation;
+    service: string;
+    working_hours: IBusinessHours;
+    logo: string;
+    cover_photo: string;
+    promot_banner: string;
+    reviews: Schema.Types.ObjectId[];
+    owner: mongoose.Types.ObjectId;
 }
 
 
