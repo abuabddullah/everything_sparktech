@@ -55,9 +55,6 @@ export const getAllProtectionExtraServices = catchAsync(
 
 export const updateExtraService = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-        if (!req.body.data) {
-            throw new ApiError(StatusCodes.CONFLICT, "Send the data in req.body.data")
-        }
         if (req.body.data) {
             req.body = ExtraServiceValidation.createExtraServiceZodSchema.parse(
                 JSON.parse(req.body.data)
