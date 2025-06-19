@@ -10,7 +10,7 @@ const extraServiceSchema: Schema<IExtraService> = new Schema(
   {
     name: { type: String, required: true },
     description: { type: String, required: true },
-    type: { type: String, enum: ["PROTECTION"] },
+    isProtection: { type: Boolean, default: false },
     image: { type: String, required: true, default: 'https://i.ibb.co/z5YHLV9/profile.png' },
     cost: { type: Number, default: 0 },
     status: { type: String, enum: Object.values(EXTRA_SERVICE_STATUS), default: EXTRA_SERVICE_STATUS.ACTIVE },

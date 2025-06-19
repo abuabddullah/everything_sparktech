@@ -38,7 +38,7 @@ const getAllExtraServicesFromDB = async (query: Record<string, unknown>) => {
 const getAllProtectionExtraServicesFromDB = async (query: Record<string, unknown>) => {
 
   const extraServicesQuery = new QueryBuilder(
-    ExtraServiceModel.find({ type: "PROTECTION" }),
+    ExtraServiceModel.find({ isProtection: true }),
     query,
   )
     .search(ExtraServiceSearchableFields)
