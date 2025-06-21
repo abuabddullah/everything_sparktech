@@ -15,6 +15,9 @@ export interface ICMSModel {
         phone: string;          // company default contact number
         email: string;            // company default email
         whatsapp?: string;            // company default email
+        facebook?: string;            // company default email
+        instagram?: string;            // company default email
+        tiktok?: string;            // company default email
         location: string;
     }           // company default location
     logo: string;            // company default logo

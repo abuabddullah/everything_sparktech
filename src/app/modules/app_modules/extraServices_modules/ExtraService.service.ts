@@ -55,6 +55,28 @@ const getAllProtectionExtraServicesFromDB = async (query: Record<string, unknown
     result,
   };
 };
+
+const getAllNonProtectionExtraServicesFromDB = async (query: Record<string, unknown>) => {
+
+  const extraServicesQuery = new QueryBuilder(
+    ExtraServiceModel.find({ isProtection: false }),
+    query,
+  )
+    .search(ExtraServiceSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await extraServicesQuery.modelQuery;
+  const meta = await extraServicesQuery.getPaginationInfo();
+
+  return {
+    meta,
+    result,
+  };
+};
+
 const updateExtraServiceInDB = async (
   id: string,
   payload: Partial<IExtraService>
@@ -113,6 +135,7 @@ export const ExtraService = {
   createExtraServiceToDB,
   getAllExtraServicesFromDB,
   getAllProtectionExtraServicesFromDB,
+  getAllNonProtectionExtraServicesFromDB,
   updateExtraServiceInDB,
   deleteExtraServiceFromDB,
   updateExtraServiceStatusInDB,

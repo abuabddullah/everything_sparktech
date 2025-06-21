@@ -53,6 +53,19 @@ export const getAllProtectionExtraServices = catchAsync(
     }
 );
 
+export const getAllNonProtectionExtraServices = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const result = await ExtraService.getAllNonProtectionExtraServicesFromDB(req.query);
+
+        sendResponse(res, {
+            success: true,
+            statusCode: StatusCodes.OK,
+            message: 'Extra non-protection services retrieved successfully',
+            data: result,
+        });
+    }
+);
+
 export const updateExtraService = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
         if (req.body.data) {
@@ -121,4 +134,4 @@ export const getExtraServiceById = catchAsync(
     }
 );
 
-export const ExtraServiceController = { createExtraService, getAllExtraServices,getAllProtectionExtraServices, updateExtraService, deleteExtraService, updateExtraServiceStatus, getExtraServiceById }
+export const ExtraServiceController = { createExtraService, getAllExtraServices,getAllProtectionExtraServices,getAllNonProtectionExtraServices, updateExtraService, deleteExtraService, updateExtraServiceStatus, getExtraServiceById }
