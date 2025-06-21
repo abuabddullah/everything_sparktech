@@ -21,7 +21,7 @@ export type IVehicle = {
     noOfSeats: number;
     noOfDoors: number;
     noOfLuggages: number;
-    image?: string; // Optional field for vehicle image
+    image?: string[]; // Optional field for vehicle image
     dailyRate: number;
     dailyRates?: DailyRateVariant[];
     status: VEHICLE_STATUS; // e.g., 

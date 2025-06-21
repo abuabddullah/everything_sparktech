@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import sendResponse from "../../../../shared/sendResponse";
 import { StatusCodes } from "http-status-codes";
 import { VehicleService } from "./vehicle.service";
-import { getSingleFilePath } from "../../../../shared/getFilePath";
+import { getMultipleFilesPath, getSingleFilePath } from "../../../../shared/getFilePath";
 import { VehicleZodValidation } from "./vehicle.validation";
 const createVehicle = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -82,7 +82,7 @@ const updateAVehicleById = catchAsync(
 
     // Attach image path or filename to parsed data
     if (req.files) {
-      let image = getSingleFilePath(req.files, 'image');
+      let image = getMultipleFilesPath(req.files, 'image');
       parsedData.image = image;
     }
 

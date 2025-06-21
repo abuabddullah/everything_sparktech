@@ -14,7 +14,7 @@ export const createVehicleZodSchema = z.object({
   noOfSeats: z.number(),
   noOfDoors: z.number(),
   noOfLuggages: z.number(),
-  image: z.string().optional(),
+  image: z.array(z.string()).min(1, 'At least one vehicle image is required').max(10, 'Maximum 10 images allowed'),
   dailyRate: z.number(),
   status: z.enum([...(Object.values(VEHICLE_STATUS) as [string, ...string[]])]).default(VEHICLE_STATUS.AVAILABLE),
 });

@@ -5,7 +5,7 @@ import { VehicleController } from './vehicle.controller';
 import { VehicleZodValidation } from './vehicle.validation';
 import validateRequest from '../../../middlewares/validateRequest';
 import fileUploadHandler from '../../../middlewares/fileUploadHandler';
-import { getSingleFilePath } from '../../../../shared/getFilePath';
+import { getMultipleFilesPath, getSingleFilePath } from '../../../../shared/getFilePath';
 const router = express.Router();
 
 router.route('/')
@@ -21,7 +21,7 @@ router.route('/')
 
                     // Attach image path or filename to parsed data
                     if (req.files) {
-                        let image = getSingleFilePath(req.files, 'image');
+                        let image = getMultipleFilesPath(req.files, 'image');
                         parsedData.image = image;
                     }
 
