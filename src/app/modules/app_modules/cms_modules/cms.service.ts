@@ -98,16 +98,49 @@ const CMSService = {
     return cms.contact;
   },
 
+  // updateContact: async (contactData: ICMSModel['contact']) => {
+  //   console.log({ contactData })
+  //   const updatedCms = await CMSModel.findOneAndUpdate(
+  //     {},
+  //     { $set: { contact: contactData } },
+  //     { new: true }
+  //   ).exec();
+  //   if (!updatedCms) throw new Error("Contact not found");
+  //   return updatedCms.contact;
+  // },
+
   updateContact: async (contactData: ICMSModel['contact']) => {
-    console.log({ contactData })
+    console.log("Received contactData:", contactData);
+
+    // Find the CMS document
+    const cms = await CMSModel.findOne().exec();
+
+    if (!cms) {
+      throw new Error("Contact not found");
+    }
+
+    console.log("Existing CMS contact:", cms.contact);
+
+    // Update only the specific fields from contactData
     const updatedCms = await CMSModel.findOneAndUpdate(
       {},
-      { $set: { contact: contactData } },
+      {
+        $set: (Object.keys(contactData) as (keyof ICMSModel['contact'])[]).reduce((acc, key) => ({
+          ...acc,
+          [`contact.${key}`]: contactData[key]
+        }), {})
+      },
       { new: true }
     ).exec();
-    if (!updatedCms) throw new Error("Contact not found");
+
+    if (!updatedCms) {
+      throw new Error("Contact update failed");
+    }
+
+    console.log("Updated CMS contact:", updatedCms.contact);
     return updatedCms.contact;
   },
+
 
   // Logo CRUD
   getLogo: async () => {

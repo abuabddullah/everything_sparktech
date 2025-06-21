@@ -4,6 +4,8 @@ import { CmsController } from "./cms.controller";
 import auth from "../../../middlewares/auth";
 import { USER_ROLES } from "../../../../enums/user";
 import fileUploadHandler from "../../../middlewares/fileUploadHandler";
+import validateRequest from "../../../middlewares/validateRequest";
+import { CompanyOverviewValildtionSchema } from "./cms.validation";
 
 const router = express.Router();
 
@@ -27,7 +29,7 @@ router.delete('/faq/:faqId', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), Cms
 
 // Contact CRUD
 router.get('/contact', CmsController.getContact);
-router.patch('/contact', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), CmsController.updateContact);
+router.patch('/contact', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),validateRequest(CompanyOverviewValildtionSchema.updateContactShcema), CmsController.updateContact);
 
 // Logo CRUD
 router.get('/logo', CmsController.getLogo);
