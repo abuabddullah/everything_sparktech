@@ -5,6 +5,7 @@ export enum USER_ROLES {
   DRIVER = 'DRIVER',
   TEAM_MEMBER = 'TEAM MEMBER',
   CLIENT = 'CLIENT',
+  MANAGER = 'MANAGER',
 }
 export enum TEAM_ROLES {
   AUTHORITY = 'AUTHORITY',

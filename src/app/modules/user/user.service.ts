@@ -259,9 +259,18 @@ const updateDriverToDB = async (payload: Partial<IUser>, id: string) => {
 };
 
 const getAllDriverFromDB = async () => {
-  const allDriverArray = await User.find({
-    role: "DRIVER"
-  });
+  // use QueryBuilder to handle search, filter, sort, paginate, and fields
+  const allDriverQueryBuilder = new QueryBuilder(User.find({
+    role: USER_ROLES.DRIVER
+  }), {})
+    .search(['name', 'email', 'phone'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const allDriverArray = await allDriverQueryBuilder.modelQuery;
+  const meta = await allDriverQueryBuilder.getPaginationInfo();
 
   if (!allDriverArray) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Driver Not Available!");
@@ -301,7 +310,7 @@ const getAllDriverFromDB = async () => {
     })
   );
 
-  return driversWithStatus;
+  return { meta, driversWithStatus };
 };
 
 
@@ -496,6 +505,91 @@ const dateWiseBookingsStatusOfDriversFromDB = async () => {
   return stats;
 };
 
+
+
+const createManagerToDB = async (payload: Partial<IUser>) => {
+  //set role
+  payload.role = USER_ROLES.MANAGER;
+  payload.verified = true;
+  const createManager = await User.create(payload); // name, user, password
+  if (!createManager) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create manager');
+  }
+
+
+  const values = {
+    name: createManager.name,
+    email: createManager.email!,
+    password: payload.password!,
+  };
+  const createAccountTemplate = emailTemplate.createManagerAccount(values);
+  emailHelper.sendEmail(createAccountTemplate);
+
+  return createManager;
+};
+
+
+const getAllManagerFromDB = async () => {
+  const allAdminArray = await User.find({
+    role: USER_ROLES.MANAGER
+  });
+  if (!allAdminArray) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Manager Not Available!");
+  }
+
+  return allAdminArray;
+};
+
+
+
+const getAManagerFromDB = async (
+  id: string
+): Promise<Partial<IUser>> => {
+  const isExistUser = await User.isExistUserById(id);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  return isExistUser;
+};
+
+
+
+const updateAManagerByIdToDB = async (
+  id: string,
+  payload: Partial<IUser>
+): Promise<Partial<IUser | null>> => {
+  const isExistUser = await User.isExistUserById(id);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  const updateDoc = await User.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+
+  return updateDoc;
+};
+
+
+const deleteAManagerFromDB = async (
+  userId: string,
+  id: string
+): Promise<unknown> => {
+  // Prevent self-delete
+  if (userId === id) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "You cannot delete your own account!");
+  }
+
+  const isExistUser = await User.isExistUserById(id);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  const result = await User.findByIdAndDelete(id);
+  return result;
+};
+
 export const UserService = {
   createUserToDB,
   createTeamMemberToDB,
@@ -512,6 +606,11 @@ export const UserService = {
   getAllDriverFromDB,
   getADriverFromDB,
   dateWiseBookingsStatusOfDriversFromDB,
+  createManagerToDB,
+  getAllManagerFromDB,
+  getAManagerFromDB,
+  updateAManagerByIdToDB,
+  deleteAManagerFromDB,
   getUserProfileFromDB,
   updateProfileToDB,
   deleteADriverFromDB,

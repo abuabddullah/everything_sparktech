@@ -95,8 +95,48 @@ router
     auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
     validateRequest(UserValidation.updateAdminZodSchema),
     UserController.updateAnAdminById
+  );
+
+
+
+router
+  .route('/manager')
+  .post(
+    validateRequest(UserValidation.createManagerZodSchema), auth(USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN),
+    UserController.createManager
+  );
+
+  
+router
+  .route('/manager')
+  .get(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    UserController.getAllManager
+  );
+
+router
+  .route('/manager/:id')
+  .get(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    UserController.getAManager
+  );
+
+router
+  .route('/manager/:id')
+  .delete(
+    auth(USER_ROLES.SUPER_ADMIN),
+    UserController.deleteAManager
   )
-  ;
+
+router
+  .route('/manager/:id')
+  .patch(
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    validateRequest(UserValidation.updateManagerZodSchema),
+    UserController.updateAManagerById
+  );
+
+
 
 
 router

@@ -323,21 +323,27 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         thisClient!.stripeCustomerId = stripeCustomerId;
         await thisClient.save({ session });
 
+        // get all the authorized users from the database for notification and emailing
+        const authorizedUsers = await User.find({ role: { $in: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN, USER_ROLES.MANAGER] } }).session(session);
+        const authorizedUserEmails = [...authorizedUsers.map(user => user.email), clientDetails.email];
+        console.log({ authorizedUserEmails })
         // need to send email to the client email with booking details specially the refferece id = booking._id
-        const values: IConfirmBookingEmail = {
-            name: `${clientDetails.firstName} ${clientDetails.lastName}`,
-            email: clientDetails.email,
-            phone: clientDetails.phone,
-            pickupLocation: isExistingPickupLocation.location,
-            returnLocation: isExistingReturnLocation.location,
-            vehicle: isExistingVehicle.name,
-            pickupTime: convertToReadableDate(bookingdata.pickupTime!),
-            returnTime: convertToReadableDate(bookingdata.returnTime!),
-            amount: amount.toFixed(2),
-            bookingId: (createdBooking[0] as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
-        }
-        const confirmBookingEmailTemplate = emailTemplate.confirmBookingEmail(values);
-        emailHelper.sendEmail(confirmBookingEmailTemplate);
+        authorizedUserEmails.forEach(email => {
+            const values: IConfirmBookingEmail = {
+                name: `${clientDetails.firstName} ${clientDetails.lastName}`,
+                email: email,
+                phone: clientDetails.phone,
+                pickupLocation: isExistingPickupLocation.location,
+                returnLocation: isExistingReturnLocation.location,
+                vehicle: isExistingVehicle.name,
+                pickupTime: convertToReadableDate(bookingdata.pickupTime!),
+                returnTime: convertToReadableDate(bookingdata.returnTime!),
+                amount: amount.toFixed(2),
+                bookingId: (createdBooking[0] as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
+            }
+            const confirmBookingEmailTemplate = emailTemplate.confirmBookingEmail(values);
+            emailHelper.sendEmail(confirmBookingEmailTemplate);
+        })
 
         // create payment
         const newPayment = await PaymentModel.create([
@@ -393,13 +399,11 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         }
 
         // send notification to the admins with booking details
-        // get all the admin users from the database
-        const adminUsers = await User.find({ role: { $in: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN] } }).session(session);
-        const adminUserIds = adminUsers.map(user => user._id);
+        const authorizedUserIds = authorizedUsers.map(user => user._id);
         // create notification data
         const notificationData = {
             text: `New booking created by ${clientDetails.firstName} ${clientDetails.lastName} for vehicle ${isExistingVehicle.name}. Booking ID: ${createdBooking[0]._id}`,
-            receiver: adminUserIds, // Send to all admin users
+            receiver: authorizedUserIds, // Send to all admin users
             read: false,
             referenceId: (createdBooking[0] as IBooking & { _id: mongoose.Types.ObjectId })._id.toString(),
             category: NOTIFICATION_CATEGORIES.RESERVATION,
