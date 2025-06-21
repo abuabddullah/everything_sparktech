@@ -11,7 +11,7 @@ import catchAsync from '../../../../shared/catchAsync';
 import ApiError from '../../../../errors/ApiError';
 
 const router = Router();
-
+/* 
 router.get('/', auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), catchAsync(async (req: Request, res: Response) => {
     // Get total reservations
     const totalReservationsPromise = BookingModel.countDocuments();
@@ -190,10 +190,118 @@ router.get('/', auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN
         fleetOverview,
     });
 }));
+ */
+
+router.get('/:month', auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), catchAsync(async (req: Request, res: Response) => {
+    console.log({ month: req.params.month });
+    // Get month from params or use current month
+    const targetDate = req.params.month ? new Date(req.params.month) : new Date();
+    const startOfMonth = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
+    const endOfMonth = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0, 23, 59, 59);
+
+    // Get start of current day for fleet overview
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    // Get total reservations for the month
+    const totalReservationsPromise = BookingModel.countDocuments({
+        createdAt: {
+            $gte: startOfMonth,
+            $lte: endOfMonth
+        }
+    });
+
+    // Get active cars for the month
+    const activeCarsPromise = Vehicle.countDocuments({
+        status: {
+            $in: [
+                VEHICLE_STATUS.AVAILABLE,
+                VEHICLE_STATUS.RENTED,
+                VEHICLE_STATUS.UNDER_MAINTENANCE
+            ]
+        },
+        createdAt: {
+            $lte: endOfMonth
+        }
+    });
+
+    // Get total revenue from paid payments for the month
+    const totalRevenuePromise = PaymentModel.aggregate([
+        {
+            $match: {
+                status: PAYMENT_STATUS.PAID,
+                createdAt: {
+                    $gte: startOfMonth,
+                    $lte: endOfMonth
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: { $sum: '$amount' }
+            }
+        }
+    ]);
 
 
+    // Get fleet overview - count of vehicles by status
+    const fleetOverviewPromise = Vehicle.aggregate([
+        {
+            $group: {
+                _id: '$status',
+                count: { $sum: 1 }
+            }
+        }
+    ]);
 
-router.get('/booking/:year', auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
+    // Execute all promises in parallel
+    const [
+        totalReservations,
+        activeCars,
+        totalRevenueAgg,
+        fleetOverviewAgg
+    ] = await Promise.all([
+        totalReservationsPromise,
+        activeCarsPromise,
+        totalRevenuePromise,
+        fleetOverviewPromise
+    ]);
+
+    // Extract total revenue or default to 0
+    const totalRevenue = totalRevenueAgg[0]?.total || 0;
+
+    // Transform fleet overview data to match required structure
+    const fleetOverview = {
+        available: 0,
+        rented: 0,
+        maintenance: 0
+    };
+
+    fleetOverviewAgg.forEach(item => {
+        switch (item._id) {
+            case VEHICLE_STATUS.AVAILABLE:
+                fleetOverview.available = item.count;
+                break;
+            case VEHICLE_STATUS.RENTED:
+                fleetOverview.rented = item.count;
+                break;
+            case VEHICLE_STATUS.UNDER_MAINTENANCE:
+                fleetOverview.maintenance = item.count;
+                break;
+        }
+    });
+
+    // Send response in required format
+    res.json({
+        totalReservations,
+        activeCars,
+        totalRevenue,
+        fleetOverview
+    });
+}));
+
+router.get('/booking/:year', auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
     const year = parseInt(req.params.year);
 
     if (isNaN(year)) {
@@ -235,7 +343,7 @@ router.get('/booking/:year', auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLE
     res.json({ totalBookingsByMonth });
 }));
 
-router.get('/revenue/:year', auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
+router.get('/revenue/:year', auth(USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
     const year = parseInt(req.params.year);
 
     if (isNaN(year)) {

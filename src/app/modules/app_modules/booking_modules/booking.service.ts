@@ -470,7 +470,7 @@ const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
 
 const getRangeBookingsForExportFromDB = async (query: Record<string, any>) => {
 
-
+    console.log({ query })
     const dateFilter: any = {};
 
     if (query.createdAt?.gte || query.createdAt?.lte) {
