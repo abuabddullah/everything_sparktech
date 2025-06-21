@@ -35,6 +35,19 @@ const getAllBookings = catchAsync(
     }
 );
 
+const getRangeBookingsForExport = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const result = await BookingService.getRangeBookingsForExportFromDB(req.query);
+
+        sendResponse(res, {
+            success: true,
+            statusCode: StatusCodes.OK,
+            message: 'Bookings retrieved successfully',
+            data: result,
+        });
+    }
+);
+
 const searchBooking = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
         const { searchTerm, page, limit } = req.query;
@@ -162,6 +175,7 @@ const getBookingByDriverID = catchAsync(async (req: Request, res: Response) => {
 export const BookingController = {
     createBooking,
     getAllBookings,
+    getRangeBookingsForExport,
     searchBooking,
     deleteBooking,
     getAvailableDriverForAssignABooking: () => {

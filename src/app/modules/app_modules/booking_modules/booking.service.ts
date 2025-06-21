@@ -468,6 +468,45 @@ const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
     };
 };
 
+const getRangeBookingsForExportFromDB = async (query: Record<string, any>) => {
+
+
+    const dateFilter: any = {};
+
+    if (query.createdAt?.gte || query.createdAt?.lte) {
+        dateFilter.createdAt = {
+            ...(query.createdAt?.gte && { $gte: new Date(query.createdAt.gte as string) }),
+            ...(query.createdAt?.lte && { $lte: new Date(query.createdAt.lte as string) })
+        };
+    }
+
+    const result = await BookingModel.find(dateFilter)
+        .populate({
+            path: 'returnLocation',
+            select: 'location'
+        })
+        .populate({
+            path: 'pickupLocation',
+            select: 'location'
+        })
+        .populate({
+            path: 'driverId',
+            select: 'name'
+        })
+        .populate({
+            path: 'clientId',
+            select: 'firstName lastName email'
+        })
+        .populate({
+            path: 'vehicle',
+            select: 'name'
+        })
+
+    return {
+        result,
+    };
+};
+
 
 const searchBookingFromDB = async ({ searchTerm, limit = 10, page = 1 }: ISearchBookingParams) => {
     // Create the case-insensitive regex for searching
@@ -823,6 +862,7 @@ const updateBookingIsPaid = async (bookingId: string, isPaid: boolean) => {
 export const BookingService = {
     createBookingToDB,
     getAllBookingsFromDB,
+    getRangeBookingsForExportFromDB,
     searchBookingFromDB,
     deleteBookingFromDB,
     getABookingByEmailAndIDFromDB,

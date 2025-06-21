@@ -15,6 +15,7 @@ router.route('/')
         BookingController.createBooking
     );
 
+router.route('/export').get(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER), BookingController.getRangeBookingsForExport);
 router.route('/search').get(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER), BookingController.searchBooking);
 
 // router.route('/available-drivers').get(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),validateRequest(BookingValidation.getAvailableDriversValidationSchema), BookingController.getAvailableDriverForAssignABooking);
