@@ -7,7 +7,7 @@ import { ExtraServiceValidation } from './extraService.validation';
 
 const router = express.Router();
 
-router.route('/').post(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), fileUploadHandler(),
+router.route('/').post(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER), fileUploadHandler(),
     (req: Request, res: Response, next: NextFunction) => {
         if (req.body.data) {
             req.body = ExtraServiceValidation.createExtraServiceZodSchema.parse(
@@ -20,9 +20,9 @@ router.route('/').post(auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), fileUploa
 router.get('/', ExtraServiceController.getAllExtraServices);
 router.get('/protection', ExtraServiceController.getAllProtectionExtraServices);
 router.get('/non-protection', ExtraServiceController.getAllNonProtectionExtraServices);
-router.patch('/status/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.updateExtraServiceStatus);
+router.patch('/status/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER), ExtraServiceController.updateExtraServiceStatus);
 router.get('/:id',ExtraServiceController.getExtraServiceById);
-router.patch('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),fileUploadHandler(), ExtraServiceController.updateExtraService);
-router.delete('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN), ExtraServiceController.deleteExtraService);
+router.patch('/:id', auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),fileUploadHandler(), ExtraServiceController.updateExtraService);
+router.delete('/:id', auth(USER_ROLES.SUPER_ADMIN), ExtraServiceController.deleteExtraService);
 
 export const ExtraServiceRoutes = router;

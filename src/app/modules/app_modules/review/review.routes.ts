@@ -9,7 +9,7 @@ const router = express.Router();
 
 
 router.get("/", ReviewController.getAllReviews)
-router.post("/admin", auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+router.post("/admin", auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN),
      validateRequest(ReviewValidation.reviewByAdminZodSchema), async (req: Request, res: Response, next: NextFunction) => {
           try {
                const { rating, ...othersData } = req.body;
@@ -24,7 +24,7 @@ router.post("/admin", auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
                return res.status(500).json({ message: 'Failed to convert string to number' });
           }
      }, ReviewController.createReiviewByAdmin);
-router.delete("/:id", auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), ReviewController.deleteReviewById)
+router.delete("/:id", auth(USER_ROLES.SUPER_ADMIN), ReviewController.deleteReviewById)
 router.post(
      '/:clientEmail',
      validateRequest(ReviewValidation.reviewZodSchema),

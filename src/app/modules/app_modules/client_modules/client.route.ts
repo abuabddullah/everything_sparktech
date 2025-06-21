@@ -12,10 +12,10 @@ const router = express.Router();
 router.post("/", validateRequest(ClientValidation.createClientSchema), ClientController.createClient);
 
 // Route to get all clients
-router.get("/",auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN), ClientController.getAllClients);
+router.get("/",auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER,USER_ROLES.SUPER_ADMIN), ClientController.getAllClients);
     
 // Route to get a client by ID
-router.get("/:id", auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN), ClientController.getClientById);
+router.get("/:id", auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER,USER_ROLES.SUPER_ADMIN), ClientController.getClientById);
 
 // Route to get a client by email
 router.get("/email/:email", ClientController.getClientByEmail);

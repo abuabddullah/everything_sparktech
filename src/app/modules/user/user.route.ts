@@ -12,7 +12,7 @@ const router = express.Router();
 
 router
   .route('/profile')
-  .get(auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.DRIVER, USER_ROLES.TEAM_MEMBER, USER_ROLES.SUPER_ADMIN), UserController.getUserProfile)
+  .get(auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.USER, USER_ROLES.DRIVER, USER_ROLES.TEAM_MEMBER, USER_ROLES.SUPER_ADMIN), UserController.getUserProfile)
   .patch(
     auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.DRIVER, USER_ROLES.TEAM_MEMBER),
     fileUploadHandler(),
@@ -29,7 +29,7 @@ router
 router
   .route('/team-member')
   .post(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     fileUploadHandler(),
     (req: Request, res: Response, next: NextFunction) => {
       if (req.body.data) {
@@ -44,7 +44,7 @@ router
 
 router.route('/team-member').get(UserController.getAllTeamMember);
 
-router.route('/team-member/:id').patch(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), validateRequest(UserValidation.updateTeamMemberZodSchema), fileUploadHandler(), (req: Request, res: Response, next: NextFunction) => {
+router.route('/team-member/:id').patch(auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), validateRequest(UserValidation.updateTeamMemberZodSchema), fileUploadHandler(), (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.data) {
     // Assuming you have an ApiError class and next() will handle it
     return next(new ApiError(400, 'Missing required data in request body'));
@@ -57,8 +57,8 @@ router.route('/team-member/:id').patch(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_A
   return UserController.updateTeamMemberById(req, res, next);
 })
 
-router.route('/team-member/:id').delete(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.deleteTeamMemberById)
-router.route('/team-member/:id').get(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.getTeamMemberById)
+router.route('/team-member/:id').delete(auth(USER_ROLES.SUPER_ADMIN), UserController.deleteTeamMemberById)
+router.route('/team-member/:id').get(auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), UserController.getTeamMemberById)
 
 
 router
@@ -71,14 +71,14 @@ router
 router
   .route('/admin')
   .get(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     UserController.getAllAdmin
   );
 
 router
   .route('/admin/:id')
   .get(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     UserController.getAnAdmin
   );
 
@@ -92,7 +92,7 @@ router
 router
   .route('/admin/:id')
   .patch(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     validateRequest(UserValidation.updateAdminZodSchema),
     UserController.updateAnAdminById
   );
@@ -102,7 +102,7 @@ router
 router
   .route('/manager')
   .post(
-    validateRequest(UserValidation.createManagerZodSchema), auth(USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN),
+    validateRequest(UserValidation.createManagerZodSchema), auth(USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     UserController.createManager
   );
 
@@ -110,14 +110,14 @@ router
 router
   .route('/manager')
   .get(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     UserController.getAllManager
   );
 
 router
   .route('/manager/:id')
   .get(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     UserController.getAManager
   );
 
@@ -131,7 +131,7 @@ router
 router
   .route('/manager/:id')
   .patch(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     validateRequest(UserValidation.updateManagerZodSchema),
     UserController.updateAManagerById
   );
@@ -142,11 +142,11 @@ router
 router
   .route('/driver')
   .get(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     UserController.getAllDriver
   )
   .post(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     fileUploadHandler(),
     (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -173,22 +173,22 @@ router
     }
   );
 
-router.route("/driver/stat").get(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.dateWiseBookingsStatusOfDrivers)
+router.route("/driver/stat").get(auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), UserController.dateWiseBookingsStatusOfDrivers)
 
 router
   .route('/driver/:id')
   .get(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     UserController.getADriver
   )
 
 router
   .route('/driver/:id')
   .delete(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN),
     UserController.deleteADriver
   ).patch(
-    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN),
+    auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN,USER_ROLES.MANAGER),
     fileUploadHandler(),
     (req: Request, res: Response, next: NextFunction) => {
       try {

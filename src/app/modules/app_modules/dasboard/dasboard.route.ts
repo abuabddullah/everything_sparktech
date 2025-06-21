@@ -12,7 +12,7 @@ import ApiError from '../../../../errors/ApiError';
 
 const router = Router();
 
-router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async (req: Request, res: Response) => {
+router.get('/', auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), catchAsync(async (req: Request, res: Response) => {
     // Get total reservations
     const totalReservationsPromise = BookingModel.countDocuments();
 
@@ -193,7 +193,7 @@ router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async
 
 
 
-router.get('/booking/:year', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
+router.get('/booking/:year', auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
     const year = parseInt(req.params.year);
 
     if (isNaN(year)) {
@@ -235,7 +235,7 @@ router.get('/booking/:year', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), cat
     res.json({ totalBookingsByMonth });
 }));
 
-router.get('/revenue/:year', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
+router.get('/revenue/:year', auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN), catchAsync(async (req, res) => {
     const year = parseInt(req.params.year);
 
     if (isNaN(year)) {

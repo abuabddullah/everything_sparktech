@@ -16,7 +16,7 @@ paymentRoutes
 
   .get(
     '/admin',
-    auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),
+    auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER,USER_ROLES.SUPER_ADMIN),
     paymenController.getAllPaymentByAdmin,
   )
 //   .get(

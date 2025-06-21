@@ -9,20 +9,20 @@ router.get('/',
     NotificationController.getNotificationFromDB
 );
 router.get('/admin',
-    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN),
     NotificationController.adminNotificationFromDB
 );
 
 router.get('/admin/count-read-unread',
-    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN),
     NotificationController.notificationReadUnreadCount
 );
 router.patch('/admin',
-    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN),
     NotificationController.adminReadNotification
 );
 router.patch('/admin/:id',
-    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    auth(USER_ROLES.ADMIN,USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN),
     NotificationController.readNotification
 );
 
