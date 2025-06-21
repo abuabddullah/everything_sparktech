@@ -27,15 +27,19 @@ export interface IShop extends Partial<IBusiness> {
     owner: mongoose.Types.ObjectId;
     // ..
     admins?: mongoose.Types.ObjectId[];
+    followers?: mongoose.Types.ObjectId[];
     coupons?: mongoose.Types.ObjectId[];
     // ...
     website?: string;
     categories?: mongoose.Types.ObjectId[];
+    chats?: mongoose.Types.ObjectId[];
+    orders?: mongoose.Types.ObjectId[];
     isActive: boolean;
     isDeleted: boolean;
     isVerified: boolean;
     rating: number;
     totalReviews: number;
+    totalFollowers: number;
     settings: {
         allowChat: boolean;
         autoAcceptOrders: boolean;

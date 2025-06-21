@@ -29,4 +29,19 @@ router.post(
      ReviewController.createReview,
 );
 
+// // shop related routes
+// // Get reviews by shop
+// router.get('/reviews/:shopId', ReviewController.getReviewsByShop);
+// const getReviewsByShop = catchAsync(async (req: Request, res: Response) => {
+//     const { shopId } = req.params;
+//     const result = await ReviewService.getReviewsByShop(shopId);
+//     sendResponse(res, {
+//         statusCode: StatusCodes.OK,
+//         success: true,
+//         message: 'Reviews by shop retrieved successfully',
+//         data: result,
+//     });
+// });
+
+
 export const ReviewRoutes = router;

@@ -16,6 +16,9 @@ router.post(
     ShopCategoryController.createShopCategory
 );
 
+// Get shops by category বানাতে হবে
+// Uncomment the following line when the getShopsByCategory method is implemented
+// router.get('/category/:categoryId', ShopCategoryController.getShopsByCategory);
 router.patch(
     '/:id',
     auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN, USER_ROLES.VENDOR, USER_ROLES.SHOP_ADMIN),

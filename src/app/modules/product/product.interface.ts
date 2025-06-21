@@ -29,6 +29,7 @@ export interface IProduct {
     viewCount: number;
     categoryId: mongoose.Types.ObjectId;
     subcategoryId: mongoose.Types.ObjectId;
+    comments: mongoose.Types.ObjectId[];
     totalReviews: number;
     product_variant_Details: IProductSingleVariant[];
 }
