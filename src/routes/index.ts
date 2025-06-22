@@ -27,6 +27,7 @@ import { VideoCommentRouter } from '../app/modules/vidoeComments/vidoeComments.r
 import { VariantRoutes } from '../app/modules/variant/variant.routes';
 import { BrandRoutes } from '../app/modules/brand/brand.routes';
 import { ShopCategoryRoutes } from '../app/modules/shopCategory/shopCategory.routes';
+import { ShopRoutes } from '../app/modules/shop/shop.route';
 
 const router = express.Router();
 const routes = [
@@ -193,6 +194,10 @@ const routes = [
      {
           path: '/shopCategory',
           route: ShopCategoryRoutes,
+     },
+     {
+          path: '/shop',
+          route: ShopRoutes,
      },
 ];
 

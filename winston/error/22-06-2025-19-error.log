@@ -1,0 +1,10 @@
+Sun Jun 22 2025 19:4:2 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 404 - 3.799 ms
+Sun Jun 22 2025 19:4:24 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 404 - 728.093 ms
+Sun Jun 22 2025 19:6:38 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 400 - 1322.070 ms
+Sun Jun 22 2025 19:8:13 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 400 - 371.788 ms
+Sun Jun 22 2025 19:9:33 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 400 - 194.346 ms
+Sun Jun 22 2025 19:9:43 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 400 - 199.341 ms
+Sun Jun 22 2025 19:11:45 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 400 - 814.107 ms
+Sun Jun 22 2025 19:11:50 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 400 - 302.615 ms
+Sun Jun 22 2025 19:12:12 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 400 - 280.606 ms
+Sun Jun 22 2025 19:36:34 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop 400 - 215.017 ms

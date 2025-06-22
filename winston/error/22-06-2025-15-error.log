@@ -1,0 +1,6 @@
+Sun Jun 22 2025 15:36:7 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/user/seller 404 - 18.274 ms
+Sun Jun 22 2025 15:36:41 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/user/seller 404 - 1.083 ms
+Sun Jun 22 2025 15:37:10 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/users/seller 400 - 4.011 ms
+Sun Jun 22 2025 15:41:45 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/users/seller 400 - 1.068 ms
+Sun Jun 22 2025 15:58:57 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/users/seller 400 - 22.192 ms
+Sun Jun 22 2025 15:59:59 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/users/seller 400 - 1371.869 ms

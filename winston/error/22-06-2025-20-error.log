@@ -1,0 +1,7 @@
+Sun Jun 22 2025 20:2:17 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/shop/make-shop-admin/685806ee0d8150920d3662a5 400 - 265.165 ms
+Sun Jun 22 2025 20:2:47 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/shop/make-shop-admin/685806ee0d8150920d3662a5 400 - 101.635 ms
+Sun Jun 22 2025 20:2:58 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/shop/make-shop-admin/685806ee0d8150920d3662a5 400 - 86.931 ms
+Sun Jun 22 2025 20:3:23 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/shop/make-shop-admin/685806ee0d8150920d3662a5 400 - 802.791 ms
+Sun Jun 22 2025 20:3:48 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/shop/make-shop-admin/685806ee0d8150920d3662a5 400 - 462.396 ms
+Sun Jun 22 2025 20:4:15 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/shop/make-shop-admin/685806ee0d8150920d3662a5 400 - 97.718 ms
+Sun Jun 22 2025 20:4:56 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/shop/make-shop-admin/685806ee0d8150920d3662a5 400 - 1133.450 ms

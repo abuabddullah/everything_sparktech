@@ -1,0 +1,53 @@
+Sun Jun 22 2025 17:17:43 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:17:46 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:17:46 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:17:46 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:22:22 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:22:23 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:22:23 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:22:23 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:27:23 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:27:24 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:27:24 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:27:24 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:49:23 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:49:24 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:49:24 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:49:24 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:51:31 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:51:32 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:51:32 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:51:32 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:52:19 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/shop 200 - 192.190 ms
+Sun Jun 22 2025 17:53:20 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:53:21 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:53:21 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:53:21 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:53:31 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:53:32 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:53:32 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:53:32 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:54:32 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:54:33 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:54:33 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:54:33 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:54:54 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:54:55 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:54:55 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:54:55 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:55:3 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:55:3 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:55:3 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:55:3 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:56:37 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/users/seller 200 - 1473.496 ms
+Sun Jun 22 2025 17:56:40 [SERVER-NAME] info: Mail send successfully
+Sun Jun 22 2025 17:57:26 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/shop 200 - 166.077 ms
+Sun Jun 22 2025 17:58:2 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:58:3 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:58:3 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:58:3 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:58:12 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Sun Jun 22 2025 17:58:13 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Sun Jun 22 2025 17:58:13 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Sun Jun 22 2025 17:58:13 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Sun Jun 22 2025 17:58:16 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/shop 200 - 261.119 ms

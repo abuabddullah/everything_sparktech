@@ -25,25 +25,10 @@ router
      );
 
 router.route('/').post(validateRequest(UserValidation.createUserZodSchema), UserController.createUser);
+router.route('/seller').post(validateRequest(UserValidation.createUserZodSchema), UserController.createSellerUser);
 router.delete('/delete', auth(USER_ROLES.USER), UserController.deleteProfile);
 
 // make user admin, user to shop admin, user to vendor
 // router.patch('/make-admin/:userId', auth(USER_ROLES.SUPER_ADMIN), UserController.makeAdmin);
-// router.patch('/make-shop-admin/:userId', auth(USER_ROLES.SUPER_ADMIN), UserController.makeShopAdmin);
-
-// // shop related routes
-// // Get followed shops by user
-// router.get('/shop/:userId', UserController.getShopsByFollower);
-
-// const getShopsByFollower = catchAsync(async (req: Request, res: Response) => {
-//     const { followerId } = req.params;
-//     const result = await UserService.getShopsByFollower(followerId);
-//     sendResponse(res, {
-//         statusCode: StatusCodes.OK,
-//         success: true,
-//         message: 'Shops by follower retrieved successfully',
-//         data: result,
-//     });
-// });
 
 export const UserRouter = router;
