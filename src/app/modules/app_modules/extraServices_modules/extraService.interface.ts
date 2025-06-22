@@ -6,5 +6,6 @@ export interface IExtraService  {
   image: string;
   cost: number;
   isProtection?: boolean;
+  isPerDay?: boolean;
   status: EXTRA_SERVICE_STATUS;
 }
