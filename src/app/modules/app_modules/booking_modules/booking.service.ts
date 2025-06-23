@@ -121,6 +121,9 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
             throw new Error("Vehicle is already booked during the requested time period");
         }
 
+        //Calculate the number of days the car is rented for
+        carRentedForInDays = Math.ceil((returnDateTime.getTime() - pickupDateTime.getTime()) / (1000 * 60 * 60 * 24));
+
         //need to check if all the selected extra services are valid or not if valid then calculate the amount and update selectedExtraServicesAmount
 
         if (payload?.extraServices && payload?.extraServices!?.length > 0) {
@@ -142,31 +145,22 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
             // Step 4: Calculate the total cost of the selected extra services
             selectedExtraServices.forEach((service, index) => {
                 const serviceDetail = serviceDetails[index];
-
-                // Ensure that the service has a valid cost and quantity
-                const serviceAmount = (service.cost || 0) * serviceDetail.quantity; // Multiply cost by quantity
-                selectedExtraServicesAmount += serviceAmount; // Add to total cost
+                if (service.isPerDay == false) {
+                    const serviceAmount = (service.cost || 0) * serviceDetail.quantity; // Multiply cost by quantity
+                    selectedExtraServicesAmount += serviceAmount; // Add to total cost
+                }
+                else {
+                    if (serviceDetail.quantity > 1) {
+                        const serviceAmount = (service.cost || 0) * carRentedForInDays * serviceDetail.quantity; // Multiply cost by quantity
+                        selectedExtraServicesAmount += serviceAmount; // Add to total cost
+                    }
+                    else {
+                        const serviceAmount = (service.cost || 0) * carRentedForInDays; // Multiply cost by quantity
+                        selectedExtraServicesAmount += serviceAmount; // Add to total cost
+                    }
+                }
             });
-
-
-            // // Ensure that extraServicesIds are converted to ObjectIds
-            // const objectIds = payload.extraServices!.map(id => new mongoose.Types.ObjectId(id));
-
-            // // Query the Service collection for all services whose providerId is in the array
-            // selectedExtraServices = await ExtraServiceModel.find({ _id: { $in: objectIds } });
-
-            // // Check if the number of services found matches the number of extraServicesIds
-            // if (selectedExtraServices.length !== payload.extraServices!.length) {
-            //     // Throw an error with the missing extraServicesIds
-            //     throw new Error(`The Services were not found in the database`);
-            // }
-
-            // // Calculate the total cost of selected services
-            // selectedExtraServicesAmount = selectedExtraServices.reduce((total: number, service: IExtraService) => total + (service.cost || 0), 0);
         }
-
-        //Calculate the number of days the car is rented for
-        carRentedForInDays = Math.ceil((returnDateTime.getTime() - pickupDateTime.getTime()) / (1000 * 60 * 60 * 24));
 
         // Calculate the vehicleRentAmount based on the vehicle's daily rate 
         if (
