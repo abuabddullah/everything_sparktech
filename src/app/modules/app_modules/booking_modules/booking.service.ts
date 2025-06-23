@@ -128,10 +128,12 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
 
         if (payload?.extraServices && payload?.extraServices!?.length > 0) {
             // Step 1: Extract serviceId and quantity from the payload
-            const serviceDetails = payload.extraServices.map((extraService) => ({
-                serviceId: new mongoose.Types.ObjectId(extraService.serviceId),
-                quantity: extraService.qty || 1,  // Default quantity to 1 if not provided
-            }));
+            const serviceDetails = payload.extraServices.map((extraService) => {
+                return {
+                    serviceId: new mongoose.Types.ObjectId(extraService.serviceId),
+                    quantity: extraService.qty || 1,  // Default quantity to 1 if not provided
+                }
+            });
 
             // Step 2: Query the ExtraService collection to retrieve the extra services by their serviceId
             const extraServiceIds = serviceDetails.map((service) => service.serviceId);
@@ -270,7 +272,7 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
                 }
 
                 // If customer exists, proceed with your logic
-                console.log('Customer retrieved:', stripeCustomer);
+                // console.log('Customer retrieved:', stripeCustomer);
 
             } catch (error: any) {
                 // Log detailed error for debugging
@@ -320,7 +322,7 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         // get all the authorized users from the database for notification and emailing
         const authorizedUsers = await User.find({ role: { $in: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN, USER_ROLES.MANAGER] } }).session(session);
         const authorizedUserEmails = [...authorizedUsers.map(user => user.email), clientDetails.email];
-        console.log({ authorizedUserEmails })
+        // console.log({ authorizedUserEmails })
         // need to send email to the client email with booking details specially the refferece id = booking._id
         authorizedUserEmails.forEach(email => {
             const values: IConfirmBookingEmail = {
@@ -354,7 +356,6 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         if (!newPayment || newPayment.length === 0) {
             throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create payment for booking');
         }
-
         createdBooking[0].paymentId = newPayment[0]._id as mongoose.Types.ObjectId;
         await createdBooking[0].save({ session });
 
@@ -409,8 +410,8 @@ const createBookingToDB = async (payload: Partial<IBookingRequestBody>) => {
         session.endSession();
         const resposnseStructure = {
             booking: createdBooking[0],
-            payment: newPayment[0],
             url: `${config.frontend_url}/reservationdetails?bookingId=${createdBooking[0]?._id}&email=${clientDetails.email}`,
+            payment: newPayment[0],
         }
         return { ...resposnseStructure };
 
