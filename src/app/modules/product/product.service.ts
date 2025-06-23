@@ -20,14 +20,14 @@ import { USER_ROLES } from '../user/user.enums';
 const createProduct = async (payload: IProduct, user: IJwtPayload) => {
     const session = await mongoose.startSession();
     session.startTransaction();
-    
+
     try {
         // Check if shop exists and user is authorized
         const shop = await Shop.findById(payload.shopId, null, { session });
         if (!shop) {
             throw new AppError(StatusCodes.NOT_FOUND, 'Shop not found');
         }
-        
+
         if (user.role === USER_ROLES.VENDOR || user.role === USER_ROLES.SHOP_ADMIN) {
             if (shop.owner.toString() !== user.id && !shop.admins?.some(admin => admin.toString() === user.id)) {
                 throw new AppError(StatusCodes.FORBIDDEN, 'You are not authorized to create a product for this shop');
@@ -81,17 +81,18 @@ const createProduct = async (payload: IProduct, user: IJwtPayload) => {
                 });
 
                 const variantSlug = generateSlug(
-                    isExistCategory.name, 
-                    isExistSubCategory.name, 
+                    isExistCategory.name,
+                    isExistSubCategory.name,
                     variant as IProductSingleVariantByFieldName
                 );
 
                 const isVariantExistSlug = await Variant.findOne({ slug: variantSlug }, null, { session });
                 if (isVariantExistSlug) {
-                    throw new AppError(
-                        StatusCodes.NOT_ACCEPTABLE, 
-                        `Variant '${variantSlug}' already exists under ${isExistSubCategory.name} subcategory. Use variant ID: ${isVariantExistSlug._id}`
-                    );
+                    return {
+                        variantId: isVariantExistSlug._id,
+                        variantQuantity: variant.variantQuantity,
+                        variantPrice: variant.variantPrice
+                    } as IProductSingleVariant;
                 }
 
                 newVariant.slug = variantSlug;
@@ -140,20 +141,20 @@ const createProduct = async (payload: IProduct, user: IJwtPayload) => {
         // Create and save the product
         const product = new Product(productData);
         await product.validate();
-        
+
         const savedProduct = await product.save({ session });
-        
+
         await session.commitTransaction();
         return savedProduct;
 
     } catch (error) {
         await session.abortTransaction();
-        
+
         // Clean up uploaded files if there was an error
         if (payload.images && Array.isArray(payload.images)) {
             payload.images.forEach(image => unlinkFile(image));
         }
-        
+
         throw error;
     } finally {
         await session.endSession();
