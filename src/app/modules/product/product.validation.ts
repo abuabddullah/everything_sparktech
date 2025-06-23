@@ -42,7 +42,7 @@ const createProductZodSchema = z.object({
         name: z.string().min(2, 'Name must be at least 2 characters').max(100, 'Name must not exceed 100 characters'),
         description: z.string().min(10, 'Description must be at least 10 characters'),
         basePrice: z.number().min(0, 'Price must be non-negative'),
-        images: z.array(z.string().url('Invalid image URL')).min(1, 'At least one image is required'),
+        images: z.array(z.string()).min(1, 'At least one image is required'),
         tags: z.array(z.string()).min(1, 'At least one tag is required'),
         categoryId: objectIdSchema,
         subcategoryId: objectIdSchema,

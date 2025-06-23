@@ -1,0 +1,8 @@
+Mon Jun 23 2025 9:8:3 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/brand/create 404 - 23.422 ms
+Mon Jun 23 2025 9:8:21 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 404 - 699.298 ms
+Mon Jun 23 2025 9:8:44 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/variant/subcategory/685378a5fff80c11a3d51533 404 - 112.273 ms
+Mon Jun 23 2025 9:9:16 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/subcategory/single/685374b5cdf9f2ba6dae945b 403 - 94.127 ms
+Mon Jun 23 2025 9:10:36 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/subcategory/single/685374b5cdf9f2ba6dae945b 403 - 99.178 ms
+Mon Jun 23 2025 9:11:41 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/subcategory/single/685374b5cdf9f2ba6dae945b 404 - 83.692 ms
+Mon Jun 23 2025 9:12:21 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 404 - 2022.928 ms
+Mon Jun 23 2025 9:12:39 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/variant/subcategory/685378a5fff80c11a3d51533 404 - 140.893 ms

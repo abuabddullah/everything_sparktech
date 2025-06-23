@@ -39,6 +39,7 @@ export interface IShop {
     rating: number;
     totalReviews: number;
     totalFollowers?: number;
+    revenue: number;
     settings?: {
         allowChat: boolean;
         autoAcceptOrders: boolean;

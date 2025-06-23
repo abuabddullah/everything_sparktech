@@ -10,9 +10,9 @@ const router = express.Router();
 
 router
      .route('/profile')
-     .get(auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.SUPER_ADMIN), UserController.getUserProfile)
+     .get(auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.SUPER_ADMIN, USER_ROLES.SHOP_ADMIN, USER_ROLES.VENDOR), UserController.getUserProfile)
      .patch(
-          auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER),
+          auth(USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.SHOP_ADMIN, USER_ROLES.VENDOR),
           fileUploadHandler(),
           (req: Request, res: Response, next: NextFunction) => {
                const image = getSingleFilePath(req.files, 'image');

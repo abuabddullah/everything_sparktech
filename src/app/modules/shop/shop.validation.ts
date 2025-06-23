@@ -28,7 +28,8 @@ const createShopZodSchema = z.object({
             start: z.string(),
             end: z.string(),
         })).optional(),
-        website: z.string().optional()
+        website: z.string().optional(),
+        revenue: z.number().optional(),
     })
 })  
 
@@ -60,7 +61,8 @@ const updateShopZodSchema = z.object({
             end: z.string(),
         })).optional(),
         website: z.string().optional(),
-        settings: z.object({
+        revenue: z.number().optional(),
+            settings: z.object({
             allowChat: z.boolean().optional(),
             autoAcceptOrders: z.boolean().optional(),
         }).optional(),  

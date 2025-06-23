@@ -18,9 +18,11 @@ const productVariantSchema = new Schema<IProductSingleVariant>({
     required: true,
     min: 0
   }
-}, {
+}, 
+{
   _id: false
-});
+}
+);
 
 const productSchema = new Schema<IProduct>({
   name: {
@@ -49,12 +51,6 @@ const productSchema = new Schema<IProduct>({
   images: [{
     type: String,
     required: true,
-    validate: {
-      validator: function (v: string) {
-        return v.startsWith('http://') || v.startsWith('https://');
-      },
-      message: 'Image URL must be a valid HTTP or HTTPS URL'
-    }
   }],
   isFeatured: {
     type: Boolean,

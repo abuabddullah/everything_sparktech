@@ -27,6 +27,7 @@ const createShop = async (payload: IShop, user: IJwtPayload) => {
     if (existingUser.role !== USER_ROLES.VENDOR) {
         // update role to vendor
         existingUser.role = USER_ROLES.VENDOR;
+
         await existingUser.save();
     }
 
@@ -89,7 +90,7 @@ const getAllShops = async (query: Record<string, unknown>) => {
     };
 }
 const getShopById = async (id: string) => {
-    const shop = await Shop.findById(id).populate('reviews').populate('owner', 'name email');
+    const shop = await Shop.findById(id).populate('owner', 'name email').populate('admins', 'name email').populate('followers', 'name email');
     if (!shop) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Shop not found');
     }

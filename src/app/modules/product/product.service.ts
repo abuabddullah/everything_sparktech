@@ -8,84 +8,109 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import unlinkFile from '../../../shared/unlinkFile';
 import { generateSlug } from '../variant/variant.utils';
 import Variant from '../variant/variant.model';
+import { Shop } from '../shop/shop.model';
+import { Category } from '../category/category.model';
+import { SubCategory } from '../subCategorys/subCategory.model';
+import { Brand } from '../brand/brand.model';
+import { USER_ROLES } from '../user/user.enums';
+
+
+
 
 const createProduct = async (payload: IProduct, user: IJwtPayload) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    
     try {
         // Check if shop exists and user is authorized
-        const shop = await Product.findOne({ shopId: payload.shopId });
+        const shop = await Shop.findById(payload.shopId, null, { session });
         if (!shop) {
             throw new AppError(StatusCodes.NOT_FOUND, 'Shop not found');
         }
+        
+        if (user.role === USER_ROLES.VENDOR || user.role === USER_ROLES.SHOP_ADMIN) {
+            if (shop.owner.toString() !== user.id && !shop.admins?.some(admin => admin.toString() === user.id)) {
+                throw new AppError(StatusCodes.FORBIDDEN, 'You are not authorized to create a product for this shop');
+            }
+        }
 
-        // Validate category, subcategory and brand
-        const category = await Product.findOne({ _id: payload.categoryId });
-        const isExistSubCategory = await Product.findOne({ _id: payload.subcategoryId });
-        const brand = await Product.findOne({ _id: payload.brandId });
-        if (!category) {
+        // Validate category, subcategory, and brand in parallel
+        const [isExistCategory, isExistSubCategory, isExistBrand] = await Promise.all([
+            Category.findOne({ _id: payload.categoryId }, null, { session }),
+            SubCategory.findOne({ _id: payload.subcategoryId, categoryId: payload.categoryId }, null, { session }),
+            Brand.findOne({ _id: payload.brandId }, null, { session })
+        ]);
+
+        if (!isExistCategory) {
             throw new AppError(StatusCodes.NOT_FOUND, 'Category not found');
         }
         if (!isExistSubCategory) {
             throw new AppError(StatusCodes.NOT_FOUND, 'Subcategory not found');
         }
-        if (!brand) {
+        if (!isExistBrand) {
             throw new AppError(StatusCodes.NOT_FOUND, 'Brand not found');
         }
-
 
         // Validate variants
         if (!payload.product_variant_Details || payload.product_variant_Details.length === 0) {
             throw new AppError(StatusCodes.BAD_REQUEST, 'At least one variant is required');
         }
 
-        const variantsWithSlug = payload.product_variant_Details.map(async (variant, index) => {
-            if (variant.variantId) {
-                const isExistVariant = await Variant.findOne({ _id: variant.variantId });
-                if (!isExistVariant) {
-                    throw new AppError(StatusCodes.NOT_FOUND, `Variant not found ${variant.variantId}`);
+        // Process variants in parallel
+        const resolvedVariants = await Promise.all(
+            payload.product_variant_Details.map(async (variant, index) => {
+                if (variant.variantId) {
+                    // If variantId is provided, check if the variant exists
+                    const isExistVariant = await Variant.findOne({ _id: variant.variantId }, null, { session });
+                    if (!isExistVariant) {
+                        throw new AppError(StatusCodes.NOT_FOUND, `Variant not found by id ${variant.variantId}`);
+                    }
+                    return {
+                        variantId: variant.variantId,
+                        variantQuantity: variant.variantQuantity,
+                        variantPrice: variant.variantPrice
+                    } as IProductSingleVariant;
                 }
+
+                // Create a new Variant if variantId is not provided
+                const newVariant = new Variant({
+                    ...variant,
+                    createdBy: user.id,
+                    categoryId: payload.categoryId,
+                    subCategoryId: payload.subcategoryId,
+                });
+
+                const variantSlug = generateSlug(
+                    isExistCategory.name, 
+                    isExistSubCategory.name, 
+                    variant as IProductSingleVariantByFieldName
+                );
+
+                const isVariantExistSlug = await Variant.findOne({ slug: variantSlug }, null, { session });
+                if (isVariantExistSlug) {
+                    throw new AppError(
+                        StatusCodes.NOT_ACCEPTABLE, 
+                        `Variant '${variantSlug}' already exists under ${isExistSubCategory.name} subcategory. Use variant ID: ${isVariantExistSlug._id}`
+                    );
+                }
+
+                newVariant.slug = variantSlug;
+                const savedVariant = await newVariant.save({ session });
+
+                if (!savedVariant) {
+                    throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to create Variant');
+                }
+
                 return {
-                    variantId: variant.variantId,
+                    variantId: savedVariant._id,
                     variantQuantity: variant.variantQuantity,
-                    variantPrice: variant.variantPrice,
+                    variantPrice: variant.variantPrice
                 } as IProductSingleVariant;
-            }
+            })
+        );
 
-            // Create a new Variant
-            const createVariant = new Variant({
-                ...variant,
-                createdBy: user.id,
-                categoryId: payload.categoryId,
-                subCategoryId: payload.subcategoryId,
-                
-            });
-            // create variant
-            const variantSlug = generateSlug(category.name, isExistSubCategory.name, variant as IProductSingleVariantByFieldName);
-
-            // Check if variant with same slug already exists
-            const isVariantExistSlug = await Variant.findOne({ slug: variantSlug });
-            if (isVariantExistSlug) {
-                throw new AppError(StatusCodes.NOT_ACCEPTABLE, `This ${index} no product_variant_Details ${variantSlug} slug is exists under ${isExistSubCategory.name} subcategory so use that variant id : ${isVariantExistSlug._id}`);
-            }
-
-            // Set the generated slug
-            createVariant.slug = variantSlug;
-
-            // Save the variant to the database
-            await createVariant.save();
-            if (!createVariant) {
-                throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to create Variant');
-            }
-            return {
-                variantId: createVariant._id,
-                variantQuantity: variant.variantQuantity,
-                variantPrice: variant.variantPrice,
-            } as IProductSingleVariant;
-        });
-
-
-
-        // Validate variant quantities and prices
-        const totalStock = payload.product_variant_Details.reduce((sum, variant) => {
+        // Calculate total stock and validate variant details
+        const totalStock = resolvedVariants.reduce((sum, variant) => {
             if (variant.variantQuantity < 0) {
                 throw new AppError(StatusCodes.BAD_REQUEST, 'Variant quantity cannot be negative');
             }
@@ -95,22 +120,46 @@ const createProduct = async (payload: IProduct, user: IJwtPayload) => {
             return sum + variant.variantQuantity;
         }, 0);
 
-        // Create product
-        const product = new Product({
-            ...payload,
+        // Create product data object
+        const productData = {
+            name: payload.name,
+            description: payload.description,
+            basePrice: payload.basePrice,
+            images: payload.images,
+            tags: payload.tags,
+            categoryId: payload.categoryId,
+            subcategoryId: payload.subcategoryId,
+            shopId: payload.shopId,
+            brandId: payload.brandId,
             createdBy: user.id,
             totalStock,
-            product_variant_Details: variantsWithSlug
-        });
+            product_variant_Details: resolvedVariants,
+            isFeatured: payload.isFeatured || false
+        };
 
-        return await product.save();
+        // Create and save the product
+        const product = new Product(productData);
+        await product.validate();
+        
+        const savedProduct = await product.save({ session });
+        
+        await session.commitTransaction();
+        return savedProduct;
+
     } catch (error) {
-        if (payload.images) {
+        await session.abortTransaction();
+        
+        // Clean up uploaded files if there was an error
+        if (payload.images && Array.isArray(payload.images)) {
             payload.images.forEach(image => unlinkFile(image));
         }
+        
         throw error;
+    } finally {
+        await session.endSession();
     }
 };
+
 
 const getProducts = async (query: Record<string, unknown>) => {
     const productQuery = new QueryBuilder(Product.find().populate('shopId', 'name').populate('categoryId', 'name').populate('subcategoryId', 'name').populate('brandId', 'name'), query)

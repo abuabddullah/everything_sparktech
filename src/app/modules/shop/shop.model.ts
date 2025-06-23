@@ -39,6 +39,7 @@ export const shopSchema = new Schema<IShop>({
     rating: { type: Number, default: 0 },
     totalReviews: { type: Number, default: 0 },
     totalFollowers: { type: Number, default: 0 },
+    revenue: { type: Number, default: 10 },
     settings: {
         allowChat: { type: Boolean, default: true },
         autoAcceptOrders: { type: Boolean, default: false },

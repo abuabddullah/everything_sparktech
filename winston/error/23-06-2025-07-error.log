@@ -1,0 +1,5 @@
+Mon Jun 23 2025 7:55:38 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/shop/create 404 - 37.366 ms
+Mon Jun 23 2025 7:56:17 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 401 - 4.974 ms
+Mon Jun 23 2025 7:56:29 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 188.366 ms
+Mon Jun 23 2025 7:57:11 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 140.853 ms
+Mon Jun 23 2025 7:57:35 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 102.590 ms

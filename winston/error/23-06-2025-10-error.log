@@ -1,0 +1,27 @@
+Mon Jun 23 2025 10:2:25 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 403 - 206.373 ms
+Mon Jun 23 2025 10:2:41 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 404 - 322.184 ms
+Mon Jun 23 2025 10:3:38 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/variant 406 - 376.996 ms
+Mon Jun 23 2025 10:5:7 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 403 - 85.739 ms
+Mon Jun 23 2025 10:8:3 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 594.843 ms
+Mon Jun 23 2025 10:8:26 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 1465.430 ms
+Mon Jun 23 2025 10:9:1 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 621.898 ms
+Mon Jun 23 2025 10:12:32 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 569.843 ms
+Mon Jun 23 2025 10:14:19 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 587.408 ms
+Mon Jun 23 2025 10:15:12 [SERVER-NAME] error: [31mDatabase connection error[39m querySrv ECONNREFUSED _mongodb._tcp.cluster0.gjcwx8p.mongodb.net
+Mon Jun 23 2025 10:15:39 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 592.242 ms
+Mon Jun 23 2025 10:15:59 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 1406.031 ms
+Mon Jun 23 2025 10:16:8 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 1037.298 ms
+Mon Jun 23 2025 10:16:26 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 988.870 ms
+Mon Jun 23 2025 10:16:38 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 897.050 ms
+Mon Jun 23 2025 10:16:49 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 1385.513 ms
+Mon Jun 23 2025 10:16:58 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 994.237 ms
+Mon Jun 23 2025 10:18:26 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 626.857 ms
+Mon Jun 23 2025 10:20:28 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 1345.815 ms
+Mon Jun 23 2025 10:23:35 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 1059.093 ms
+Mon Jun 23 2025 10:25:28 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 590.187 ms
+Mon Jun 23 2025 10:28:52 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 614.762 ms
+Mon Jun 23 2025 10:37:48 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 400 - 605.292 ms
+Mon Jun 23 2025 10:47:14 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 406 - 480.846 ms
+Mon Jun 23 2025 10:48:18 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 406 - 418.624 ms
+Mon Jun 23 2025 10:49:46 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/auth/login 409 - 267.410 ms
+Mon Jun 23 2025 10:51:58 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/product/create 406 - 441.146 ms
