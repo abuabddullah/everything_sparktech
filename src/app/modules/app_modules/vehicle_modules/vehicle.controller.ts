@@ -82,8 +82,8 @@ const updateAVehicleById = catchAsync(
 
     // Attach image path or filename to parsed data
     if (req.files) {
-      let image = getMultipleFilesPath(req.files, 'image');
-      parsedData.image = image;
+      const image = getMultipleFilesPath(req.files, 'image');
+      parsedData.image = (parsedData.image || []).concat(image);
     }
 
 
