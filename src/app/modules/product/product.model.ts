@@ -1,6 +1,7 @@
 import { model, Schema, Document, Types, Model } from "mongoose";
 import { IProduct, IProductSingleVariant } from "./product.interface";
 import { IReview } from "../review/review.interface";
+import { Offered } from "../offered/offered.model";
 
 const productVariantSchema = new Schema<IProductSingleVariant>({
   variantId: {
@@ -190,6 +191,19 @@ productSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
+
+
+
+productSchema.methods.calculateOfferPrice = async function () {
+  const offer = await Offered.findOne({ product: this._id });
+
+  if (offer) {
+    const discount = (offer.discountPercentage / 100) * this.basePrice;
+    return this.basePrice - discount;
+  }
+
+  return 0;
+};
 
 export const Product = model<IProduct>('Product', productSchema) as unknown as Model<IProduct> & {
   findById(id: string): Promise<IProduct | null>;

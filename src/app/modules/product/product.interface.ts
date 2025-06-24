@@ -36,6 +36,8 @@ export interface IProduct extends mongoose.Document {
     isDeleted: boolean;
     deletedAt: Date;
     isRecommended: boolean;
+
+    calculateOfferPrice(): Promise<number | null>;
 }
 
 

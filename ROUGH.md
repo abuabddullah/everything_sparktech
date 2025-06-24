@@ -17,3 +17,7 @@
  ## owner of a shop cant be admin of any other shop (need decision)
  ## making admin of a user will change his role to shop_admin and he will not be able to purchase just handle the shop activities (need decision)
  ## while removing admin check if this user is as admin of any shop if yes then remove admin role from that shop but dont change is user.shop_admin but he becomes non responsible as admin to any shop (if we remove admin role from user) then make him user.role.USER
+ # coupon module (pending)
+ ## routes done testng pending
+ # offerd module (pending)
+ ## routes done testng pending

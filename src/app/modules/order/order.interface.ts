@@ -1,4 +1,5 @@
 import { Types, Document } from 'mongoose';
+import { IPayment } from '../payment/payment.interface';
 
 export interface IOrderProduct {
   product: Types.ObjectId;

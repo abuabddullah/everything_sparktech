@@ -1,9 +1,9 @@
-import { Schema, Types, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { IOrder } from "./order.interface";
 import { Product } from "../product/product.model";
 import { Coupon } from "../coupon/coupon.model";
-import AppError from "../../errors/appError";
 import { StatusCodes } from "http-status-codes";
+import AppError from "../../../errors/AppError";
 
 const orderSchema = new Schema<IOrder>(
     {
@@ -105,16 +105,36 @@ orderSchema.pre("validate", async function (next) {
         if (!product) {
             return next(new Error(`Product not found!.`));
         }
-        if (shopId && String(shopId) !== String(product.shop._id)) {
+        const variant = await Product.findById(item.variant).populate("shop");
+
+        if (!variant) {
+            return next(new Error(`variant not found!.`));
+        }
+
+
+        // check if ths vairant is in the product.product_variant_Details array if present then check variantQuantity of that item in product.product_variant_Details array
+        const variantIndex = product.product_variant_Details.findIndex(
+            itm => itm.variantId.toString() === item.variant.toString()
+        );
+
+        if (variantIndex === -1) {
+            return next(new Error(`Variant not found in product with ID: ${item.product}`));
+        }
+
+        if (product.product_variant_Details[variantIndex].variantQuantity < item.quantity) {
+            return next(new Error(`Variant quantity is not available in product with ID: ${item.product}`));
+        }
+
+        if (shopId && String(shopId) !== String(product.shopId._id)) {
             return next(new Error("Products must be from the same shop."));
         }
 
         //@ts-ignore
-        shopId = product.shop._id;
+        shopId = product.shopId._id;
 
         const offerPrice = (await product?.calculateOfferPrice()) || 0;
 
-        let productPrice = product.price;
+        let productPrice = product.basePrice;
         if (offerPrice) productPrice = Number(offerPrice);
 
         item.unitPrice = productPrice;
@@ -125,11 +145,11 @@ orderSchema.pre("validate", async function (next) {
 
     if (order.coupon) {
         const couponDetails = await Coupon.findById(order.coupon);
-        if (String(shopId) === couponDetails?.shop.toString()) {
+        if (String(shopId) === couponDetails?.shopId.toString()) {
             throw new AppError(StatusCodes.BAD_REQUEST, "The coupon is not applicable for your selected products")
         }
         if (couponDetails && couponDetails.isActive) {
-            if (totalAmount >= couponDetails.minOrderAmount) {
+            if (couponDetails?.minOrderAmount && totalAmount >= couponDetails?.minOrderAmount) {
                 if (couponDetails.discountType === "Percentage") {
                     finalDiscount = Math.min(
                         (couponDetails.discountValue / 100) * totalAmount,
