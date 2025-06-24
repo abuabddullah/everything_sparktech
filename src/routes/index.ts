@@ -29,6 +29,7 @@ import { BrandRoutes } from '../app/modules/brand/brand.routes';
 import { ShopCategoryRoutes } from '../app/modules/shopCategory/shopCategory.routes';
 import { ShopRoutes } from '../app/modules/shop/shop.route';
 import { ProductRoutes } from '../app/modules/product/product.route';
+import { CartRoutes } from '../app/modules/cart/cart.routes';
 
 const router = express.Router();
 const routes = [
@@ -203,6 +204,10 @@ const routes = [
      {
           path: '/product',
           route: ProductRoutes,
+     },
+     {
+          path: '/cart',
+          route: CartRoutes,
      },
 ];
 

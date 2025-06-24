@@ -10,7 +10,7 @@ export const getCart = async (userId: string) => {
     const cart = await Cart.findOne({ userId })
         .populate('items.productId', 'name images')
         .populate('items.variantId');
-    
+
     if (!cart) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Cart not found');
     }
@@ -22,7 +22,6 @@ export const addToCart = async (userId: string, items: Array<{
     productId: string;
     variantId: string;
     variantQuantity: number;
-    variantPrice: number;
 }>) => {
     const session = await Cart.startSession();
     session.startTransaction();
@@ -51,25 +50,38 @@ export const addToCart = async (userId: string, items: Array<{
                 throw new AppError(StatusCodes.NOT_FOUND, `Variant not found with ID: ${item.variantId}`);
             }
 
+            // check if ths vairant is in the product.product_variant_Details array if present then check variantQuantity of that item in product.product_variant_Details array
+            const variantIndex = product.product_variant_Details.findIndex(
+                itm => itm.variantId.toString() === item.variantId
+            );
+
+            if (variantIndex === -1) {
+                throw new AppError(StatusCodes.NOT_FOUND, `Variant not found in product with ID: ${item.productId}`);
+            }
+
+            if (product.product_variant_Details[variantIndex].variantQuantity < item.variantQuantity) {
+                throw new AppError(StatusCodes.BAD_REQUEST, `Variant quantity is not available in product with ID: ${item.productId}`);
+            }
+
             // Check if variant already exists in cart
             const existingItemIndex = cart.items.findIndex(
-                i => i.productId.toString() === item.productId && 
-                     i.variantId.toString() === item.variantId
+                itm => itm.productId.toString() === item.productId &&
+                    itm.variantId.toString() === item.variantId
             );
 
             if (existingItemIndex > -1) {
                 // Update quantity if item already exists
                 cart.items[existingItemIndex].variantQuantity += item.variantQuantity;
-                cart.items[existingItemIndex].totalPrice = 
-                    cart.items[existingItemIndex].variantPrice * 
+                cart.items[existingItemIndex].totalPrice =
+                    cart.items[existingItemIndex].variantPrice *
                     cart.items[existingItemIndex].variantQuantity;
             } else {
                 // Add new item
-                const totalPrice = variant.price * item.variantQuantity;
+                const totalPrice = product.product_variant_Details[variantIndex].variantPrice * item.variantQuantity;
                 cart.items.push({
                     productId: new Types.ObjectId(item.productId),
                     variantId: new Types.ObjectId(item.variantId),
-                    variantPrice: variant.price,
+                    variantPrice: product.product_variant_Details[variantIndex].variantPrice,
                     variantQuantity: item.variantQuantity,
                     totalPrice
                 });
@@ -81,10 +93,12 @@ export const addToCart = async (userId: string, items: Array<{
 
         const savedCart = await cart.save({ session });
         await session.commitTransaction();
+        // Populate before returning
+        const populatedProductCart = await savedCart.populate('items.productId', 'name images');
+        const populatedVariantCart = await populatedProductCart.populate('items.variantId', 'slug');
 
         return {
-            cart: await savedCart.populate('items.productId', 'name images')
-                                .populate('items.variantId', 'color storage ram'),
+            cart: populatedVariantCart,
             total: cartTotal
         };
     } catch (error) {
@@ -96,8 +110,8 @@ export const addToCart = async (userId: string, items: Array<{
 };
 
 export const updateCartItem = async (
-    userId: string, 
-    itemId: string, 
+    userId: string,
+    itemId: string,
     updateData: { variantQuantity: number }
 ) => {
     const session = await Cart.startSession();
@@ -110,7 +124,7 @@ export const updateCartItem = async (
         }
 
         const itemIndex = cart.items.findIndex(
-            item => item._id.toString() === itemId
+            item => item._id!.toString() === itemId
         );
 
         if (itemIndex === -1) {
@@ -119,14 +133,18 @@ export const updateCartItem = async (
 
         // Update quantity and total price
         cart.items[itemIndex].variantQuantity = updateData.variantQuantity;
-        cart.items[itemIndex].totalPrice = 
+        cart.items[itemIndex].totalPrice =
             cart.items[itemIndex].variantPrice * updateData.variantQuantity;
 
         const savedCart = await cart.save({ session });
         await session.commitTransaction();
+        // Populate before returning
+        const populatedProductCart = await savedCart.populate('items.productId', 'name images');
+        const populatedVariantCart = await populatedProductCart.populate('items.variantId', 'color storage ram');
 
-        return await savedCart.populate('items.productId', 'name images')
-                            .populate('items.variantId', 'color storage ram');
+        return {
+            cart: populatedVariantCart,
+        };
     } catch (error) {
         await session.abortTransaction();
         throw error;
@@ -146,7 +164,7 @@ export const removeFromCart = async (userId: string, itemId: string) => {
         }
 
         const initialLength = cart.items.length;
-        cart.items = cart.items.filter(item => item._id.toString() !== itemId);
+        cart.items = cart.items.filter(item => item._id!.toString() !== itemId);
 
         if (cart.items.length === initialLength) {
             throw new AppError(StatusCodes.NOT_FOUND, 'Item not found in cart');
@@ -154,9 +172,13 @@ export const removeFromCart = async (userId: string, itemId: string) => {
 
         const savedCart = await cart.save({ session });
         await session.commitTransaction();
+        // Populate before returning
+        const populatedProductCart = await savedCart.populate('items.productId', 'name images');
+        const populatedVariantCart = await populatedProductCart.populate('items.variantId', 'color storage ram');
 
-        return await savedCart.populate('items.productId', 'name images')
-                            .populate('items.variantId', 'color storage ram');
+        return {
+            cart: populatedVariantCart,
+        };
     } catch (error) {
         await session.abortTransaction();
         throw error;

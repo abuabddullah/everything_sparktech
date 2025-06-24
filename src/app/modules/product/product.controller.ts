@@ -70,11 +70,34 @@ const getProductsByCategory = catchAsync(async (req: Request, res: Response) => 
     });
 });
 
+const updateToggleProductIsRecommended = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await ProductService.updateToggleProductIsRecommended(id, req.user as IJwtPayload);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Product updated successfully',
+        data: result
+    });
+});
+
+const getRecommendedProducts = catchAsync(async (req: Request, res: Response) => {
+    const result = await ProductService.getRecommendedProducts(req.query);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Products retrieved successfully',
+        data: result
+    });
+});
+
 export const ProductController = {
     createProduct,
     getProducts,
     getProductById,
     updateProduct,
     deleteProduct,
-    getProductsByCategory
+    getProductsByCategory,
+    updateToggleProductIsRecommended,
+    getRecommendedProducts
 }

@@ -7,7 +7,6 @@ import {
     removeFromCart as removeFromCartService,
     clearCart as clearCartService
 } from './cart.service';
-import { validateCart } from './cart.validation';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import AppError from '../../../errors/AppError';
@@ -28,7 +27,7 @@ export const getCart = catchAsync(async (req: Request, res: Response) => {
 export const addToCart = catchAsync(async (req: Request, res: Response) => {
     const user = req.user as IJwtPayload;
 
-    const result = await addToCartService(user.id, req.body);
+    const result = await addToCartService(user.id, req.body.items);
     
     sendResponse(res, {
         statusCode: StatusCodes.OK,

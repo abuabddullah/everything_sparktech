@@ -44,30 +44,43 @@ router.get('/',
     ProductController.getProducts
 );
 
-// Get product by ID (public endpoint)
-router.get('/:id',
-    validateRequest(ProductValidation.getProductByIdZodSchema),
-    ProductController.getProductById
-);
-
 // Get products by category (public endpoint)
 router.get('/category/:categoryId',
     validateRequest(ProductValidation.getProductsByCategoryZodSchema),
     ProductController.getProductsByCategory
 );
 
-// Update product (only vendor who owns the product)
-router.patch('/:id',
-    auth(USER_ROLES.VENDOR),
-    validateRequest(ProductValidation.updateProductZodSchema),
-    ProductController.updateProduct
+
+// get all recommended products (public endpoint)
+router.get('/recommended',
+    ProductController.getRecommendedProducts
+);
+
+// recommended product (only vendor who owns the product)
+router.patch('/recommended/:id',
+    auth(USER_ROLES.VENDOR,USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN,USER_ROLES.SHOP_ADMIN),
+    ProductController.updateToggleProductIsRecommended
 );
 
 // Delete product (only vendor who owns the product)
 router.delete('/:id',
-    auth(USER_ROLES.VENDOR),
+    auth(USER_ROLES.VENDOR,USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN),
     validateRequest(ProductValidation.deleteProductZodSchema),
     ProductController.deleteProduct
 );
 
+
+// Update product (only vendor who owns the product)
+router.patch('/:id',
+    auth(USER_ROLES.VENDOR,USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN),
+    validateRequest(ProductValidation.updateProductZodSchema),
+    ProductController.updateProduct
+);
+
+
+// Get product by ID (public endpoint)
+router.get('/:id',
+    validateRequest(ProductValidation.getProductByIdZodSchema),
+    ProductController.getProductById
+);
 export const ProductRoutes = router;

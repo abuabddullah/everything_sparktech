@@ -163,7 +163,7 @@ const createProduct = async (payload: IProduct, user: IJwtPayload) => {
 
 
 const getProducts = async (query: Record<string, unknown>) => {
-    const productQuery = new QueryBuilder(Product.find().populate('shopId', 'name').populate('categoryId', 'name').populate('subcategoryId', 'name').populate('brandId', 'name'), query)
+    const productQuery = new QueryBuilder(Product.find().populate('shopId', 'name').populate('categoryId', 'name').populate('subcategoryId', 'name').populate('brandId', 'name').populate('product_variant_Details.variantId', 'slug'), query)
         .search(['name', 'description', 'tags'])
         .filter()
         .sort()
@@ -185,7 +185,7 @@ const getProductById = async (id: string) => {
         .populate('categoryId', 'name')
         .populate('subcategoryId', 'name')
         .populate('brandId', 'name')
-        .populate('product_variant_Details.variantId', 'name');
+        .populate('product_variant_Details.variantId', 'slug');
 
     if (!product) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
@@ -271,7 +271,7 @@ const getProductsByCategory = async (categoryId: string) => {
         .populate('categoryId', 'name')
         .populate('subcategoryId', 'name')
         .populate('brandId', 'name')
-        .populate('product_variant_Details.variantId', 'name');
+        .populate('product_variant_Details.variantId', 'slug');
 
     if (!products || products.length === 0) {
         throw new AppError(StatusCodes.NOT_FOUND, 'No products found in this category');
@@ -280,11 +280,52 @@ const getProductsByCategory = async (categoryId: string) => {
     return products;
 };
 
+const updateToggleProductIsRecommended = async (id: string, user: IJwtPayload) => {
+    const product = await Product.findById(id);
+    if (!product) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
+    }
+    const shop = await Shop.findById(product.shopId);
+    if (!shop) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Shop not found');
+    }
+
+    if (user.role === USER_ROLES.VENDOR || user.role === USER_ROLES.SHOP_ADMIN) {
+        if (shop.owner.toString() !== user.id && !shop.admins?.some(admin => admin.toString() === user.id)) {
+            throw new AppError(StatusCodes.FORBIDDEN, 'You are not authorized to create a product for this shop');
+        }
+    }
+
+    product.isRecommended = !product.isRecommended;
+    await product.save();
+
+    return product;
+};
+
+const getRecommendedProducts = async (query: Record<string, unknown>) => {
+    const productQuery = new QueryBuilder(Product.find({ isRecommended: true }).populate('shopId', 'name').populate('categoryId', 'name').populate('subcategoryId', 'name').populate('brandId', 'name').populate('product_variant_Details.variantId', 'slug'), query)
+        .search(['name', 'description', 'tags'])
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+
+    const result = await productQuery.modelQuery;
+    const meta = await productQuery.countTotal();
+
+    return {
+        meta,
+        result
+    };
+};
+
 export const ProductService = {
     createProduct,
     getProducts,
     getProductById,
     updateProduct,
     deleteProduct,
-    getProductsByCategory
+    getProductsByCategory,
+    updateToggleProductIsRecommended,
+    getRecommendedProducts
 };

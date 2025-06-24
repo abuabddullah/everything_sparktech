@@ -35,6 +35,7 @@ export interface IProduct extends mongoose.Document {
     product_variant_Details: IProductSingleVariant[];
     isDeleted: boolean;
     deletedAt: Date;
+    isRecommended: boolean;
 }
 
 

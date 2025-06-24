@@ -123,6 +123,10 @@ const productSchema = new Schema<IProduct>({
   deletedAt: {
     type: Date,
     default: null
+  },
+  isRecommended: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true,

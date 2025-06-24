@@ -4,6 +4,7 @@ import { IProduct } from "../product/product.interface";
 import { IVariant } from "../variant/variant.interfaces";
 
 export interface ICartItem {
+    _id?: Types.ObjectId;
     productId: Types.ObjectId | IProduct;
     variantId: Types.ObjectId | IVariant;
     variantPrice: number;

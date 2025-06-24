@@ -81,5 +81,5 @@ export const ProductValidation = {
     updateProductZodSchema,
     getProductsByCategoryZodSchema,
     getProductByIdZodSchema,
-    deleteProductZodSchema
+    deleteProductZodSchema,
 };
