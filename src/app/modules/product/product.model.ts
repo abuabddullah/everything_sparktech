@@ -18,10 +18,10 @@ const productVariantSchema = new Schema<IProductSingleVariant>({
     required: true,
     min: 0
   }
-}, 
-{
-  _id: false
-}
+},
+  {
+    _id: false
+  }
 );
 
 const productSchema = new Schema<IProduct>({
@@ -169,8 +169,25 @@ productSchema.pre<IProduct>('save', async function (next) {
     this.avg_rating = 0;
     const populatedReviews = await mongoose.model('Review').find({ '_id': { $in: this.reviews } }).exec();
     const totalRating = populatedReviews.reduce((acc: number, review: IReview) => acc + review.rating, 0);
-    this.avg_rating = this.totalReviews > 0 ? totalRating / this.totalReviews : 0;  
+    this.avg_rating = this.totalReviews > 0 ? totalRating / this.totalReviews : 0;
   }
+  next();
+});
+
+
+
+productSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+productSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+productSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
 

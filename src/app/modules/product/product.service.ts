@@ -248,13 +248,20 @@ const updateProduct = async (id: string, payload: Partial<IProduct>, user: IJwtP
 };
 
 const deleteProduct = async (id: string, user: IJwtPayload) => {
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate('shopId', 'owner');
     if (!product) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
     }
+    const shop = await Shop.findById(product.shopId);
+    if (!shop) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Shop not found');
+    }
 
-    if (product.shopId.toString() !== user.id) {
-        throw new AppError(StatusCodes.FORBIDDEN, 'You are not authorized to delete this product');
+
+    if (user.role === USER_ROLES.VENDOR || user.role === USER_ROLES.SHOP_ADMIN) {
+        if (shop.owner.toString() !== user.id && !shop.admins?.some(admin => admin.toString() === user.id)) {
+            throw new AppError(StatusCodes.FORBIDDEN, 'You are not authorized to delete this product');
+        }
     }
 
     // Soft delete the product
@@ -265,19 +272,26 @@ const deleteProduct = async (id: string, user: IJwtPayload) => {
     return product;
 };
 
-const getProductsByCategory = async (categoryId: string) => {
-    const products = await Product.find({ categoryId })
+const getProductsByCategory = async (categoryId: string, query: Record<string, unknown>) => {
+    const productQuery = new QueryBuilder(Product.find({ categoryId })
         .populate('shopId', 'name')
         .populate('categoryId', 'name')
         .populate('subcategoryId', 'name')
         .populate('brandId', 'name')
-        .populate('product_variant_Details.variantId', 'slug');
+        .populate('product_variant_Details.variantId', 'slug'), query)
+        .search(['name', 'description', 'tags'])
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
 
-    if (!products || products.length === 0) {
-        throw new AppError(StatusCodes.NOT_FOUND, 'No products found in this category');
-    }
+    const result = await productQuery.modelQuery;
+    const meta = await productQuery.countTotal();
 
-    return products;
+    return {
+        meta,
+        result
+    };
 };
 
 const updateToggleProductIsRecommended = async (id: string, user: IJwtPayload) => {

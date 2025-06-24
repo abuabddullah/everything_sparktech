@@ -60,8 +60,8 @@ const deleteProduct = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getProductsByCategory = catchAsync(async (req: Request, res: Response) => {
-    const { categoryId } = req.query;
-    const result = await ProductService.getProductsByCategory(categoryId as string);
+    const { categoryId } = req.params;
+    const result = await ProductService.getProductsByCategory(categoryId as string,req.query);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,

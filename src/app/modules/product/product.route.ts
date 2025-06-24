@@ -46,7 +46,6 @@ router.get('/',
 
 // Get products by category (public endpoint)
 router.get('/category/:categoryId',
-    validateRequest(ProductValidation.getProductsByCategoryZodSchema),
     ProductController.getProductsByCategory
 );
 
@@ -80,7 +79,6 @@ router.patch('/:id',
 
 // Get product by ID (public endpoint)
 router.get('/:id',
-    validateRequest(ProductValidation.getProductByIdZodSchema),
     ProductController.getProductById
 );
 export const ProductRoutes = router;

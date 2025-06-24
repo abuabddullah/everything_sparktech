@@ -1,0 +1,2 @@
+Tue Jun 24 2025 11:56:14 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/product/category/68537718cdf9f2ba6dae9477 400 - 51.003 ms
+Tue Jun 24 2025 11:56:35 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/product/category/68537718cdf9f2ba6dae9477 400 - 1.953 ms
