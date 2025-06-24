@@ -15,3 +15,8 @@ Tue Jun 24 2025 10:27:36 [SERVER-NAME] info: [32m🚀 Database connected succes
 Tue Jun 24 2025 10:27:36 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
 Tue Jun 24 2025 10:27:36 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
 Tue Jun 24 2025 10:27:43 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/cart/create 200 - 601.772 ms
+Tue Jun 24 2025 10:28:46 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Tue Jun 24 2025 10:28:47 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Tue Jun 24 2025 10:28:47 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Tue Jun 24 2025 10:28:47 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Tue Jun 24 2025 10:28:57 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/cart/create 200 - 602.078 ms
