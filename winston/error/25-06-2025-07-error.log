@@ -1,0 +1,16 @@
+Wed Jun 25 2025 7:28:18 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/coupon/create 401 - 26.841 ms
+Wed Jun 25 2025 7:28:24 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/coupon/create 403 - 92.530 ms
+Wed Jun 25 2025 7:34:40 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/shop/user 400 - 13.340 ms
+Wed Jun 25 2025 7:35:2 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/shop/user 403 - 971.836 ms
+Wed Jun 25 2025 7:35:28 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/shop/user 404 - 226.620 ms
+Wed Jun 25 2025 7:36:2 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/shop/user 400 - 155.739 ms
+Wed Jun 25 2025 7:41:25 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/coupon/create 400 - 112.128 ms
+Wed Jun 25 2025 7:41:51 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/coupon/create 400 - 76.891 ms
+Wed Jun 25 2025 7:44:6 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/coupon/create 400 - 74.317 ms
+Wed Jun 25 2025 7:49:11 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/coupon/DISCOUNT2025/update-coupon 400 - 24.930 ms
+Wed Jun 25 2025 7:52:4 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/coupon/DISCOUNT2025/update-coupon 400 - 267.629 ms
+Wed Jun 25 2025 7:53:28 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/coupon/DISCOUNT2025/update-coupon 404 - 163.888 ms
+Wed Jun 25 2025 7:53:54 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/coupon/DISCOUNT2025June/update-coupon 404 - 158.548 ms
+Wed Jun 25 2025 7:54:58 [SERVER-NAME] error: 10.0.60.110 - PATCH /api/v1/coupon/DISCOUNT2025/update-coupon 400 - 256.507 ms
+Wed Jun 25 2025 7:55:46 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/coupon/DISCOUNT2025 404 - 3.652 ms
+Wed Jun 25 2025 7:56:25 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 400 - 2.414 ms

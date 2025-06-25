@@ -1,0 +1,75 @@
+Wed Jun 25 2025 8:0:0 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 76.316 ms
+Wed Jun 25 2025 8:0:6 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 77.926 ms
+Wed Jun 25 2025 8:0:11 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 82.241 ms
+Wed Jun 25 2025 8:0:17 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 77.747 ms
+Wed Jun 25 2025 8:0:22 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 76.615 ms
+Wed Jun 25 2025 8:0:29 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 75.793 ms
+Wed Jun 25 2025 8:0:34 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 80.862 ms
+Wed Jun 25 2025 8:0:38 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 75.669 ms
+Wed Jun 25 2025 8:0:43 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 75.605 ms
+Wed Jun 25 2025 8:0:48 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 76.837 ms
+Wed Jun 25 2025 8:0:51 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 75.577 ms
+Wed Jun 25 2025 8:0:56 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 77.553 ms
+Wed Jun 25 2025 8:1:3 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 76.004 ms
+Wed Jun 25 2025 8:1:8 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 76.163 ms
+Wed Jun 25 2025 8:1:12 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 75.650 ms
+Wed Jun 25 2025 8:1:19 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 78.612 ms
+Wed Jun 25 2025 8:1:23 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 79.390 ms
+Wed Jun 25 2025 8:1:29 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 77.863 ms
+Wed Jun 25 2025 8:1:34 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/DISCOUNT2025 200 - 75.739 ms
+Wed Jun 25 2025 8:2:21 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:2:22 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:2:22 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:2:22 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:2:28 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:2:29 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:2:29 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:2:29 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:2:36 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:2:37 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:2:37 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:2:37 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:3:10 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/coupon/shop/6857d5988a47be1e4bf6adc4 200 - 260.823 ms
+Wed Jun 25 2025 8:4:6 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:4:7 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:4:7 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:4:7 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:4:32 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/login 200 - 597.371 ms
+Wed Jun 25 2025 8:4:35 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/coupon/super-admin 200 - 227.792 ms
+Wed Jun 25 2025 8:4:58 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/login 200 - 450.111 ms
+Wed Jun 25 2025 8:5:2 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/coupon/create 201 - 233.642 ms
+Wed Jun 25 2025 8:5:59 [SERVER-NAME] info: 10.0.60.110 - DELETE /api/v1/coupon/685b594ecb919491559e15f3 200 - 305.267 ms
+Wed Jun 25 2025 8:7:18 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/login 200 - 539.735 ms
+Wed Jun 25 2025 8:7:25 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/users/profile 200 - 150.808 ms
+Wed Jun 25 2025 8:9:15 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:9:15 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:9:16 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:9:16 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:10:21 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:10:22 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:10:22 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:10:22 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:11:27 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:11:28 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:11:28 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:11:28 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:11:58 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:11:59 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:11:59 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:11:59 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:12:13 [SERVER-NAME] info: 10.0.60.110 - POST /api/v1/auth/login 200 - 556.357 ms
+Wed Jun 25 2025 8:12:46 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/users/get-all 200 - 148.352 ms
+Wed Jun 25 2025 8:13:24 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:13:25 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:13:25 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:13:25 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:13:48 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:13:48 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:13:48 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:13:48 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:13:50 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/users/get-all 200 - 158.899 ms
+Wed Jun 25 2025 8:14:13 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Jun 25 2025 8:14:14 [SERVER-NAME] info: [32m🚀 Database connected successfully[39m
+Wed Jun 25 2025 8:14:14 [SERVER-NAME] info: [33m♻️  Socket is listening on 10.0.60.110:6002[39m
+Wed Jun 25 2025 8:14:14 [SERVER-NAME] info: [33m♻️  Application listening on http://10.0.60.110:7000[39m
+Wed Jun 25 2025 8:14:15 [SERVER-NAME] info: 10.0.60.110 - GET /api/v1/users/get-all 200 - 1268.025 ms
