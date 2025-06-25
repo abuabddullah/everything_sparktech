@@ -2,3 +2,4 @@ Wed Jun 25 2025 8:4:15 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/coupon/sup
 Wed Jun 25 2025 8:4:53 [SERVER-NAME] error: 10.0.60.110 - POST /api/v1/coupon/create 403 - 80.759 ms
 Wed Jun 25 2025 8:7:4 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/cart/create 403 - 81.355 ms
 Wed Jun 25 2025 8:7:21 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/cart/create 403 - 75.801 ms
+Wed Jun 25 2025 8:40:48 [SERVER-NAME] error: 10.0.60.110 - GET /api/v1/cart/create 403 - 249.278 ms
