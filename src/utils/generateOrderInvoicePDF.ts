@@ -42,7 +42,7 @@ export const generateOrderInvoicePDF = async (order: IOrder): Promise<Buffer> =>
             doc.text(`Order Date: ${(order.createdAt as Date).toLocaleDateString()}`);
             doc.moveDown(0.5);
             //@ts-ignore
-            doc.text(`Customer Name: ${order.user.name}`);
+            doc.text(`Customer Id: ${order.user.id}`);
             doc.text(`Shipping Address: ${order.shippingAddress}`);
             doc.moveDown(1);
 
@@ -99,7 +99,7 @@ export const generateOrderInvoicePDF = async (order: IOrder): Promise<Buffer> =>
 
             // Pricing Breakdown (Normal text, not bold)
             doc.fontSize(11).fillColor('#000000').text('Sub Total', 50, pricingY, { width: 200 });
-            doc.text(`${order.totalAmount.toFixed(2)} /-`, 400, pricingY, { width: 90, align: 'right' });
+            doc.text(`${order.finalAmount.toFixed(2)} /-`, 400, pricingY, { width: 90, align: 'right' });
             pricingY += tableHeight;
 
             doc.fontSize(11).fillColor('#000000').text('Discount', 50, pricingY, { width: 200 });

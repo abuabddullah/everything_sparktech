@@ -17,6 +17,8 @@ import Variant from "../variant/variant.model";
 import { PAYMENT_METHOD } from "./order.enums";
 import { USER_ROLES } from "../user/user.enums";
 import { DEFAULT_SHOP_REVENUE } from "../shop/shop.enum";
+import stripe from "../../../config/stripe";
+import config from "../../../config";
 
 const createOrder = async (
     orderData: Partial<IOrder>,
@@ -26,6 +28,10 @@ const createOrder = async (
     session.startTransaction();
 
     try {
+        const thisCustomer = await User.findById(user.id);
+        if (!thisCustomer || !thisCustomer.stripeCustomerId) {
+            throw new AppError(StatusCodes.NOT_FOUND, 'User or Stripe Customer ID not found');
+        }
         if (orderData.products) {
             for (const item of orderData.products) {
                 // Validate product and variant
@@ -57,20 +63,6 @@ const createOrder = async (
 
                 isExistProduct.product_variant_Details[variantIndex].variantQuantity -= item.quantity;
                 await isExistProduct.save({ session });
-                // const product = await Product.findById(item.product)
-                //     .populate("shop")
-                //     .session(session);
-
-                // if (product) {
-                //     if (product.stock < item.quantity) {
-                //         throw new Error(`Insufficient stock for product: ${product.name}`);
-                //     }
-                //     // Decrement the product stock
-                //     product.stock -= item.quantity;
-                //     await product.save({ session });
-                // } else {
-                //     throw new Error(`Product not found: ${item.product}`);
-                // }
             }
         }
 
@@ -103,44 +95,63 @@ const createOrder = async (
             user: user.id,
         });
 
-        const createdOrder = await order.save({ session });
-        await createdOrder.populate("user products.product");
+        await order.validate();
+        let createdOrder;
+        if (orderData.paymentMethod === PAYMENT_METHOD.CASH) {
+            createdOrder = await order.save({ session });
+            await createdOrder.populate("user products.product");
 
-        const transactionId = generateTransactionId();
+            const transactionId = generateTransactionId();
 
-        const payment = new Payment({
-            user: user.id,
-            shop: createdOrder.shop,
-            order: createdOrder._id,
-            method: orderData.paymentMethod,
-            transactionId,
-            amount: createdOrder.finalAmount,
-        });
+            const payment = new Payment({
+                user: user.id,
+                shop: createdOrder.shop,
+                order: createdOrder._id,
+                method: orderData.paymentMethod,
+                transactionId,
+                amount: createdOrder.finalAmount,
+            });
 
-        await payment.save({ session });
+            await payment.save({ session });
+
+
+            // Commit the transaction
+            await session.commitTransaction();
+            session.endSession();
+        }
 
         let result;
 
-        if (createdOrder.paymentMethod == PAYMENT_METHOD.ONLINE) {
-            // result = await sslService.initPayment({
-            //     total_amount: createdOrder.finalAmount,
-            //     tran_id: transactionId,
-            // });
-            // result = { paymentUrl: result };
-
+        if (orderData.paymentMethod !== PAYMENT_METHOD.CASH) {
+            // need to implement the stripe here if payment method is online/card
             // need to hanlde the stripe like (shop এর যে revenue আছে সেই হিসেবে কিছু টাকা যাবে super admin এর কাছে আর বাকী টাকা যাবে shop owner এর কাছে)
-            const shop = await Shop.findById(createdOrder.shop);
-            const superAdmin = await User.findOne({ role: USER_ROLES.SUPER_ADMIN });
-            const shopOwner = await User.findById(shop?.owner);
-            if (!superAdmin || !shopOwner) {
-                throw new AppError(StatusCodes.BAD_REQUEST, "Super admin or shop owner not found!");
-            }
-            const shopRevenue = shop?.revenue || DEFAULT_SHOP_REVENUE;
-            const superAdminRevenue = createdOrder.finalAmount * (shopRevenue / 100);
-            const shopOwnerRevenue = createdOrder.finalAmount - superAdminRevenue;
-            await User.findByIdAndUpdate(superAdmin._id, { balance: superAdmin.balance + superAdminRevenue });
-            await User.findByIdAndUpdate(shopOwner._id, { balance: shopOwner.balance + shopOwnerRevenue });
-        
+
+            let stripeCustomerId = thisCustomer?.stripeCustomerId;
+            const stripeCustomer = await stripe.customers.retrieve(stripeCustomerId);
+
+
+
+
+
+
+
+            await session.commitTransaction();
+            session.endSession();
+            return {
+                url: stripeSession.url,
+            };
+            // const shop = await Shop.findById(orderData.shop);
+            // const superAdmin = await User.findOne({ role: USER_ROLES.SUPER_ADMIN });
+            // const shopOwner = await User.findById(shop?.owner);
+            // if (!superAdmin || !shopOwner) {
+            //     throw new AppError(StatusCodes.BAD_REQUEST, "Super admin or shop owner not found!");
+            // }
+            // const shopRevenue = shop?.revenue || DEFAULT_SHOP_REVENUE;
+            // const superAdminRevenue = createdOrder.finalAmount * (shopRevenue / 100);
+            // const shopOwnerRevenue = createdOrder.finalAmount - superAdminRevenue;
+            // await User.findByIdAndUpdate(superAdmin._id, { balance: superAdmin.balance + superAdminRevenue });
+            // await User.findByIdAndUpdate(shopOwner._id, { balance: shopOwner.balance + shopOwnerRevenue });
+
         } else {
             result = order;
         }
@@ -149,6 +160,7 @@ const createOrder = async (
         await session.commitTransaction();
         session.endSession();
 
+        // invoice generationand mail sending
         const pdfBuffer = await generateOrderInvoicePDF(createdOrder);
         const emailContent = await emailHelper.createEmailContent(
             //@ts-ignore
