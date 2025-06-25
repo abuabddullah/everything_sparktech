@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Socket Test</title>
+</head>
+<body>
+  <h1>Socket.IO User Test</h1>
+  <p>Open browser console to see logs.</p>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    // Replace with actual user ID
+    const userId = "683d7e4b64a3fb85635596d6";
+
+    const socket = io("http://10.0.60.210:5000");
+
+    socket.on("connect", () => {
+      console.log("✅ User connected");
+
+      // Join user room
+      socket.emit("join", `user::${userId}`);
+    });
+
+    socket.on("rider-location-updated", (data) => {
+      console.log("📍 Rider location update received by user:", data);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("❌ Disconnected from server");
+    });
+  </script>
+</body>
+</html>
