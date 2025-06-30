@@ -1,60 +1,75 @@
-const httpStatus = require("http-status");
-const catchAsync = require("../../helpers/catchAsync");
-const { findShipments } = require("./shipment.service");
+const httpStatus = require('http-status');
+const catchAsync = require('../../helpers/catchAsync')
+const response = require("../../helpers/response");
+const { findLoadRequests } = require('../LoadRequest/loadRequest.service');
 
-//pendingShipment controller
+
 const pendingShipment = catchAsync(async (req, res) => {
-  const status = [
-    {
-      status: "Pending",
-    },
-  ];
-  const result = await findShipments(req, status);
-  return res.status(httpStatus.OK).json({
-    status: "OK",
-    statusCode: httpStatus.OK,
-    message: "Pending Shipment fetched successfully.",
-    data: {
-      type: "Shipment",
-      ...result,
-    },
-  });
+  const query = {
+    status: 'Pending',
+    user: req.User._id
+  };
+  const options = {
+    page: Number(req.query.page) || 1,
+    limit: Number(req.query.limit) || 10
+  };
+  const populateOptions = {
+    drivermodelfields: 'fullName email phoneNumber address image',
+    loadmodelfields: 'loadType palletSpace Hazmat shippingAddress shipperPhoneNumber shipperEmail receivingAddress receiverEmail receiverPhoneNumber',
+    truckmodelfields: 'truckNumber trailerSize',
+    populateDriver: true,
+    populateLoad: true,
+    populateTruck: true
+  };
+
+  const { results: loadRequests, pagination } = await findLoadRequests(query, populateOptions, options);
+  return res.status(httpStatus.OK).json(response({ status: 'OK', statusCode: httpStatus.OK, type: 'load Request', message: "Load requests fetched successfully.", data: { loadRequests, pagination } }));
 });
 
-//currrentShipment controller
+
 const currrentShipment = catchAsync(async (req, res) => {
-  const status = [
-    { status: "Accepted" },
-    { status: "Picked" },
-    { status: "Delivery-Pending" },
-  ];
-  const result = await findShipments(req, status);
+  const query = {
+    status: 'Accepted',
+    user: req.User._id
+  };
+  const options = {
+    page: Number(req.query.page) || 1,
+    limit: Number(req.query.limit) || 10
+  };
+  const populateOptions = {
+    drivermodelfields: 'fullName email phoneNumber address image',
+    loadmodelfields: 'loadType palletSpace Hazmat shippingAddress shipperPhoneNumber shipperEmail receivingAddress receiverEmail receiverPhoneNumber',
+    truckmodelfields: 'truckNumber trailerSize',
+    populateDriver: true,
+    populateLoad: true,
+    populateTruck: true
+  };
 
-  return res.status(httpStatus.OK).json({
-    status: "OK",
-    statusCode: httpStatus.OK,
-    message: "Current Shipment fetched successfully.",
-    data: {
-      type: "Shipment",
-      ...result,
-    },
-  });
+  const { results: loadRequests, pagination } = await findLoadRequests(query, populateOptions, options);
+  return res.status(httpStatus.OK).json(response({ status: 'OK', statusCode: httpStatus.OK, type: 'load Request', message: "Load requests fetched successfully.", data: { loadRequests, pagination } }));
 });
 
-//shippingHistory mcurrrentShipment
-const shippingHistory = catchAsync(async (req, res) => {
-  const status = [{ status: "Delivered" }];
 
-  const result = await findShipments(req, status);
-  return res.status(httpStatus.OK).json({
-    status: "OK",
-    statusCode: httpStatus.OK,
-    message: "Shipment history fetched successfully.",
-    data: {
-      type: "Shipment",
-      ...result,
-    },
-  });
+const shippingHistory = catchAsync(async (req, res) => {
+  const query = {
+    status: 'Delivered',
+    user: req.User._id
+  };
+  const options = {
+    page: Number(req.query.page) || 1,
+    limit: Number(req.query.limit) || 10
+  };
+  const populateOptions = {
+    drivermodelfields: 'fullName email phoneNumber address image',
+    loadmodelfields: 'loadType palletSpace Hazmat shippingAddress shipperPhoneNumber shipperEmail receivingAddress receiverEmail receiverPhoneNumber',
+    truckmodelfields: 'truckNumber trailerSize',
+    populateDriver: true,
+    populateLoad: true,
+    populateTruck: true
+  };
+
+  const { results: loadRequests, pagination } = await findLoadRequests(query, populateOptions, options);
+  return res.status(httpStatus.OK).json(response({ status: 'OK', statusCode: httpStatus.OK, type: 'load Request', message: "Load requests fetched successfully.", data: { loadRequests, pagination } }));
 });
 
 module.exports = { pendingShipment, currrentShipment, shippingHistory };

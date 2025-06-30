@@ -2,9 +2,11 @@ const Chat = require("./chat.model");
 const mongoose = require("mongoose");
 
 const addChat = async (user, participant) => {
-  return await Chat.create({
-    participants: [user, participant],
-  });
+  return await Chat.create(
+    {
+      participants: [user, participant]
+    }
+  );
 };
 
 const getChatById = async (id) => {
@@ -54,10 +56,10 @@ const getChatByParticipantId = async (filters, options) => {
             { $match: { $expr: { $eq: ["$chat", "$$chatId"] } } },
             { $sort: { createdAt: -1 } }, // Sort messages in descending order by createdAt
             { $limit: 1 },
-            { $project: { message: 1, createdAt: 1 } }, // Project only the content and createdAt of the latest message
+            { $project: { message: 1, createdAt: 1 } } // Project only the content and createdAt of the latest message
           ],
-          as: "latestMessage",
-        },
+          as: "latestMessage"
+        }
       },
       { $unwind: { path: "$latestMessage", preserveNullAndEmptyArrays: true } },
       { $sort: { "latestMessage.createdAt": -1 } }, // Sort chat list based on the createdAt of the latest message
@@ -66,8 +68,8 @@ const getChatByParticipantId = async (filters, options) => {
           from: "users",
           localField: "participants",
           foreignField: "_id",
-          as: "participants",
-        },
+          as: "participants"
+        }
       },
       {
         $addFields: {
@@ -77,34 +79,34 @@ const getChatByParticipantId = async (filters, options) => {
                 $filter: {
                   input: "$participants",
                   as: "participant",
-                  cond: { $ne: ["$$participant._id", participantId] },
-                },
+                  cond: { $ne: ["$$participant._id", participantId] }
+                }
               },
               as: "participant",
               in: {
                 _id: "$$participant._id",
                 fullName: "$$participant.fullName",
-                image: "$$participant.image",
-              },
-            },
-          },
-        },
+                image: "$$participant.image"
+              }
+            }
+          }
+        }
       },
       {
         $match: {
           participants: {
             $elemMatch: {
-              fullName: { $regex: name },
-            },
-          },
-        },
+              fullName: { $regex: name }
+            }
+          }
+        }
       },
       {
-        $addFields: {
-          participant: {
-            $arrayElemAt: ["$participants", 0],
-          },
-        },
+        $addFields:{
+          participant:{
+            $arrayElemAt: ["$participants", 0]
+          }
+        }
       },
       {
         $project: {
@@ -113,21 +115,23 @@ const getChatByParticipantId = async (filters, options) => {
           type: 1,
           groupAdmin: 1,
           image: 1,
-          participant: 1,
-        },
+          participant: 1
+        }
       },
       {
         $facet: {
-          totalCount: [{ $count: "count" }],
-          data: [{ $skip: skip }, { $limit: limit }],
-        },
-      },
+          "totalCount": [
+            { $count: "count" }
+          ],
+          "data": [
+            { $skip: skip },
+            { $limit: limit }
+          ]
+        }
+      }
     ]);
 
-    const totalResults =
-      allChatLists[0].totalCount.length > 0
-        ? allChatLists[0].totalCount[0].count
-        : 0;
+    const totalResults = allChatLists[0].totalCount.length > 0 ? allChatLists[0].totalCount[0].count : 0;
     const totalPages = Math.ceil(totalResults / limit);
     const pagination = { totalResults, totalPages, currentPage: page, limit };
 
@@ -140,32 +144,22 @@ const getChatByParticipantId = async (filters, options) => {
 
 const deleteChatById = async (chatId) => {
   return await Chat.findByIdAndDelete(chatId);
-};
+}
 
 const getParticipantLists = async (userId) => {
   const myId = new mongoose.Types.ObjectId(userId);
   const result = await Chat.aggregate([
-    { $match: { participants: { $in: [myId] } } },
-    { $unwind: "$participants" },
-    { $match: { participants: { $ne: myId } } },
-    {
-      $group: {
-        _id: null,
-        participantIds: { $addToSet: "$participants" },
-      },
-    },
-  ]);
-  return result;
-};
-
-const findChatById = async (id) => {
-  
-  const chat = await Chat.find({
-    _id: new mongoose.Types.ObjectId(String(id)),
-  }).populate("loadId");
-
-
-  // return await Chat.findOne({ _id: id }).populate("loadId");
+  { $match: { participants: { $in: [myId]} } },
+  { $unwind: "$participants" },
+  { $match: { participants: { $ne: myId } } },
+  {
+    $group: {
+      _id: null,
+      participantIds: { $addToSet: "$participants" }
+    }
+  }
+]);
+return result;
 };
 
 module.exports = {
@@ -176,6 +170,5 @@ module.exports = {
   getChatByDeleteId,
   getChatByParticipantId,
   deleteChatById,
-  getParticipantLists,
-  findChatById,
+  getParticipantLists
 };

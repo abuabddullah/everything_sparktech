@@ -1,33 +1,11 @@
-// models/subscription.js
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const { duplexPair } = require('nodemailer/lib/xoauth2');
 
-const subscriptionSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
-    duration: {
-      type: Number, // in days
-      required: true,
-    },
-    noOfDispatches: {
-      type: Number, // Optional, for user-specific plans
-      default: 0,
-    },
-    createdFor: {
-      type: String,
-      enum: ["user", "driver"],
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+const subscriptionSchema = new mongoose.Schema({
+  name: { type: String, default: '' },price: { type: Number, default: 0 },
+  duration: { type: Number, default: 0 },
+  expiaryTime: { type: Number, default: 0 },
+  noOfDispathes: { type: Number, default: 0 },
+});
 
-module.exports = mongoose.model("Subscription", subscriptionSchema);
+module.exports = mongoose.model('Subscription', subscriptionSchema);

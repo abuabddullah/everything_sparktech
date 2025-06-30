@@ -1,34 +1,25 @@
-const {
-  getChatAndAgoraTokens,
-  deleteChatAndAgoraToken,
-} = require("../../modules/ChatAndAgoraTokenGenerator/chatAndAgoraTokenGenerator.service");
-const generateAgoraToken = require("../../helpers/generateAgoraToken");
-const { getChatByParticipants } = require("../../modules/Chat/chat.service");
-const { addMessage } = require("../../modules/Message/message.service");
-const Chat = require("../../modules/Chat/chat.model");
-const sendNotification = require("../../helpers/formatNotification");
-const { start } = require("agenda/dist/agenda/start");
+const { getChatAndAgoraTokens, deleteChatAndAgoraToken } = require('../../modules/ChatAndAgoraTokenGenerator/chatAndAgoraTokenGenerator.service');
+const generateAgoraToken = require('../../helpers/generateAgoraToken');
+const { getChatByParticipants } = require('../../modules/Chat/chat.service');
+const { addMessage } = require('../../modules/Message/message.service');
+const Chat = require('../../modules/Chat/chat.model');
+const sendNotification = require('../../helpers/formatNotification');
+const { start } = require('agenda/dist/agenda/start');
 
 const chatAndAgoraTokenGenerate = async (agenda) => {
-  agenda.define("chat and agora token generate", async (job) => {
+  agenda.define('chat and agora token generate', async job => {
     try {
       const myTasks = await getChatAndAgoraTokens();
       if (myTasks && myTasks.length > 0) {
         for (const data of myTasks) {
-          const agoraToken = await generateAgoraToken(
-            data.channelName,
-            data.appointmentStartTime,
-            data.duration
-          );
+          const agoraToken = await generateAgoraToken(data.channelName, data.appointmentStartTime, data.duration);
+          console.log('🔑 Agora Token:', agoraToken);
 
-          let existingChat = await getChatByParticipants(
-            data.user._id,
-            data.ootms._id
-          );
+          let existingChat = await getChatByParticipants(data.user._id, data.ootms._id);
           if (!existingChat) {
             existingChat = new Chat({
               participants: [data.user._id, data.ootms._id],
-              status: "accepted",
+              status: 'accepted'
             });
           }
           existingChat.agoraToken = agoraToken;
@@ -36,6 +27,7 @@ const chatAndAgoraTokenGenerate = async (agenda) => {
           existingChat.startTime = data.appointmentStartTime;
           existingChat.duration = data.duration;
           await existingChat.save();
+          console.log('💬 Chat Updated:', existingChat._id);
 
           await addMessage({
             type: "special",
@@ -45,27 +37,26 @@ const chatAndAgoraTokenGenerate = async (agenda) => {
             meetingTime: data.appointmentStartTime,
             duration: data.duration,
             token: agoraToken,
-            sender: data.ootms._id,
+            sender: data.ootms._id
           });
 
           // send notification to user and ootms
-          const roomForUser = "user-notification::" + data.user._id.toString();
-          const roomForootms =
-            "user-notification::" + data.ootms._id.toString();
+          const roomForUser = 'user-notification::' + data.user._id.toString();
+          const roomForootms = 'user-notification::' + data.ootms._id.toString();
 
           const dataForUser = {
-            message: "You can now start the chat with " + data.ootms.fullName,
-            type: "chat",
+            message: 'You can now start the chat with '+data.ootms.fullName,
+            type: 'chat',
             link: existingChat._id,
-            role: "user",
+            role: 'user',
             receiver: data.user._id,
           };
 
           const dataForootms = {
-            message: "You can now start the chat with " + data.user.fullName,
-            type: "chat",
+            message: 'You can now start the chat with '+data.user.fullName,
+            type: 'chat',
             link: existingChat._id,
-            role: "user",
+            role: 'user',
             receiver: data.ootms._id,
           };
 

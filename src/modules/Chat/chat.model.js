@@ -2,15 +2,11 @@ const mongoose = require("mongoose");
 
 const chatSchema = mongoose.Schema(
   {
-    loadId: {
+    participants: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Load",
-      required: true,
-    },
-    chatType: {
-      type: String,
-      enum: ["shipper-receiver", "shipper-driver", "driver-receiver"],
-    },
+      ref: "User",
+      required: false,
+    }],
     status: {
       type: String,
       enum: ["accepted", "blocked"],

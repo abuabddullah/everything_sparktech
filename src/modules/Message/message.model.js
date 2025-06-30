@@ -7,42 +7,16 @@ const messageSchema = mongoose.Schema(
       ref: "Chat",
       required: true,
     },
-    text: {
-      type: String,
-      default: "",
-    },
-    imageUrl: {
-      type: String,
-      default: "",
-    },
-    seen: {
-      type: Boolean,
-      default: false,
-    },
+    message: { type: String, required: false },
+    type: { type: String, enum: ["general", "special", "reply"], default: "general" },
+    meetingTime: { type: Date, required: false },
+    duration: { type: Number, required: false },
+    link: { type: String, required: false },
     sender: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
-    },
-    // sender: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   required: true,
-    //   ref: 'User',
-    // },
-    // receiver: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   required: true,
-    //   ref: 'Receiver',
-    // },
-    // loadId: {
-    //   type: mongoose.Schema.Types.ObjectId || null,
-    //   required: false,
-    //   ref: 'Load',
-    //   default: null,
-    // },
-    showButton: {
-      type: Boolean,
-      default: false,
-    },
+    }
   },
   {
     timestamps: true,

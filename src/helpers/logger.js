@@ -6,9 +6,7 @@ const consoleLogFormat = combine(
   colorize(),
   timestamp(),
   printf(({ level, message, timestamp, method, url, responseTime }) => {
-    return `${timestamp} ${level}: ${method ? `[${method}] ` : ""}${message} ${
-      url ? `- ${url}` : ""
-    } ${responseTime ? `Response Time: ${responseTime}ms` : ""}`;
+    return `${timestamp} ${level}: ${method ? `[${method}] ` : ''}${message} ${url ? `- ${url}` : ''} ${responseTime ? `Response Time: ${responseTime}ms` : ''}`;
   })
 );
 

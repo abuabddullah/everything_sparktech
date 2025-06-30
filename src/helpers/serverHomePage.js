@@ -1,11 +1,11 @@
-const fs = require("fs");
-const path = require("path");
-const os = require("os");
-const osUtils = require("os-utils");
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+const osUtils = require('os-utils');
 require("dotenv").config();
 
-const responseLogFilePath = path.resolve(__dirname, "../../ResponseTime.log");
-const errorLogFilePath = path.resolve(__dirname, "../../app.log");
+const responseLogFilePath = path.resolve(__dirname, '../../ResponseTime.log');
+const errorLogFilePath = path.resolve(__dirname, '../../app.log');
 
 // Function to read and parse log files for both error and response time logs
 function readLogFile() {
@@ -14,77 +14,66 @@ function readLogFile() {
 
   // Read and parse response time logs
   try {
-    const responseLogData = fs.readFileSync(responseLogFilePath, "utf8");
-    responseLogData.split("\n").forEach((entry) => {
+    const responseLogData = fs.readFileSync(responseLogFilePath, 'utf8');
+    responseLogData.split('\n').forEach(entry => {
       if (!entry.trim()) return;
 
       try {
         const log = JSON.parse(entry);
         if (log.responseTime) {
           const responseTime = parseFloat(log.responseTime);
-          const label =
-            responseTime > 2000
-              ? "High"
-              : responseTime > 1000
-              ? "Medium"
-              : "Low";
+          const label = responseTime > 2000 ? 'High' : responseTime > 1000 ? 'Medium' : 'Low';
 
           responseTimeLogs.push({
             timestamp: new Date(log.timestamp).toLocaleString(),
-            route: log.url || "N/A",
-            method: log.method || "N/A",
+            route: log.url || 'N/A',
+            method: log.method || 'N/A',
             responseTime,
             label,
           });
         }
       } catch (error) {
-        console.error("Error parsing response time log entry:", error);
+        console.error('Error parsing response time log entry:', error);
       }
     });
   } catch (error) {
-    console.error("Error reading response time log file:", error);
+    console.error('Error reading response time log file:', error);
   }
 
   // Read and parse error logs
   try {
-    const errorLogData = fs.readFileSync(errorLogFilePath, "utf8");
-    errorLogData.split("\n").forEach((entry) => {
+    const errorLogData = fs.readFileSync(errorLogFilePath, 'utf8');
+    errorLogData.split('\n').forEach(entry => {
       if (!entry.trim()) return;
 
       try {
         const log = JSON.parse(entry);
-        if (
-          log.level === "error" &&
-          !(log.url && log.url.includes("/favicon.ico"))
-        ) {
+        if (log.level === 'error' && !(log.url && log.url.includes('/favicon.ico'))) {
           errorLogs.push({
             timestamp: new Date(log.timestamp).toLocaleString(),
-            method: log.method || "N/A",
-            statusCode: log.status || "N/A",
+            method: log.method || 'N/A',
+            statusCode: log.status || 'N/A',
             message: log.message,
-            errorPath: log.url || "N/A",
-            stack: log.stack || "No stack trace available",
+            errorPath: log.url || 'N/A',
+            stack: log.stack || 'No stack trace available',
           });
         }
       } catch (error) {
-        console.error("Error parsing error log entry:", error);
+        console.error('Error parsing error log entry:', error);
       }
     });
   } catch (error) {
-    console.error("Error reading error log file:", error);
+    console.error('Error reading error log file:', error);
   }
 
   // Reverse the logs to show newest entries first
-  return {
-    errorLogs: errorLogs.reverse(),
-    responseTimeLogs: responseTimeLogs.reverse(),
-  };
+  return { errorLogs: errorLogs.reverse(), responseTimeLogs: responseTimeLogs.reverse() };
 }
 
 // Function to generate HTML for error log table
 function generateErrorLogTable(errorLogs) {
   if (errorLogs.length === 0) {
-    return "<p>No recent error log entries found.</p>";
+    return '<p>No recent error log entries found.</p>';
   }
 
   let tableHtml = `
@@ -102,7 +91,7 @@ function generateErrorLogTable(errorLogs) {
       <tbody>
   `;
 
-  errorLogs.forEach((entry) => {
+  errorLogs.forEach(entry => {
     tableHtml += `
       <tr>
         <td>${entry.timestamp}</td>
@@ -122,7 +111,7 @@ function generateErrorLogTable(errorLogs) {
 // Function to generate HTML for response time log table
 function generateResponseTimeTable(responseTimeLogs) {
   if (responseTimeLogs.length === 0) {
-    return "<p>No response time data available.</p>";
+    return '<p>No response time data available.</p>';
   }
 
   let tableHtml = `
@@ -139,13 +128,8 @@ function generateResponseTimeTable(responseTimeLogs) {
       <tbody>
   `;
 
-  responseTimeLogs.forEach((entry) => {
-    const labelClass =
-      entry.label === "High"
-        ? "high-label"
-        : entry.label === "Medium"
-        ? "medium-label"
-        : "low-label";
+  responseTimeLogs.forEach(entry => {
+    const labelClass = entry.label === 'High' ? 'high-label' : entry.label === 'Medium' ? 'medium-label' : 'low-label';
 
     tableHtml += `
       <tr class="${labelClass}">

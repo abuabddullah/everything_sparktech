@@ -1,18 +1,10 @@
-const express = require("express");
-const {
-  addNewTruckDetails,
-  myEquipment,
-  deleteTruck,
-  availableTruck,
-} = require("./truckDetails.controller");
+const express = require('express');
+const { addNewTruckDetails, myEquipment } = require('./truckDetails.controller');
 const router = express.Router();
 
-const { isValidUser } = require("../../middlewares/auth");
+const { isValidUser } = require('../../middlewares/auth')
 
-//router.get('/', isValidUser, myEquipment);
-router.get("/available_truck", isValidUser, availableTruck);
-// router.post('/', isValidUser, addNewTruckDetails);
-router.post("/", isValidUser, addNewTruckDetails);
-router.delete("/:id", deleteTruck);
+router.get('/', isValidUser, myEquipment);
+router.post('/', isValidUser, addNewTruckDetails);
 
 module.exports = router;

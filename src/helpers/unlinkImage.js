@@ -3,16 +3,20 @@ const path = require("path");
 
 function unlinkImage(imgPath) {
   var imagePath;
-  if (imgPath.startsWith("public")) {
+  if (imgPath.startsWith('public')) {
     imagePath = imgPath;
-  } else if (imgPath.startsWith("\\public")) {
+  }
+  else if (imgPath.startsWith('\\public')) {
     imagePath = imgPath.slice(1);
-  } else {
+  }
+  else {
     imagePath = path.join("public/", imgPath);
   }
 
+  console.log("File Path ---> ", imgPath, imagePath);
   const fileExists = fs.existsSync(imagePath);
   if (!fileExists) {
+    console.log(`File ${imagePath} does not exist`);
     return;
   }
 
@@ -26,3 +30,4 @@ function unlinkImage(imgPath) {
 }
 
 module.exports = unlinkImage;
+

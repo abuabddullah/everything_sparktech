@@ -2,7 +2,7 @@ require("dotenv").config();
 
 // Helper function to encode data into Base64
 const encodeData = (data) => {
-  return Buffer.from(JSON.stringify(data)).toString("base64");
+  return Buffer.from(JSON.stringify(data)).toString('base64');
 };
 
 const setSuccessDataAndRedirect = async (res, user, token) => {
@@ -23,9 +23,7 @@ const setErrorDataAndRedirect = async (res, err, user) => {
   if (!user) message = "Invalid credentials";
 
   // Encode the error message before passing it in the query string
-  return res.redirect(
-    `${process.env.FAILURE_URL_WEB}&message=${encodeURIComponent(message)}`
-  );
+  return res.redirect(`${process.env.FAILURE_URL_WEB}&message=${encodeURIComponent(message)}`);
 };
 
 module.exports = { setSuccessDataAndRedirect, setErrorDataAndRedirect };

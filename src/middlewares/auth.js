@@ -1,8 +1,6 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const response = require("../helpers/response");
-const catchAsync = require("../helpers/catchAsync");
-const ApiError = require("../helpers/ApiError");
-const httpStatus = require("http-status");
+const catchAsync = require('../helpers/catchAsync');
 
 const isValidUser = catchAsync(async (req, res, next) => {
   const { authorization } = req.headers;
@@ -15,62 +13,26 @@ const isValidUser = catchAsync(async (req, res, next) => {
     }
   }
   if (!authorization || !decodedData) {
-    return res.status(401).json(
-      response({
-        status: "Unauthorised",
-        statusCode: "401",
-        type: "auth",
-        message: req.t("unauthorised"),
-      })
-    );
+    return res.status(401).json(response({ status: 'Unauthorised', statusCode: '401', type: 'auth', message: req.t('unauthorised') }));
   }
   req.User = decodedData;
   next();
 });
 
-// const tokenCheck = catchAsync(
-//   async (req, res, next) => {
-//     const { signuptoken } = req.headers;
-//     if (signuptoken && signuptoken.startsWith("signUpToken ")) {
-//       const token = signuptoken.split(" ")[1];
-//       let decodedData = {};
-//       if (token && token !== undefined && token !== null && token !== "null") {
-//         decodedData = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
-//       }
-//       req.User = decodedData;
-//     }
-//     else {
-
-//     }
-//     next();
-//   }
-// );
-
-const tokenCheck = catchAsync(async (req, res, next) => {
-  const { signuptoken } = req.headers;
-
-  if (signuptoken && signuptoken.startsWith("signUpToken ")) {
-    const token = signuptoken.split(" ")[1];
-    let decodedData = {};
-
-    if (token && token !== undefined && token !== null && token !== "null") {
-      try {
+const tokenCheck = catchAsync(
+  async (req, res, next) => {
+    const { signuptoken } = req.headers;
+    if (signuptoken && signuptoken.startsWith("signUpToken ")) {
+      const token = signuptoken.split(" ")[1];
+      let decodedData = {};
+      if (token && token !== undefined && token !== null && token !== "null") {
         decodedData = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
-        req.User = decodedData;
-      } catch (error) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid or expired token.");
       }
-
-      // decodedData = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
-      // req.User = decodedData;
-    } else if (!token) {
-      req.User = {};
-      next();
+      req.User = decodedData;
     }
+    next();
   }
-
-  next();
-});
+);
 
 const noCheck = async (req, res, next) => {
   try {
@@ -87,9 +49,11 @@ const noCheck = async (req, res, next) => {
       }
     }
     next();
-  } catch (err) {
+  }
+  catch (err) {
+    console.log(err, '----------------------------error-------------------------');
     next();
   }
-};
+}
 
 module.exports = { isValidUser, tokenCheck, noCheck };

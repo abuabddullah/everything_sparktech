@@ -1,10 +1,7 @@
-const {
-  getChatByParticipants,
-  addChat,
-} = require("../../modules/Chat/chat.service");
+const { getChatByParticipants, addChat } = require("../../modules/Chat/chat.service");
 
 const addNewChat = async (socket, data, callback) => {
-  let messageGiven = "Chat already successfully";
+  let messageGiven = "Chat already successfully"
   if (data.participant) {
     if (data.participant === socket.decodedToken._id.toString()) {
       return callback({
@@ -17,10 +14,11 @@ const addNewChat = async (socket, data, callback) => {
       data.participant
     );
     if (chatExists && chatExists.status === "accepted") {
-      messageGiven = "Chat already successfully";
-    } else {
+      messageGiven = "Chat already successfully"
+    }
+    else {
       chatExists = await addChat(socket.decodedToken._id, data.participant);
-      messageGiven = "Chat created successfully";
+      messageGiven = "Chat created successfully"
     }
 
     callback({

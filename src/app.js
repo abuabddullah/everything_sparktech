@@ -33,7 +33,6 @@ app.use(
   cors({
     origin: "*",
     optionsSuccessStatus: 200,
-    httpOnly: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   })
 );
@@ -52,7 +51,6 @@ if (process.env.NODE_ENV === "production") {
     "translation/{{lng}}/translation.json"
   );
 }
-
 
 i18next
   .use(Backend)

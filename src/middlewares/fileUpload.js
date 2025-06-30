@@ -35,6 +35,7 @@ module.exports = function (UPLOADS_FOLDER) {
         file.mimetype == "image/heif"
       ) {
         cb(null, true);
+
       } else {
         cb(new Error("Only jpg, png, jpeg, heic and heif format allowed!"));
       }

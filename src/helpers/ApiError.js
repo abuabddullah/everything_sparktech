@@ -1,9 +1,5 @@
 class ApiError extends Error {
-  constructor(
-    statusCode,
-    message = "An unexpected error occurred",
-    stack = ""
-  ) {
+  constructor(statusCode, message = 'An unexpected error occurred', stack = '') {
     super(message);
     this.statusCode = statusCode || 500; // Default to 500 if no status code is provided
     if (stack) {

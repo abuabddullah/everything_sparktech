@@ -1,14 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const mySubscriptionSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  expiryDate: { type: Date, required: true },
-  subscription: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Subscription",
-    required: true,
-  },
-  remainingDispatch: { type: Number, default: 0 },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  expiaryDate: { type: Date, required: true },
+  subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription', required: true }
 });
 
-module.exports = mongoose.model("MySubscription", mySubscriptionSchema);
+module.exports = mongoose.model('MySubscription', mySubscriptionSchema);

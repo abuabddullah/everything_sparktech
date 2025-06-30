@@ -5,19 +5,19 @@ const path = require("path");
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 // Middleware function to upload file to Cloudinary
 function uploadToCloudinary(req, res, next) {
   if (!req.file) {
-    return next(new Error("No file uploaded"));
+    return next(new Error('No file uploaded'));
   }
 
   const uploadOptions = {
     folder: req.body.folderName || "melange",
     overwrite: true,
-    public_id: req.body.givenFileName, // Set the public_id of the file (name)
+    public_id: req.body.givenFileName // Set the public_id of the file (name)
   };
 
   // Upload the file using cloudinary.uploader.upload

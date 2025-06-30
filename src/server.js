@@ -6,7 +6,6 @@ const logger = require("./helpers/logger");
 const { createServer } = require("http");
 const socketIO = require("./socket/socketIO.js");
 const socket = require("socket.io");
-const seedAdmin = require("../DB/seedAdmin.js");
 // Create a new server specifically for Socket.io
 const socketServer = createServer();
 const socketPort = process.env.SOCKET_PORT || 3002;
@@ -32,7 +31,6 @@ const serverIP = process.env.API_SERVER_IP || "localhost";
 
 async function myServer() {
   try {
-    console.log("MONGODB_CONNECTION", process.env.MONGODB_CONNECTION);
     await mongoose.connect(process.env.MONGODB_CONNECTION);
 
     // Start Express server
@@ -43,8 +41,7 @@ async function myServer() {
     });
 
     // Start Socket.io server
-    // socketServer.listen(socketPort, serverIP, () => {
-    socketServer.listen(socketPort, () => {
+    socketServer.listen(socketPort, serverIP, () => {
       console.dir(
         `---> Socket server is listening on: http://${serverIP}:${socketPort}`
       );
@@ -69,7 +66,6 @@ async function myServer() {
 }
 
 myServer();
-seedAdmin();
 
 async function graceful(err) {
   console.error("Received shutdown signal or error:", err);
@@ -85,11 +81,13 @@ async function graceful(err) {
   // }
   if (server) {
     server.close(() => {
+      console.log("Server closed. Exiting process.");
       process.exit(0);
     });
   }
   if (socketServer) {
     socketServer.close(() => {
+      console.log("Socket server closed. Exiting process.");
       process.exit(0);
     });
   } else {
