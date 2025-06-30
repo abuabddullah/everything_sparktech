@@ -1,0 +1,23 @@
+{
+  "workbench.colorTheme": "Learn with Sumit Official Theme",
+  "workbench.colorCustomizations": {
+    // 🌟 Activity Bar (Left)
+    "activityBar.activeBackground": "#006400",
+    "activityBar.background": "#004d00",
+    "activityBar.inactiveBackground": "#003300",
+    "activityBar.foreground": "#00FF00",
+    "activityBarBadge.background": "#32CD32",
+    "activityBarBadge.foreground": "#003300",
+    // 🌟 Title Bar (Top)
+    "titleBar.activeBackground": "#228B22",
+    "titleBar.activeForeground": "#F0FFF0",
+    "titleBar.inactiveBackground": "#006400",
+    "titleBar.inactiveForeground": "#A0E4A0",
+    // 🌟 Status Bar (Bottom)
+    "statusBar.background": "#2E8B57",
+    "statusBar.foreground": "#F0FFF0",
+    "statusBar.noFolderBackground": "#004d00",
+    "statusBar.debuggingBackground": "#32CD32",
+    "statusBar.debuggingBorder": "#00FF00"
+  }
+}
