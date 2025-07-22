@@ -1,0 +1,12 @@
+config:
+  target: 'http://10.10.7.112:5005'
+  phases:
+    - duration: 60 # running 1 minute
+      arrivalRate: 500 # new request per 20 seconds
+  defaults:
+    headers:
+      Authorization: 'Bearer eeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NTk0MTk3YzE2YjliNzhiOGI5ZGQxZSIsInJvbGUiOiJBRE1JTiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzUyOTE3ODQ4LCJleHAiOjE3NTMwMDQyNDh9.zqvDVPs_aNSzEg7Vth3KFuY0cDsHItuKFnCO2XmCkPk'
+scenarios:
+  - flow:
+      - get:
+          url: '/api/v1/payment'
