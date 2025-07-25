@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 1
+    },
+    "auditLog": "C:\\Users\\Rakibur Rahman\\Desktop\\New folder\\tramplete letest new\\tramplete letest new\\winston\\success\\.130ce2eaa80707f73fe78bca39f3f2492993b7e4-audit.json",
+    "files": [
+        {
+            "date": 1752635747766,
+            "name": "C:\\Users\\Rakibur Rahman\\Desktop\\New folder\\tramplete letest new\\tramplete letest new\\winston\\success\\16-07-2025-09-success.log",
+            "hash": "c81e4ecbc9fe070866fade5ed5ab1e14f9d4d4e8cc06b123e57ab912f1e75ef6"
+        },
+        {
+            "date": 1752644869776,
+            "name": "C:\\Users\\Rakibur Rahman\\Desktop\\New folder\\tramplete letest new\\tramplete letest new\\winston\\success\\16-07-2025-11-success.log",
+            "hash": "852808046701d46b324634eae6f0399dd97060d0ac5fd9021d14a440f3d05500"
+        }
+    ],
+    "hashType": "sha256"
+}
