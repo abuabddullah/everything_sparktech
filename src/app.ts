@@ -19,7 +19,17 @@ app.use(Morgan.successHandler);
 app.use(Morgan.errorHandler);
 
 //body parser
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      'https://admin.914unplugged.com/',
+      'http://admin.914unplugged.com/',
+      'https://914unplugged.com',
+      'http://914unplugged.com',
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
