@@ -22,15 +22,22 @@ app.use(Morgan.errorHandler);
 app.use(
   cors({
     origin: [
-      'https://admin.914unplugged.com/',
-      'http://admin.914unplugged.com/',
+      'https://admin.914unplugged.com',
+
+      'http://admin.914unplugged.com',
+
       'https://914unplugged.com',
       'http://914unplugged.com',
-      'https://www.admin.914unplugged.com/',
-      'http://www.admin.914unplugged.com/',
+      'https://www.admin.914unplugged.com',
+
+      'http://www.admin.914unplugged.com',
+
       'https://www.914unplugged.com',
       'http://www.914unplugged.com',
     ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
 app.use(express.json());
