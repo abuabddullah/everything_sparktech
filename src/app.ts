@@ -26,8 +26,11 @@ app.use(
       'http://admin.914unplugged.com/',
       'https://914unplugged.com',
       'http://914unplugged.com',
+      'https://www.admin.914unplugged.com/',
+      'http://www.admin.914unplugged.com/',
+      'https://www.914unplugged.com',
+      'http://www.914unplugged.com',
     ],
-    credentials: true,
   })
 );
 app.use(express.json());
