@@ -1,0 +1,204 @@
+{
+    "info": {
+      "name": "AI Chat API",
+      "description": "Postman collection for the AI Chat, TTS, and Wikipedia API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Chat",
+        "item": [
+          {
+            "name": "Send Chat Message",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"message\": \"Hello, how are you?\",\n    \"conversation_id\": \"optional-conversation-id\",\n    \"include_tts\": false,\n    \"voice_settings\": {\n        \"language\": \"en-US\",\n        \"voice\": \"en-US-Wavenet-D\",\n        \"speed\": 1.0\n    }\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/chat",
+                "host": ["{{base_url}}"],
+                "path": ["chat"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Stream Chat Message",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": ""
+                },
+                {
+                  "key": "Accept",
+                  "value": "text/event-stream"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"message\": \"Hello, how are you?\",\n    \"conversation_id\": \"optional-conversation-id\",\n    \"stream\": true\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/chat/stream",
+                "host": ["{{base_url}}"],
+                "path": ["chat", "stream"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "TTS",
+        "item": [
+          {
+            "name": "Synthesize Speech",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"text\": \"Hello, this is a test message.\",\n    \"language\": \"en-US\",\n    \"voice\": \"en-US-Wavenet-D\",\n    \"speed\": 1.0\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/tts/synthesize",
+                "host": ["{{base_url}}"],
+                "path": ["tts", "synthesize"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get All Voices",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/tts/voices",
+                "host": ["{{base_url}}"],
+                "path": ["tts", "voices"],
+                "query": [
+                  {
+                    "key": "language",
+                    "value": "en-US",
+                    "description": "Optional language filter"
+                  }
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Voices by Language",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/tts/voices/en-US",
+                "host": ["{{base_url}}"],
+                "path": ["tts", "voices", "en-US"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Wikipedia",
+        "item": [
+          {
+            "name": "Search Wikipedia",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"query\": \"Artificial Intelligence\",\n    \"limit\": 5,\n    \"suggest\": true\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/wiki/search",
+                "host": ["{{base_url}}"],
+                "path": ["wiki", "search"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Page Summary",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/wiki/page/Artificial%20Intelligence/summary",
+                "host": ["{{base_url}}"],
+                "path": ["wiki", "page", "Artificial Intelligence", "summary"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Page Content",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/wiki/page/Artificial%20Intelligence/content",
+                "host": ["{{base_url}}"],
+                "path": ["wiki", "page", "Artificial Intelligence", "content"],
+                "query": [
+                  {
+                    "key": "sections",
+                    "value": "summary,history",
+                    "description": "Comma-separated list of sections to include"
+                  }
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Random Article",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/wiki/random",
+                "host": ["{{base_url}}"],
+                "path": ["wiki", "random"]
+              }
+            },
+            "response": []
+          }
+        ]
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:3000",
+        "type": "string",
+        "description": "Update this to match your server URL"
+      }
+    ]
+  }
