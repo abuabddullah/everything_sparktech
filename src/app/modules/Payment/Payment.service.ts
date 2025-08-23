@@ -17,9 +17,37 @@ const createPayment = async (payload: Partial<IPayment>): Promise<IPayment> => {
      return result;
 };
 
-const getAllPayments = async (query: Record<string, any>): Promise<{ meta: { total: number; page: number; limit: number; }; result: IPayment[]; }> => {
-     const queryBuilder = new QueryBuilder(Payment.find(), query);
+const getAllPayments = async (query: Record<string, any>) => {
+     const { searchTerm, ...otherQueryParams } = query;
+
+     // Base query without search
+     let paymentQuery = Payment.find().populate('user', 'full_name email image').select('-gatewayResponse');
+
+     // If there's a search term, find matching users first
+     if (searchTerm) {
+          // Find users matching the search term
+          const matchingUsers = await User.find({
+               $or: [{ full_name: { $regex: searchTerm, $options: 'i' } }, { email: { $regex: searchTerm, $options: 'i' } }],
+          }).select('_id');
+
+          // Create a query that searches in transactionId or user references
+          paymentQuery = Payment.find({
+               $or: [{ transactionId: { $regex: searchTerm, $options: 'i' } }, { user: { $in: matchingUsers.map((u) => u._id) } }],
+          })
+               .populate('user', 'full_name email image')
+               .select('-gatewayResponse');
+     }
+
+     // Create query builder with the modified query
+     const queryBuilder = new QueryBuilder(paymentQuery, otherQueryParams);
+
+     // Apply other query operations (filter, sort, paginate, fields)
      const result = await queryBuilder.filter().sort().paginate().fields().modelQuery;
+
+     if (!result || result.length === 0) {
+          throw new AppError(StatusCodes.NOT_FOUND, 'Payments not found!');
+     }
+
      const meta = await queryBuilder.countTotal();
      return { meta, result };
 };
@@ -28,8 +56,6 @@ const getAllUnpaginatedPayments = async (): Promise<IPayment[]> => {
      const result = await Payment.find();
      return result;
 };
-
-
 
 const deletePayment = async (id: string): Promise<IPayment | null> => {
      const result = await Payment.findById(id);
@@ -63,7 +89,6 @@ const isPaymentExist = async (paymentIntent: string) => {
      return result;
 };
 
-
 const refundPayment = async (paymentId: string, user: IJwtPayload, refundReason: CANCELL_OR_REFUND_REASON) => {
      try {
           const payment = await Payment.findOne({ _id: paymentId, user: user.id, status: { $nin: [PAYMENT_STATUS.UNPAID, PAYMENT_STATUS.REFUNDED] } }).populate('booking');
@@ -95,7 +120,6 @@ const refundPayment = async (paymentId: string, user: IJwtPayload, refundReason:
      }
 };
 
-
 const stripeDuePaymentByBookingId = async (bookingId: string, user: IJwtPayload) => {
      const session = await mongoose.startSession();
      session.startTransaction();
@@ -119,10 +143,7 @@ const stripeDuePaymentByBookingId = async (bookingId: string, user: IJwtPayload)
           }
 
           thisUser.stripeCustomerId = stripeCustomer?.id;
-          console.log(
-               '🚀 ~ createBookingToDB ~ New customer created:',
-               stripeCustomer
-          );
+          console.log('🚀 ~ createBookingToDB ~ New customer created:', stripeCustomer);
           await User.findByIdAndUpdate(thisUser._id, { stripeCustomerId: stripeCustomer?.id }, { session });
 
           const admins = await User.find({ role: { $in: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN] } }).session(session);
@@ -156,7 +177,7 @@ const stripeDuePaymentByBookingId = async (bookingId: string, user: IJwtPayload)
                },
                success_url: config.stripe.success_url,
                cancel_url: config.stripe.cancel_url,
-          }
+          };
           const stripeSession: any = await stripe.checkout.sessions.create(stripeSessionData);
           console.log('🚀 ~ createBookingToDB ~:', {
                url: stripeSession.url,
@@ -232,5 +253,5 @@ export const PaymentService = {
      refundPayment,
      stripeDuePaymentByBookingId,
      updateCashPayment,
-     getMyPayments
+     getMyPayments,
 };

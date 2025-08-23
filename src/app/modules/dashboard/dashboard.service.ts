@@ -327,62 +327,82 @@ class DashboardService {
     // // rotue for datewise status based booking summary total, completed, cancel and rests as in progress name getDateWiseBookingSummary
 
     async getDateWiseAndStatusWiseBookingSummary(query: Record<string, any>) {
-        const { date } = query;
+        console.log('🚀 ~ DashboardService ~ getDateWiseAndStatusWiseBookingSummary ~ query:', query);
+        const { date, searchTerm } = query;
 
         if (!date) {
-            throw new AppError(StatusCodes.BAD_REQUEST, 'Date is required');
+             throw new AppError(StatusCodes.BAD_REQUEST, 'Date is required');
         }
 
         // Normalize the date to ensure time part is set to midnight in UTC
-        const startOfDay = moment.utc(date).startOf('day').toDate();  // 00:00:00 in UTC
-        const endOfDay = moment.utc(date).endOf('day').toDate();      // 23:59:59 in UTC
+        const startOfDay = moment.utc(date).startOf('day').toDate(); // 00:00:00 in UTC
+        const endOfDay = moment.utc(date).endOf('day').toDate(); // 23:59:59 in UTC
 
-        console.log('Start Date:', startOfDay); // Log the start date in UTC
-        console.log('End Date:', endOfDay); // Log the end date in UTC
+        console.log('Start Date:', startOfDay);
+        console.log('End Date:', endOfDay);
 
         // Define the common populate structure for user and service provider fields
         const populateOptions = [
-            {
-                path: 'user',
-                select: 'full_name',
-            },
-            {
-                path: 'serviceProvider',
-                select: 'full_name',
-            },
+             {
+                  path: 'user',
+                  select: 'full_name',
+             },
+             {
+                  path: 'serviceProvider',
+                  select: 'full_name',
+             },
         ];
 
+        // Build the base query
+        const baseQuery: any = {
+             createdAt: { $gte: startOfDay, $lte: endOfDay },
+        };
 
-        const bookingQuery = new QueryBuilder(
-            Booking.find({ createdAt: { $gte: startOfDay, $lte: endOfDay } }).populate(populateOptions), query
-        )
-            .search(['user.full_name', 'serviceProvider.full_name', 'servicingDestination'])
-            .paginate();
+        // If there's a search term, find matching users and service providers first
+        if (searchTerm) {
 
-        const result = await bookingQuery.modelQuery.exec();  // Executes the query
+             // Find users matching the search term
+             const matchingUsers = await User.find({
+                  full_name: { $regex: searchTerm, $options: 'i' },
+                  role: { $in: [USER_ROLES.USER, USER_ROLES.SERVICE_PROVIDER] },
+             }).select('_id');
+
+             // Create the search condition
+             const searchConditions = [
+                  { user: { $in: matchingUsers.map((u) => u._id) } },
+                  { serviceProvider: { $in: matchingUsers.map((sp) => sp._id) } },
+                  { servicingDestination: { $regex: searchTerm, $options: 'i' } },
+             ];
+
+             // If there are any search conditions, add them to the query
+             if (searchConditions.length > 0) {
+                  baseQuery.$or = searchConditions;
+             }
+        }
+
+        const bookingQuery = new QueryBuilder(Booking.find(baseQuery).populate(populateOptions), query).paginate();
+
+        const result = await bookingQuery.modelQuery.exec();
 
         // Check if no results are found
         if (!result || result.length === 0) {
-            throw new AppError(StatusCodes.NOT_FOUND, 'No bookings found');
+             throw new AppError(StatusCodes.NOT_FOUND, 'No bookings found');
         }
 
         const meta = await bookingQuery.countTotal();
 
-
-
         // Modify the status of bookings based on their current status
         result.forEach((booking) => {
-            if (![BOOKING_STATUS.COMPLETED, BOOKING_STATUS.CANCELLED].includes(booking.status)) {
-                booking.status = 'inProgress' as unknown as BOOKING_STATUS;  // Set status to 'inProgress' if it's neither 'COMPLETED' nor 'CANCELLED'
-            }
+             if (![BOOKING_STATUS.COMPLETED, BOOKING_STATUS.CANCELLED].includes(booking.status)) {
+                  booking.status = 'inProgress' as unknown as BOOKING_STATUS;
+             }
         });
 
         return {
-            meta,
-            result,
+             meta,
+             result,
         };
-
-    }
+   }
 
 
 
