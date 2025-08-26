@@ -1,0 +1,466 @@
+{
+  "info": {
+    "name": "User Study History API",
+    "description": "API collection for tracking user study progress, lesson attempts, and exam history in NCLEX prep application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "lesson_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "exam_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "question_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Student Endpoints",
+      "item": [
+        {
+          "name": "Record Lesson Question Attempt",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"lessonId\": \"{{lesson_id}}\",\n  \"questionId\": \"{{question_id}}\",\n  \"isCorrect\": true,\n  \"timeSpent\": 45,\n  \"selectedAnswer\": \"Option A\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user-study-history/lesson/question-attempt",
+              "host": ["{{base_url}}"],
+              "path": ["user-study-history", "lesson", "question-attempt"]
+            },
+            "description": "Record a student's attempt at answering a lesson question with timing and correctness data"
+          },
+          "response": []
+        },
+        {
+          "name": "Start Exam Attempt",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"examId\": \"{{exam_id}}\",\n  \"totalQuestions\": 50,\n  \"passMark\": 75\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user-study-history/exam/start",
+              "host": ["{{base_url}}"],
+              "path": ["user-study-history", "exam", "start"]
+            },
+            "description": "Initialize a new exam attempt for a student"
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Exam Attempt",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"examId\": \"{{exam_id}}\",\n  \"questionsAttempted\": [\n    {\n      \"questionId\": \"{{question_id}}\",\n      \"isCorrect\": true,\n      \"timeSpent\": 120,\n      \"selectedAnswer\": \"Option B\",\n      \"explanation\": \"Patient safety is the priority\"\n    },\n    {\n      \"questionId\": \"67890abcdef123456789\",\n      \"isCorrect\": false,\n      \"timeSpent\": 90,\n      \"selectedAnswer\": \"Option C\"\n    }\n  ],\n  \"timeSpent\": 2700\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user-study-history/exam/complete",
+              "host": ["{{base_url}}"],
+              "path": ["user-study-history", "exam", "complete"]
+            },
+            "description": "Complete an exam attempt with all question responses and total time"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Study History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user-study-history/my-history?period=weekly&startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{base_url}}"],
+              "path": ["user-study-history", "my-history"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "weekly",
+                  "description": "daily, weekly, monthly, yearly"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            },
+            "description": "Get authenticated user's comprehensive study statistics and history"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Lesson Progress",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user-study-history/my-lessons",
+              "host": ["{{base_url}}"],
+              "path": ["user-study-history", "my-lessons"]
+            },
+            "description": "Get authenticated user's lesson progress summary"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Exam History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user-study-history/my-exams",
+              "host": ["{{base_url}}"],
+              "path": ["user-study-history", "my-exams"]
+            },
+            "description": "Get authenticated user's exam attempt history"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for students to track their own study progress"
+    },
+    {
+      "name": "Admin Endpoints",
+      "item": [
+        {
+          "name": "Get All User Study Histories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user-study-history/admin/all?page=1&limit=10&sortBy=lastStudyDate&sortOrder=desc",
+              "host": ["{{base_url}}"],
+              "path": ["user-study-history", "admin", "all"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "lastStudyDate"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                },
+                {
+                  "key": "userId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get paginated list of all user study histories (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Study Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user-study-history/admin/user/{{user_id}}/stats?period=monthly",
+              "host": ["{{base_url}}"],
+              "path": [
+                "user-study-history",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "stats"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "monthly"
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get comprehensive study statistics for a specific user (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Lesson Progress",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user-study-history/admin/user/{{user_id}}/lessons?lessonId={{lesson_id}}",
+              "host": ["{{base_url}}"],
+              "path": [
+                "user-study-history",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "lessons"
+              ],
+              "query": [
+                {
+                  "key": "lessonId",
+                  "value": "{{lesson_id}}",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get lesson progress for a specific user (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Exam History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user-study-history/admin/user/{{user_id}}/exams?examId={{exam_id}}",
+              "host": ["{{base_url}}"],
+              "path": [
+                "user-study-history",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "exams"
+              ],
+              "query": [
+                {
+                  "key": "examId",
+                  "value": "{{exam_id}}",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get exam history for a specific user (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Specific User Lesson Progress",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user-study-history/admin/user/{{user_id}}/lesson/{{lesson_id}}",
+              "host": ["{{base_url}}"],
+              "path": [
+                "user-study-history",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "lesson",
+                "{{lesson_id}}"
+              ]
+            },
+            "description": "Get detailed progress for a specific user and lesson (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Specific User Exam History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user-study-history/admin/user/{{user_id}}/exam/{{exam_id}}",
+              "host": ["{{base_url}}"],
+              "path": [
+                "user-study-history",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "exam",
+                "{{exam_id}}"
+              ]
+            },
+            "description": "Get detailed exam history for a specific user and exam (Admin only)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Admin endpoints for managing and viewing all user study data"
+    },
+    {
+      "name": "Test Data Examples",
+      "item": [
+        {
+          "name": "Multiple Question Attempts",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"lessonId\": \"{{lesson_id}}\",\n  \"questionId\": \"{{question_id}}\",\n  \"isCorrect\": false,\n  \"timeSpent\": 180,\n  \"selectedAnswer\": [\"Option A\", \"Option C\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user-study-history/lesson/question-attempt",
+              "host": ["{{base_url}}"],
+              "path": ["user-study-history", "lesson", "question-attempt"]
+            },
+            "description": "Example with multiple choice selection and incorrect answer"
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Exam - Full Example",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"examId\": \"{{exam_id}}\",\n  \"questionsAttempted\": [\n    {\n      \"questionId\": \"q1_12345abcdef123456789\",\n      \"isCorrect\": true,\n      \"timeSpent\": 120,\n      \"selectedAnswer\": \"A\",\n      \"explanation\": \"Airway management is priority in emergency care\"\n    },\n    {\n      \"questionId\": \"q2_23456bcdef1234567890\",\n      \"isCorrect\": true,\n      \"timeSpent\": 90,\n      \"selectedAnswer\": \"C\"\n    },\n    {\n      \"questionId\": \"q3_34567cdef12345678901\",\n      \"isCorrect\": false,\n      \"timeSpent\": 150,\n      \"selectedAnswer\": \"B\",\n      \"explanation\": \"Should have prioritized patient safety protocols\"\n    },\n    {\n      \"questionId\": \"q4_45678def123456789012\",\n      \"isCorrect\": true,\n      \"timeSpent\": 105,\n      \"selectedAnswer\": [\"A\", \"D\"]\n    },\n    {\n      \"questionId\": \"q5_56789ef1234567890123\",\n      \"isCorrect\": false,\n      \"timeSpent\": 200,\n      \"selectedAnswer\": \"A\"\n    }\n  ],\n  \"timeSpent\": 3900\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user-study-history/exam/complete",
+              "host": ["{{base_url}}"],
+              "path": ["user-study-history", "exam", "complete"]
+            },
+            "description": "Complete exam example with 5 questions, mixed results (3 correct, 2 incorrect)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Example requests with realistic test data"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-generate sample IDs if not set",
+          "if (!pm.collectionVariables.get('user_id')) {",
+          "    pm.collectionVariables.set('user_id', '507f1f77bcf86cd799439011');",
+          "}",
+          "if (!pm.collectionVariables.get('lesson_id')) {",
+          "    pm.collectionVariables.set('lesson_id', '507f1f77bcf86cd799439012');",
+          "}",
+          "if (!pm.collectionVariables.get('exam_id')) {",
+          "    pm.collectionVariables.set('exam_id', '507f1f77bcf86cd799439013');",
+          "}",
+          "if (!pm.collectionVariables.get('question_id')) {",
+          "    pm.collectionVariables.set('question_id', '507f1f77bcf86cd799439014');",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Basic response validation",
+          "pm.test('Status code is successful', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+          "});",
+          "",
+          "pm.test('Response has success field', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('success');",
+          "    pm.expect(jsonData.success).to.be.true;",
+          "});",
+          "",
+          "pm.test('Response time is acceptable', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});"
+        ]
+      }
+    }
+  ]
+}
