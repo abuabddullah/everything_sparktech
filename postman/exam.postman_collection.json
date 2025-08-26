@@ -1,0 +1,129 @@
+{
+  "info": {
+    "name": "Exam API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Exam",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"sample_name\",\n  \"code\": \"sample_code\",\n  \"description\": \"sample_description\",\n  \"isPublished\": true,\n  \"durationMinutes\": 123,\n  \"passMark\": 123,\n  \"questions\": [\n    {\n      \"type\": \"sample_type\",\n      \"stemTitle\": \"sample_stemTitle\",\n      \"stemDescription\": \"sample_stemDescription\",\n      \"title\": \"sample_title\",\n      \"options\": [\n        \"sample_options_item\"\n      ],\n      \"object\": \"sample_object\",\n      \"string\": \"sample_string\",\n      \"boolean\": \"sample_boolean\",\n      \"number\": \"sample_number\",\n      \"array\": \"sample_array\",\n      \"correctOrder\": [\n        \"sample_correctOrder_item\"\n      ],\n      \"explanation\": \"sample_explanation\"\n    }\n  ],\n  \"stats\": {\n    \"key\": \"value\"\n  },\n  \"createdBy\": \"sample_createdBy\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/exam",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "exam"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Exams",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/exam",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "exam"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Exam by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/exam/{{exam_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "exam",
+            "{{exam_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Exam",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"sample_name\",\n  \"code\": \"sample_code\",\n  \"description\": \"sample_description\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/exam/{{exam_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "exam",
+            "{{exam_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Exam",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/exam/{{exam_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "exam",
+            "{{exam_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}

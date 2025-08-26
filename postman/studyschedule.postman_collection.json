@@ -1,0 +1,129 @@
+{
+  "info": {
+    "name": "Studyschedule API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Studyschedule",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"calendar\": \"2025-08-16T17:49:15.740Z\",\n  \"title\": \"sample_title\",\n  \"description\": \"sample_description\",\n  \"createdBy\": \"507f1f77bcf86cd799439011\",\n  \"isDeleted\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyschedule",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyschedule"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Studyschedules",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyschedule",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyschedule"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Studyschedule by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyschedule/{{studyschedule_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyschedule",
+            "{{studyschedule_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Studyschedule",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"calendar\": \"2025-08-16T17:49:15.741Z\",\n  \"title\": \"sample_title\",\n  \"description\": \"sample_description\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyschedule/{{studyschedule_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyschedule",
+            "{{studyschedule_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Studyschedule",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyschedule/{{studyschedule_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyschedule",
+            "{{studyschedule_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}

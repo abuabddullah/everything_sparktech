@@ -1,0 +1,4159 @@
+{
+	"info": {
+		"_postman_id": "392328e5-7901-4888-a190-2c099a870c5c",
+		"name": "my-nclex-prep",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45907329",
+		"_collection_link": "https://my-nclex-prep.postman.co/workspace/my-nclex-prep-Workspace~47f8cf06-97a2-42d0-8ff9-c9b4d801d48d/collection/45907329-392328e5-7901-4888-a190-2c099a870c5c?action=share&source=collection_link&creator=45907329"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"temp\",\r\n    \"email\": \"mohosinali075@gmail.com\",\r\n    \"password\": \"12345678\",\r\n    \"role\": \"student\"\r\n}\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/signup",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"tayaca8326@futebr.com\",\r\n    \"oneTimeCode\" : \"606073\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/verify-account",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"verify-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forget password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"tayaca8326@futebr.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/forget-password",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"forget-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resend-otp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/resend-otp",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"resend-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "24305079d66d07846053a916ec9a54768fe849c149ab6a3b63e17e33f5ebaf8c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"newPassword\" : \"123456789\",\r\n    \"confirmPassword\" : \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/reset-password",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete account",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoSWQiOiI2ODk0ZGY4YzI3MGRjYzQwMDQyYTM1MjIiLCJyb2xlIjoiYWRtaW4iLCJuYW1lIjoiQW5kcmVhIiwiZW1haWwiOiJ3ZWIubW9ob3NpbkBnbWFpbC5jb20iLCJpYXQiOjE3NTQ1OTM5MTksImV4cCI6MTc1NDY4MDMxOX0.afHzwLS3A_G5B1QmYnJDfnYUQGQq1HIAa2q-mXPE__s",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\" : \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/delete-account",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"delete-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{user}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPassword\" : \"12345670\",\r\n    \"newPassword\" : \"12345678\",\r\n    \"confirmPassword\" : \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/change-password",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "social-login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoSWQiOiI2ODk0ZGY4YzI3MGRjYzQwMDQyYTM1MjIiLCJyb2xlIjoiYWRtaW4iLCJuYW1lIjoiQW5kcmVhIiwiZW1haWwiOiJ3ZWIubW9ob3NpbkBnbWFpbC5jb20iLCJpYXQiOjE3NTQ1OTM5MTksImV4cCI6MTc1NDY4MDMxOX0.afHzwLS3A_G5B1QmYnJDfnYUQGQq1HIAa2q-mXPE__s",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/social-login",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"social-login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh-token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/refresh-token",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"mohosinali075@gmail.com\",\r\n    \"password\" : \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "google  login",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{user}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPassword\" : \"12345670\",\r\n    \"newPassword\" : \"12345678\",\r\n    \"confirmPassword\" : \"12345678\"\r\n}"
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/google",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"google"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "social login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{user}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"appId\" : \"760236376384286\",\r\n    \"deviceToken\" : \"dk\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/auth/social-login",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"social-login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "update profile",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "names",
+									"value": "Md Mohsoin Ali",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/webmo/Downloads/IMG_20250505_200142.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/user/profile",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Md Mohosin Ali\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/user/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Md Mohosin Ali\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/user/6897a478f1a59afbbb17667a",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"6897a478f1a59afbbb17667a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/user/profile",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete my profile",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\" : \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/user/profile",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user by id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Md Mohosin Ali\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/user/6897a478f1a59afbbb17667a",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"6897a478f1a59afbbb17667a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user status by id",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\" : \"inactive\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/user/6897a6ca11b2927166ac5c7a",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"6897a6ca11b2927166ac5c7a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "public",
+			"item": [
+				{
+					"name": "faq",
+					"item": [
+						{
+							"name": "create faq",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"How do I reset my password?\",\r\n    \"answer\": \"Click on 'Forgot Password' at the login page and follow the instructions.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/public/faq",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"public",
+										"faq"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update faq",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"How do I reset my password? update \",\r\n    \"answer\": \"Click on 'Forgot Password' at the login page and follow the instructions.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/public/faq/6897bf3b1fd6441a9eee6d25",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"public",
+										"faq",
+										"6897bf3b1fd6441a9eee6d25"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get faq by id",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"How do I reset my password?\",\r\n    \"answer\": \"Click on 'Forgot Password' at the login page and follow the instructions.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/public/faq/single/6897bf3b1fd6441a9eee6d25",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"public",
+										"faq",
+										"single",
+										"6897bf3b1fd6441a9eee6d25"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all faq",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"How do I reset my password?\",\r\n    \"answer\": \"Click on 'Forgot Password' at the login page and follow the instructions.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/public/faq/all",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"public",
+										"faq",
+										"all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete faq",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"How do I reset my password?\",\r\n    \"answer\": \"Click on 'Forgot Password' at the login page and follow the instructions.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/public/faq/6897bf3b1fd6441a9eee6d25",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"public",
+										"faq",
+										"6897bf3b1fd6441a9eee6d25"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "contact",
+					"item": [
+						{
+							"name": "create contact",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Appon Ahmed\",\r\n  \"email\": \"apponislamdev@gmail.com\",\r\n  \"phone\": \"+880123456789\",\r\n  \"country\": \"Bangladesh\",\r\n  \"message\": \"Hey, I’m interested in learning more about your backend services!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/public/contact",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"public",
+										"contact"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create terms-and-condition",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\" : \"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like\",\r\n    \"type\" : \"terms-and-condition\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/public",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"public"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create privacy-policy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\" : \"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like\",\r\n    \"type\" : \"privacy-policy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/public",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"public"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update public",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\" : \"updated dsfsd\",\r\n    \"type\" : \"privacy-sdf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/public/update/6897b74fe0ee2c1ee0f0060b",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"public",
+								"update",
+								"6897b74fe0ee2c1ee0f0060b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create about",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\" : \"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like\",\r\n    \"type\" : \"about\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/public",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"public"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get terms-and-condition",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/public/terms-and-condition",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"public",
+								"terms-and-condition"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get privacy-policy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/public/privacy-policy",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"public",
+								"privacy-policy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete public",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/public/6897b74fe0ee2c1ee0f0060b",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"public",
+								"6897b74fe0ee2c1ee0f0060b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "support/report",
+			"item": [
+				{
+					"name": "create support",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"message\": \"Check how to solve this\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/support",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"support"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get support",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/support?sortOrder",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"support"
+							],
+							"query": [
+								{
+									"key": "sortOrder",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update support status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\" : \"solved\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/support/6897e7828b3f43bf4f5a4c44",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"support",
+								"6897e7828b3f43bf4f5a4c44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete support",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/support/6897e7828b3f43bf4f5a4c44",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"support",
+								"6897e7828b3f43bf4f5a4c44"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "onboardingScreen",
+			"item": [
+				{
+					"name": "create onboarding",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Onboardingscreen 2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Onboardingscreen Details 2",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/webmo/Downloads/image.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/onboardingscreen/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"onboardingscreen",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get onboarding",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/onboardingscreen/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"onboardingscreen",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get onboarding by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "\"sdlf\"",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "\"sdfj\"",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/webmo/Downloads/IMG_20250505_200142.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/onboardingscreen/689915abef1c490859ab1ccc",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"onboardingscreen",
+								"689915abef1c490859ab1ccc"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete onboarding by id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/onboardingscreen/689e6be5cc0e90bcddabdd9d",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"onboardingscreen",
+								"689e6be5cc0e90bcddabdd9d"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "studyschedule",
+			"item": [
+				{
+					"name": "create studyschedule",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"calendar\": \"2025-08-17\",\r\n  \"title\": \"NCLEX Practice Session 111111\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyschedule/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyschedule",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get studyschedule",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyschedule/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyschedule",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get studySchedule by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyschedule/68a0cbfe163c7e2fd2d2802b",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyschedule",
+								"68a0cbfe163c7e2fd2d2802b"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get studySchedule by Date",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyschedule/by-date?date=2025-08-17",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyschedule",
+								"by-date"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2025-08-17"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete studySchedule by id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyschedule/68a0d1eed37ac76641560a46",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyschedule",
+								"68a0d1eed37ac76641560a46"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "community",
+			"item": [
+				{
+					"name": "answer",
+					"item": [
+						{
+							"name": "create answer",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{student}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"comments\" : \"Now it's okey\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/community/689b970eb914302cf572f382/answers",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"community",
+										"689b970eb914302cf572f382",
+										"answers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete answer",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{student}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/community/689b970eb914302cf572f382/answers/689b97cdb914302cf572f393",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"community",
+										"689b970eb914302cf572f382",
+										"answers",
+										"689b97cdb914302cf572f393"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update answer",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{student}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"comments\" : \"how to create mongoose\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/community/689b970eb914302cf572f382/answers/689b9850032d9dc01fd04fea",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"community",
+										"689b970eb914302cf572f382",
+										"answers",
+										"689b9850032d9dc01fd04fea"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create community",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"What is Next js?\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/community/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"community",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get community",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/community/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"community",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get single community",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/community/689b93d3f73ff082c7611b11",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"community",
+								"689b93d3f73ff082c7611b11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update community",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"How to Create mongoose module?\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/community/689b93d3f73ff082c7611b11",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"community",
+								"689b93d3f73ff082c7611b11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete community",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/community/689b971cb914302cf572f384",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"community",
+								"689b971cb914302cf572f384"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "review",
+			"item": [
+				{
+					"name": "add review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\" : 4,\r\n    \"review\" : \"okey now\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/review",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get review by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/review/689bac0065e85d50130d2fab",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"review",
+								"689bac0065e85d50130d2fab"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all review",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/review",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete review",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/review/689ba870404112c8c987b0cb",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"review",
+								"689ba870404112c8c987b0cb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update review",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\" : 5,\r\n    \"review\" : \"okey now\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/review/689bac0065e85d50130d2fab",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"review",
+								"689bac0065e85d50130d2fab"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category",
+			"item": [
+				{
+					"name": "add category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Pregnancy",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/webmo/Downloads/Media (1).jpeg",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/category",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get category by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/category/68a7716199e1ed9c7e0fda19",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"category",
+								"68a7716199e1ed9c7e0fda19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/category?Pregnancy&Mental health&Men health&Women health",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"category"
+							],
+							"query": [
+								{
+									"key": "Pregnancy",
+									"value": null
+								},
+								{
+									"key": "Mental health",
+									"value": null
+								},
+								{
+									"key": "Men health",
+									"value": null
+								},
+								{
+									"key": "Women health",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/category/68a78061d8bbb0f227254d9a",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"category",
+								"68a78061d8bbb0f227254d9a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update review",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Men health 7",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/webmo/Downloads/RIYAN_20250815_014942_⛱️Blue Sky Beach (LMC17) by Riyan.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/category/68a77f1fbfac96a835fb4f2c",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"category",
+								"68a77f1fbfac96a835fb4f2c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "mnemonic",
+			"item": [
+				{
+					"name": "add mnemonic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Prenatal Care: CHECK\",\r\n    \"category\": \"68a7850388d1124460f971cf\",\r\n    \"items\": [\r\n        {\r\n            \"letter\": \"C\",\r\n            \"meaning\": \"Checkups regular\"\r\n        },\r\n        {\r\n            \"letter\": \"H\",\r\n            \"meaning\": \"Healthy diet\"\r\n        },\r\n        {\r\n            \"letter\": \"E\",\r\n            \"meaning\": \"Exercise appropriate\"\r\n        },\r\n        {\r\n            \"letter\": \"C\",\r\n            \"meaning\": \"Calcium intake\"\r\n        },\r\n        {\r\n            \"letter\": \"K\",\r\n            \"meaning\": \"Knowledge of changes\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/mnemonic",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"mnemonic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get mnemonic by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/mnemonic/68a7881288d1124460f971e5",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"mnemonic",
+								"68a7881288d1124460f971e5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get mnemonic by category id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/mnemonic/category/{{categoryId}}",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"mnemonic",
+								"category",
+								"{{categoryId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all mnemonic",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/mnemonic",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"mnemonic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete mnemonic",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/mnemonic/68a7881b88d1124460f971e7",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"mnemonic",
+								"68a7881b88d1124460f971e7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "study material",
+			"item": [
+				{
+					"name": "add material",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "doc",
+									"type": "file",
+									"src": "/C:/Users/webmo/Downloads/CSE_selected.pdf"
+								},
+								{
+									"key": "name",
+									"value": "Study 1",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "study_guide",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studymaterial",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studymaterial"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get studymaterial by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studymaterial/689d1fcf9f4132bd75acfa37",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studymaterial",
+								"689d1fcf9f4132bd75acfa37"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all materials",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studymaterial?category=study_guide",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studymaterial"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "study_guide"
+								},
+								{
+									"key": "sortOrder",
+									"value": "asc",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all study guide",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studymaterial/study-guide",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studymaterial",
+								"study-guide"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "question_sample",
+									"disabled": true
+								},
+								{
+									"key": "sortOrder",
+									"value": "asc",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete studymaterial",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studymaterial/689d287fff901f4ecb2624bd",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studymaterial",
+								"689d287fff901f4ecb2624bd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update studymaterial",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Leader",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studymaterial/689cf78a33c751c1013bdf7c",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studymaterial",
+								"689cf78a33c751c1013bdf7c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "exam",
+			"item": [
+				{
+					"name": "stem",
+					"item": [
+						{
+							"name": "create stem",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "stems",
+											"value": "[\n        {\n            \"stemTitle\": \"Pulmonary\",\n            \"stemDescription\": \"Reports dyspnea; lung sounds diminished with fine crackles in bilateral bases; sharp chest pain on inspiration; denies cough; former 10-year smoker; quit 25 years ago\"\n        },\n        {\n            \"stemTitle\": \"Pulmonary\",\n            \"stemDescription\": \"Reports dyspnea; lung sounds diminished with fine crackles in bilateral bases; sharp chest pain on inspiration; denies cough; former 10-year smoker; quit 25 years ago\"\n        }\n    ]\n",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": [
+												"/C:/Users/webmo/Downloads/IMG_20250505_200142.jpg",
+												"/C:/Users/webmo/Downloads/Screenshot 2025-08-07 224932.png"
+											]
+										}
+									]
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/exam/stems",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"exam",
+										"stems"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "question",
+					"item": [
+						{
+							"name": "create question",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "// ============\r\n// type radio or checkbox or box  or chart_box or rearrange or dropdown\r\n// ===========\r\n{\r\n    \"questions\": [\r\n        {\r\n            \"questionText\": \"What is the first step in a case study?\",\r\n            \"type\": \"radio\",\r\n            \"options\": [\r\n                {\r\n                    \"label\": \"Earth\",\r\n                    \"value\": \"earth\"\r\n                },\r\n                {\r\n                    \"label\": \"Mars\",\r\n                    \"value\": \"mars\"\r\n                },\r\n                {\r\n                    \"label\": \"Jupiter\",\r\n                    \"value\": \"jupiter\",\r\n                    \"isCorrect\": true\r\n                }\r\n            ],\r\n            \"explanation\": \"The first step is to clearly define the problem to focus your research and analysis.\",\r\n            \"stems\": [\r\n                \"68a50b7cd4a100c57db84263\",\r\n                \"68a50b7cd4a100c57db84264\"\r\n            ]\r\n        }\r\n    ]\r\n}\r\n// ============\r\n// type number input\r\n// ===========\r\n// {\r\n//     \"questions\": [\r\n//         {\r\n//             \"type\": \"number\",\r\n//             \"stems\": [\r\n//         \"68a63205f195f64e990b21e7\",\r\n//         \"68a63205f195f64e990b21e8\"\r\n//     ],\r\n//             \"questionText\": \"What is the square root of 144?\",\r\n//             \"numberAnswer\": 12,\r\n//             \"explanation\": \"The square root of 144 is 12.\"\r\n//         }\r\n//     ]\r\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/exam/questions",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"exam",
+										"questions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get question by exam id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{student}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/exam/68a64034e7867cca52145942/questions",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"exam",
+										"68a64034e7867cca52145942",
+										"questions"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "3",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create exam",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"category\": \"readiness\" // 'readiness' | 'standalone'\r\n    // \"name\": \"NCLEX Practice Exam - Fundamentals\",\r\n    // \"code\": \"EXAM-FND-001\",\r\n    // \"description\": \"A practice exam covering fundamental nursing concepts to prepare for NCLEX.\",\r\n    // \"durationMinutes\": 90,\r\n    // \"passMark\": 70\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/exam",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"exam"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get exams by category",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/exam?category=readiness",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"exam"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "standalone",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "readiness"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get readiness exams",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/exam/readiness",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"exam",
+								"readiness"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "readiness",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get standalone exams",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/exam/standalone",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"exam",
+								"standalone"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "readiness",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get exams by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/exam/68a624a0afd1dac963409421",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"exam",
+								"68a624a0afd1dac963409421"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete exams by id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/exam/68a624a0afd1dac963409421",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"exam",
+								"68a624a0afd1dac963409421"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "lesson",
+			"item": [
+				{
+					"name": "stem",
+					"item": [
+						{
+							"name": "create stem",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "stems",
+											"value": "[\n        \n        {\n            \"stemTitle\": \"Pulmonary\",\n            \"stemDescription\": \"Reports dyspnea; lung sounds diminished with fine crackles in bilateral bases; sharp chest pain on inspiration; denies cough; former 10-year smoker; quit 25 years ago\"\n        }\n    ]\n",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/C:/Users/webmo/Downloads/Screenshot 2025-08-07 224932.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/lesson/stems",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"lesson",
+										"stems"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "question",
+					"item": [
+						{
+							"name": "create question",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "// ============\r\n// type chart_based or image_based\r\n// ===========\r\n{\r\n    \"questions\": [\r\n        {\r\n            \"questionText\": \"What is the first step in a case study?\",\r\n            \"type\": \"chart_based\",\r\n            \"options\": [\r\n                {\r\n                    \"label\": \"Earth\",\r\n                    \"value\": \"earth\"\r\n                },\r\n                {\r\n                    \"label\": \"Mars\",\r\n                    \"value\": \"mars\"\r\n                },\r\n                {\r\n                    \"label\": \"Jupiter\",\r\n                    \"value\": \"jupiter\",\r\n                    \"isCorrect\": true\r\n                }\r\n            ],\r\n            \"explanation\": \"The first step is to clearly define the problem to focus your research and analysis.\",\r\n            \"stems\": [\r\n                \"68aa042aa36c970ea8a5f4b8\"\r\n            ]\r\n        }\r\n    ]\r\n}\r\n// ============\r\n// type number input\r\n// ===========\r\n// {\r\n//     \"questions\": [\r\n//         {\r\n//             \"type\": \"number\",\r\n//             \"stems\": [\r\n//         \"68a63205f195f64e990b21e7\",\r\n//         \"68a63205f195f64e990b21e8\"\r\n//     ],\r\n//             \"questionText\": \"What is the square root of 144?\",\r\n//             \"numberAnswer\": 12,\r\n//             \"explanation\": \"The square root of 144 is 12.\"\r\n//         }\r\n//     ]\r\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/lesson/questions",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"lesson",
+										"questions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get question by lesson id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{student}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://10.10.7.47:5000/api/v1/lesson/{{lessonId}}/questions",
+									"protocol": "http",
+									"host": [
+										"10",
+										"10",
+										"7",
+										"47"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"lesson",
+										"{{lessonId}}",
+										"questions"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create lesson",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"category\": \"next_gen\", // 'next_gen' | 'case_study'\r\n    \"name\": \"NCLEX Practice Exam - Fundamentals\"\r\n    // \"code\": \"EXAM-FND-001\",\r\n    // \"description\": \"A practice exam covering fundamental nursing concepts to prepare for NCLEX.\",\r\n    // \"durationMinutes\": 90,\r\n    // \"passMark\": 70\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/lesson",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"lesson"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get lesson by category",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/lesson?category=next_gen",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"lesson"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "next_gen"
+								},
+								{
+									"key": "category",
+									"value": "case_study",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get case_study lesson",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/lesson/case_study",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"lesson",
+								"case_study"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get next_gen lesson",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/lesson/next_gen",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"lesson",
+								"next_gen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get lesson by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/lesson/68a65bf34ca736c02eb927d2",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"lesson",
+								"68a65bf34ca736c02eb927d2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete lesson by id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Case Studies\",\r\n    \"category\": \"case\",\r\n    \"lessonType\": \"chart\",\r\n    \"questions\": [\r\n      \"68a235102fd1d5c779549bb4\"\r\n      \r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/lesson/68a657659a6d94f15245e42b",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"lesson",
+								"68a657659a6d94f15245e42b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "study progress",
+			"item": [
+				{
+					"name": "Start Study Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"topics\": [\"pulmonary\", \"case-study\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyprogress/{{studentId}}/{{examId}}/session/start",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyprogress",
+								"{{studentId}}",
+								"{{examId}}",
+								"session",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Question",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isCorrect\": true\n//   \"notes\": \"User answered: jupiter\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyprogress/{{studentId}}/{{examId}}/question/{{questionId}}/complete",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyprogress",
+								"{{studentId}}",
+								"{{examId}}",
+								"question",
+								"{{questionId}}",
+								"complete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Bookmark",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyprogress/{{studentId}}/{{examId}}/bookmark/{{questionId}}",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyprogress",
+								"{{studentId}}",
+								"{{examId}}",
+								"bookmark",
+								"{{questionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "End Study Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyprogress/{{studentId}}/{{examId}}/session/end",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyprogress",
+								"{{studentId}}",
+								"{{examId}}",
+								"session",
+								"end"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Study Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyprogress/{{studentId}}/{{examId}}/stats",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyprogress",
+								"{{studentId}}",
+								"{{examId}}",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bookmarks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyprogress/{{studentId}}/{{examId}}/bookmarks",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyprogress",
+								"{{studentId}}",
+								"{{examId}}",
+								"bookmarks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Study Progress",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyprogress/{{studentId}}/{{examId}}",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyprogress",
+								"{{studentId}}",
+								"{{examId}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Bookmark",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}"
+							}
+						],
+						"url": {
+							"raw": "http://10.10.7.47:5000/api/v1/studyprogress/{{studentId}}/{{examId}}/bookmark/{{questionId}}",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"7",
+								"47"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"studyprogress",
+								"{{studentId}}",
+								"{{examId}}",
+								"bookmark",
+								"{{questionId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "admin",
+			"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoSWQiOiI2ODllNjYzOTYzZjRhYjJjODMwMGM2MTUiLCJyb2xlIjoiYWRtaW4iLCJuYW1lIjoiTWQgTW9ob3NpbiIsImVtYWlsIjoid2ViLm1vaG9zaW5AZ21haWwuY29tIiwiaWF0IjoxNzU1NzE1NzY1LCJleHAiOjE3NTY1Nzk3NjV9.14TLEoZHeF7Tl5L6OwrP80xVxvjqvUgBIQ9umHWEL6A"
+		},
+		{
+			"key": "student",
+			"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoSWQiOiI2OGE2MzYyMzUzY2Q0ZGFkODkxMTMwMGEiLCJyb2xlIjoic3R1ZGVudCIsIm5hbWUiOiJ0ZW1wIiwiZW1haWwiOiJtb2hvc2luYWxpMDc1QGdtYWlsLmNvbSIsImlhdCI6MTc1NTgxMTE3MiwiZXhwIjoxNzU2Njc1MTcyfQ.N4GdOP2C9k41G8Bwf_U4ZRrWLD6Fd5afNZcHtI-gx0A"
+		},
+		{
+			"key": "studentId",
+			"value": "68a65bb64ca736c02eb927af",
+			"type": "string"
+		},
+		{
+			"key": "examId",
+			"value": "68a65bb64ca736c02eb927af",
+			"type": "string"
+		},
+		{
+			"key": "categoryId",
+			"value": "68a7881288d1124460f971e5",
+			"type": "default"
+		},
+		{
+			"key": "lessonId",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

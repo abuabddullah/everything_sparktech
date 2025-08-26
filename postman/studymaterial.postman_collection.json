@@ -1,0 +1,129 @@
+{
+  "info": {
+    "name": "Studymaterial API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Studymaterial",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"sample_name\",\n  \"category\": \"sample_category\",\n  \"size\": \"sample_size\",\n  \"uploadDate\": \"2025-08-13T00:13:58.253Z\",\n  \"type\": \"sample_type\",\n  \"fileUrl\": \"sample_fileUrl\",\n  \"uploadedBy\": \"507f1f77bcf86cd799439011\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/studymaterial",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studymaterial"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Studymaterials",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/studymaterial",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studymaterial"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Studymaterial by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/studymaterial/{{studymaterial_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studymaterial",
+            "{{studymaterial_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Studymaterial",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"sample_name\",\n  \"category\": \"sample_category\",\n  \"size\": \"sample_size\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/studymaterial/{{studymaterial_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studymaterial",
+            "{{studymaterial_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Studymaterial",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/studymaterial/{{studymaterial_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studymaterial",
+            "{{studymaterial_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}

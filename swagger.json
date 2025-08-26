@@ -1,0 +1,1090 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "1.0.0",
+    "description": "Generated API documentation"
+  },
+  "paths": {
+    "/studyprogress": {
+      "post": {
+        "tags": [
+          "Studyprogress"
+        ],
+        "summary": "Create a new Studyprogress",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudyprogressCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Studyprogress created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Studyprogress"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Studyprogress"
+        ],
+        "summary": "Get all Studyprogresss",
+        "responses": {
+          "200": {
+            "description": "List of Studyprogresss retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Studyprogress"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/studyprogress/{id}": {
+      "get": {
+        "tags": [
+          "Studyprogress"
+        ],
+        "summary": "Get Studyprogress by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Studyprogress ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Studyprogress retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Studyprogress"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Studyprogress not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Studyprogress"
+        ],
+        "summary": "Update Studyprogress",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Studyprogress ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudyprogressUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Studyprogress updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Studyprogress"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Studyprogress not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Studyprogress"
+        ],
+        "summary": "Delete Studyprogress",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Studyprogress ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Studyprogress deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Studyprogress"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Studyprogress not found"
+          }
+        }
+      }
+    },
+    "/category": {
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Create a new Category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Category created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Get all Categorys",
+        "responses": {
+          "200": {
+            "description": "List of Categorys retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Category"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/{id}": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Get Category by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Category ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Update Category",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Category ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Delete Category",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Category ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        }
+      }
+    },
+    "/mnemonic": {
+      "post": {
+        "tags": [
+          "Mnemonic"
+        ],
+        "summary": "Create a new Mnemonic",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MnemonicCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mnemonic created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Mnemonic"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Mnemonic"
+        ],
+        "summary": "Get all Mnemonics",
+        "responses": {
+          "200": {
+            "description": "List of Mnemonics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Mnemonic"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mnemonic/{id}": {
+      "get": {
+        "tags": [
+          "Mnemonic"
+        ],
+        "summary": "Get Mnemonic by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Mnemonic ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mnemonic retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Mnemonic"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Mnemonic not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Mnemonic"
+        ],
+        "summary": "Update Mnemonic",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Mnemonic ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MnemonicUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mnemonic updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Mnemonic"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Mnemonic not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Mnemonic"
+        ],
+        "summary": "Delete Mnemonic",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Mnemonic ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mnemonic deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Mnemonic"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Mnemonic not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SessionsItem": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "MongoDB ObjectId"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "startTime field"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "endTime field"
+          },
+          "durationMinutes": {
+            "type": "number",
+            "description": "durationMinutes field"
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of topics items"
+          },
+          "string": {
+            "type": "string",
+            "description": "string field"
+          },
+          "array": {
+            "type": "string",
+            "description": "array reference ID"
+          },
+          "Question": {
+            "type": "string",
+            "description": "Question field"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "_id"
+        ]
+      },
+      "WeakTopicsItem": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "MongoDB ObjectId"
+          },
+          "topic": {
+            "type": "string",
+            "description": "topic field"
+          },
+          "accuracy": {
+            "type": "number",
+            "description": "accuracy field"
+          },
+          "totalAttempts": {
+            "type": "number",
+            "description": "totalAttempts field"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "_id"
+        ]
+      },
+      "Studyprogress": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "MongoDB ObjectId"
+          },
+          "studentId": {
+            "type": "string",
+            "description": "studentId reference ID"
+          },
+          "examId": {
+            "type": "string",
+            "description": "examId reference ID"
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionsItem"
+            },
+            "description": "Array of sessions objects"
+          },
+          "totalStudyTime": {
+            "type": "number",
+            "description": "totalStudyTime field"
+          },
+          "lastStudied": {
+            "type": "string",
+            "format": "date-time",
+            "description": "lastStudied field"
+          },
+          "bookmarks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of bookmarks references"
+          },
+          "weakTopics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeakTopicsItem"
+            },
+            "description": "Array of weakTopics objects"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "_id"
+        ]
+      },
+      "StudyprogressCreate": {
+        "type": "object",
+        "properties": {
+          "studentId": {
+            "type": "string",
+            "description": "studentId reference ID"
+          },
+          "examId": {
+            "type": "string",
+            "description": "examId reference ID"
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionsItem"
+            },
+            "description": "Array of sessions objects"
+          },
+          "totalStudyTime": {
+            "type": "number",
+            "description": "totalStudyTime field"
+          },
+          "lastStudied": {
+            "type": "string",
+            "format": "date-time",
+            "description": "lastStudied field"
+          },
+          "bookmarks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of bookmarks references"
+          },
+          "weakTopics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeakTopicsItem"
+            },
+            "description": "Array of weakTopics objects"
+          }
+        },
+        "required": []
+      },
+      "StudyprogressUpdate": {
+        "type": "object",
+        "properties": {
+          "studentId": {
+            "type": "string",
+            "description": "studentId reference ID"
+          },
+          "examId": {
+            "type": "string",
+            "description": "examId reference ID"
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionsItem"
+            },
+            "description": "Array of sessions objects"
+          },
+          "totalStudyTime": {
+            "type": "number",
+            "description": "totalStudyTime field"
+          },
+          "lastStudied": {
+            "type": "string",
+            "format": "date-time",
+            "description": "lastStudied field"
+          },
+          "bookmarks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of bookmarks references"
+          },
+          "weakTopics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeakTopicsItem"
+            },
+            "description": "Array of weakTopics objects"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "MongoDB ObjectId"
+          },
+          "name": {
+            "type": "string",
+            "description": "name field"
+          },
+          "description": {
+            "type": "string",
+            "description": "description field"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "CategoryCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "name field"
+          },
+          "description": {
+            "type": "string",
+            "description": "description field"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CategoryUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "name field"
+          },
+          "description": {
+            "type": "string",
+            "description": "description field"
+          }
+        }
+      },
+      "ItemsItem": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "MongoDB ObjectId"
+          },
+          "letter": {
+            "type": "string",
+            "description": "letter field"
+          },
+          "meaning": {
+            "type": "string",
+            "description": "meaning field"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "_id",
+          "letter",
+          "meaning"
+        ]
+      },
+      "Mnemonic": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "MongoDB ObjectId"
+          },
+          "title": {
+            "type": "string",
+            "description": "title field"
+          },
+          "description": {
+            "type": "string",
+            "description": "description field"
+          },
+          "category": {
+            "type": "string",
+            "description": "category field"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemsItem"
+            },
+            "description": "Array of items objects"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "_id",
+          "title",
+          "description",
+          "category"
+        ]
+      },
+      "MnemonicCreate": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "title field"
+          },
+          "description": {
+            "type": "string",
+            "description": "description field"
+          },
+          "category": {
+            "type": "string",
+            "description": "category field"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemsItem"
+            },
+            "description": "Array of items objects"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "category"
+        ]
+      },
+      "MnemonicUpdate": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "title field"
+          },
+          "description": {
+            "type": "string",
+            "description": "description field"
+          },
+          "category": {
+            "type": "string",
+            "description": "category field"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemsItem"
+            },
+            "description": "Array of items objects"
+          }
+        }
+      }
+    }
+  }
+}

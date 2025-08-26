@@ -1,0 +1,129 @@
+{
+  "info": {
+    "name": "Onboardingscreen API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Onboardingscreen",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"sample_title\",\n  \"description\": \"sample_description\",\n  \"imageUrl\": \"sample_imageUrl\",\n  \"order\": 123,\n  \"actionText\": \"sample_actionText\",\n  \"skipEnabled\": true,\n  \"isActive\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/onboardingscreen",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "onboardingscreen"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Onboardingscreens",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/onboardingscreen",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "onboardingscreen"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Onboardingscreen by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/onboardingscreen/{{onboardingscreen_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "onboardingscreen",
+            "{{onboardingscreen_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Onboardingscreen",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"sample_title\",\n  \"description\": \"sample_description\",\n  \"imageUrl\": \"sample_imageUrl\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/onboardingscreen/{{onboardingscreen_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "onboardingscreen",
+            "{{onboardingscreen_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Onboardingscreen",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/onboardingscreen/{{onboardingscreen_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "onboardingscreen",
+            "{{onboardingscreen_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}

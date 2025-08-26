@@ -1,0 +1,129 @@
+{
+  "info": {
+    "name": "Community API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Community",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"507f1f77bcf86cd799439011\",\n  \"name\": \"sample_name\",\n  \"avatarUrl\": \"sample_avatarUrl\",\n  \"question\": \"sample_question\",\n  \"details\": \"sample_details\",\n  \"answers\": [\n    {\n      \"userId\": \"507f1f77bcf86cd799439011\",\n      \"User\": \"sample_User\",\n      \"string\": \"sample_string\",\n      \"date\": \"sample_date\",\n      \"array\": {\n        \"key\": \"value\"\n      }\n    }\n  ],\n  \"answersCount\": 123,\n  \"likesCount\": 123,\n  \"tags\": [\n    \"sample_tags_item\"\n  ],\n  \"status\": \"sample_status\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/community",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "community"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Communitys",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/community",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "community"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Community by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/community/{{community_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "community",
+            "{{community_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Community",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"507f1f77bcf86cd799439011\",\n  \"name\": \"sample_name\",\n  \"avatarUrl\": \"sample_avatarUrl\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/community/{{community_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "community",
+            "{{community_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Community",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/community/{{community_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "community",
+            "{{community_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}

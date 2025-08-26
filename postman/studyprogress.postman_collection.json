@@ -1,0 +1,129 @@
+{
+  "info": {
+    "name": "Studyprogress API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Studyprogress",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"507f1f77bcf86cd799439011\",\n  \"examId\": \"507f1f77bcf86cd799439011\",\n  \"sessions\": [\n    {\n      \"startTime\": \"2025-08-21T00:08:13.856Z\",\n      \"endTime\": \"2025-08-21T00:08:13.857Z\",\n      \"durationMinutes\": 123,\n      \"topics\": [\n        \"sample_topics_item\"\n      ],\n      \"string\": \"sample_string\",\n      \"array\": \"507f1f77bcf86cd799439011\",\n      \"Question\": \"sample_Question\"\n    }\n  ],\n  \"totalStudyTime\": 123,\n  \"lastStudied\": \"2025-08-21T00:08:13.857Z\",\n  \"bookmarks\": [\n    \"507f1f77bcf86cd799439011\"\n  ],\n  \"weakTopics\": [\n    {\n      \"topic\": \"sample_topic\",\n      \"accuracy\": 123,\n      \"totalAttempts\": 123\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyprogress",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyprogress"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Studyprogresss",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyprogress",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyprogress"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Studyprogress by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyprogress/{{studyprogress_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyprogress",
+            "{{studyprogress_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Studyprogress",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"507f1f77bcf86cd799439011\",\n  \"examId\": \"507f1f77bcf86cd799439011\",\n  \"sessions\": [\n    {\n      \"startTime\": \"2025-08-21T00:08:13.857Z\",\n      \"endTime\": \"2025-08-21T00:08:13.857Z\",\n      \"durationMinutes\": 123,\n      \"topics\": [\n        \"sample_topics_item\"\n      ],\n      \"string\": \"sample_string\",\n      \"array\": \"507f1f77bcf86cd799439011\",\n      \"Question\": \"sample_Question\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyprogress/{{studyprogress_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyprogress",
+            "{{studyprogress_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Studyprogress",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/studyprogress/{{studyprogress_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "studyprogress",
+            "{{studyprogress_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}
