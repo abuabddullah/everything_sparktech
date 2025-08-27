@@ -6,8 +6,8 @@ import { paginationHelper } from '../../../helpers/paginationHelper'
 import mongoose, { Types } from 'mongoose'
 import { IStudyprogress } from './studyprogress.interface'
 import { Studyprogress } from './studyprogress.model'
-import { Exam, Question } from '../exam/exam.model'
-import { Lesson } from '../lesson/lesson.model'
+import { Exam, Question } from '../exam0/exam.model'
+import { Lesson } from '../lesson0/lesson.model'
 
 const startSession = async (
   studentId: string,

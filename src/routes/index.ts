@@ -9,12 +9,11 @@ import { CommunityRoutes } from '../app/modules/community/community.route'
 import { ReviewRoutes } from '../app/modules/review/review.route'
 import { StudymaterialRoutes } from '../app/modules/studymaterial/studymaterial.route'
 import { StudyscheduleRoutes } from '../app/modules/studyschedule/studyschedule.route'
-import { ExamRoutes } from '../app/modules/exam/exam.route'
-import { LessonRoutes } from '../app/modules/lesson/lesson.route'
+import { ExamRoutes } from '../app/modules/exam0/exam.route'
+import { LessonRoutes } from '../app/modules/lesson0/lesson.route'
 import { StudyProgressRoutes } from '../app/modules/studyprogress/studyprogress.route'
 import { CategoryRoutes } from '../app/modules/category/category.route'
 import { MnemonicRoutes } from '../app/modules/mnemonic/mnemonic.route'
-import { UserStudyHistoryRoutes } from '../app/modules/userStudyHistory/userStudyHistory.route'
 
 const router = express.Router()
 
@@ -36,7 +35,6 @@ const apiRoutes: { path: string; route: Router }[] = [
   { path: '/lesson', route: LessonRoutes },
 
   { path: '/studyprogress', route: StudyProgressRoutes },
-  { path: '/user-study-history', route: UserStudyHistoryRoutes },
 
   { path: '/category', route: CategoryRoutes },
   { path: '/mnemonic', route: MnemonicRoutes },
