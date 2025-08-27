@@ -6,7 +6,7 @@ export interface ICourse {
   title: 'Next Gen Course' | 'Case Studies' // পরে string type দিয়ে flexible করা যাবে
   description: string
   accessibleTo: ICourseAudience
-  studyLessons: Types.ObjectId[]
+  studyLessons?: Types.ObjectId[]
   createdAt: Date
   updatedAt: Date
   isDeleted: boolean
