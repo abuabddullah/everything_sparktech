@@ -5,6 +5,7 @@ export interface IStudyLesson {
   image: string
   prompt: Types.ObjectId // title, description
   questionSets: Types.ObjectId[] // *
+  category: Types.ObjectId // Men, Women, Children,Adult
   questionSetsCount: number
   altText: string
   title: string

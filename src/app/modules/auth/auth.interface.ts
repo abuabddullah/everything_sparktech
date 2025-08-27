@@ -1,32 +1,39 @@
+import { USER_ROLES } from '../../../enum/user'
+
 export type IEmailOrPhoneOtpVerification = {
-    oneTimeCode: string
-    email?: string
-    phone?: string
+  oneTimeCode: string
+  email?: string
+  phone?: string
 }
 
 export type IVerificationResponse = {
-    verified: boolean
-    message: string
+  verified: boolean
+  message: string
 }
 
 export type IForgetPassword = {
-    email?: string
-    phone?: string
+  email?: string
+  phone?: string
 }
 
 export type IResetPassword = {
-    email?: string
-    phone?: string
-    newPassword: string
-    confirmPassword: string
+  email?: string
+  phone?: string
+  newPassword: string
+  confirmPassword: string
 }
 
-
 export type IAuthResponse = {
-    status: number
-    message: string
-    role?: string
-    token?: string
-    accessToken?: string
-    refreshToken?: string
+  status: number
+  message: string
+  role?: string
+  token?: string
+  accessToken?: string
+  refreshToken?: string
+}
+
+export interface IJwtPayload {
+  id: string
+  role: USER_ROLES | ''
+  email: string
 }
