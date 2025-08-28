@@ -39,7 +39,7 @@ const updateProfile = async (user: JwtPayload, payload: Partial<IUser>) => {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to update profile.')
   }
 
-  return 'Profile updated successfully.'
+  return updatedProfile
 }
 
 const createAdmin = async (): Promise<Partial<IUser> | null> => {

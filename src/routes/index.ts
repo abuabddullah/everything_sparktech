@@ -7,7 +7,6 @@ import { SupportRoutes } from '../app/modules/support/support.route'
 import { OnboardingscreenRoutes } from '../app/modules/onboardingscreen/onboardingscreen.route'
 import { CommunityRoutes } from '../app/modules/community/community.route'
 import { ReviewRoutes } from '../app/modules/review0/review.route'
-import { StudymaterialRoutes } from '../app/modules/studymaterial/studymaterial.route'
 import { StudyscheduleRoutes } from '../app/modules/studyschedule/studyschedule.route'
 import { ExamRoutes } from '../app/modules/exam0/exam.route'
 import { LessonRoutes } from '../app/modules/lesson0/lesson.route'
@@ -29,7 +28,6 @@ const apiRoutes: { path: string; route: Router }[] = [
   { path: '/onboardingscreen', route: OnboardingscreenRoutes },
   { path: '/community', route: CommunityRoutes },
   { path: '/review', route: ReviewRoutes },
-  { path: '/studymaterial', route: StudymaterialRoutes },
   { path: '/studyschedule', route: StudyscheduleRoutes },
   { path: '/exam', route: ExamRoutes },
   { path: '/lesson', route: LessonRoutes },
