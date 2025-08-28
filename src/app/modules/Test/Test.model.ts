@@ -3,14 +3,12 @@ import { ITest } from './Test.interface'
 
 const TestSchema = new Schema<ITest>(
   {
-    examinations: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Examination',
-        required: false,
-        default: [],
-      },
-    ],
+    examinations: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Examination',
+      required: false,
+      default: [],
+    },
     title: { type: String, required: true },
     description: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },

@@ -8,6 +8,9 @@ export const objectIdSchemaOptional = z
   .regex(/^[a-f\d]{24}$/i, { message: 'Invalid ObjectId' })
   .optional()
 
+export const objectIdSchemaMendatory = (fieldName: string) =>
+  z.string().regex(/^[a-f\d]{24}$/i, { message: `Invalid ${fieldName} Id` })
+
 const updateAvgRatingOfRefference = async (
   type: ReviewsType,
   refferenceId: Types.ObjectId,

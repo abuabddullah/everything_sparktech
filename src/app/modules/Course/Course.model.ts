@@ -12,14 +12,12 @@ const CourseSchema = new Schema<ICourse>(
       enum: Object.values(ICourseAudience),
       required: true,
     },
-    studyLessons: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'StudyLesson',
-        required: false,
-        default: [],
-      },
-    ],
+    studyLessons: {
+      type: [Schema.Types.ObjectId],
+      ref: 'StudyLesson',
+      required: false,
+      default: [],
+    },
 
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
