@@ -4,6 +4,7 @@ import { ICourseAudience } from './Course.enum'
 const createCourseZodSchema = z.object({
   body: z.object({
     title: z.string({ required_error: 'Title is required' }),
+    subtitle: z.string().optional(),
     description: z.string({ required_error: 'Description is required' }),
     image: z.string({ required_error: 'Image is required' }),
     accessibleTo: z.nativeEnum(ICourseAudience, {

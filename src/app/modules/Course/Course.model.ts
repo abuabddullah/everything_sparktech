@@ -1,10 +1,15 @@
 import { Schema, model } from 'mongoose'
 import { ICourse } from './Course.interface'
-import { ICourseAudience } from './Course.enum'
+import { ICourseAudience, ICourseTitle } from './Course.enum'
 
 const CourseSchema = new Schema<ICourse>(
   {
-    title: { type: String, required: true },
+    title: {
+      type: String,
+      enum: Object.values(ICourseTitle),
+      required: true,
+      unique: true,
+    },
     description: { type: String, required: true },
     image: { type: String, required: true },
     accessibleTo: {

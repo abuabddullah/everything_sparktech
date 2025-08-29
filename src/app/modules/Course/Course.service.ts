@@ -4,9 +4,14 @@ import { Course } from './Course.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import unlinkFile from '../../../shared/unlinkFile'
 import AppError from '../../../errors/AppError'
+import { StudyLesson } from '../StudyLesson/StudyLesson.model'
 
 const createCourse = async (payload: ICourse): Promise<ICourse> => {
   const result = await Course.create(payload)
+  if (!result) {
+    unlinkFile(payload.image!)
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Course not created.')
+  }
   return result
 }
 
@@ -59,6 +64,8 @@ const hardDeleteCourse = async (id: string): Promise<ICourse | null> => {
     throw new AppError(StatusCodes.NOT_FOUND, 'Course not found.')
   }
   unlinkFile(result.image!)
+  // make null of those studyLessons
+  await StudyLesson.updateMany({ course: id }, { course: null })
   return result
 }
 
