@@ -4,9 +4,14 @@ import { Prompt } from './Prompt.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import unlinkFile from '../../../shared/unlinkFile'
 import AppError from '../../../errors/AppError'
-
+import mongoose from 'mongoose'
+import { QuestionSet } from '../QuestionSet/QuestionSet.model'
 const createPrompt = async (payload: IPrompt): Promise<IPrompt> => {
   const result = await Prompt.create(payload)
+  if (!result) {
+    payload.image && unlinkFile(payload.image!)
+    throw new AppError(StatusCodes.NOT_FOUND, 'Prompt not found.')
+  }
   return result
 }
 
@@ -34,12 +39,33 @@ const updatePrompt = async (
 ): Promise<IPrompt | null> => {
   const isExist = await Prompt.findById(id)
   if (!isExist) {
-    unlinkFile(payload.image!)
+    payload.image && unlinkFile(payload.image!)
+    throw new AppError(StatusCodes.NOT_FOUND, 'Prompt not found.')
+  }
+  const updatedPrompt = await Prompt.findByIdAndUpdate(id, payload, {
+    new: true,
+  })
+  if (!updatedPrompt) {
+    payload.image && unlinkFile(payload.image!)
     throw new AppError(StatusCodes.NOT_FOUND, 'Prompt not found.')
   }
 
-  unlinkFile(isExist.image!) // Unlink the old image
-  return await Prompt.findByIdAndUpdate(id, payload, { new: true })
+  // need to remove old image if payload.image is exist
+  payload.image && isExist.image && unlinkFile(isExist.image!)
+  // if payload.questionSetId is exist then make push of those questionSets and pull old one
+  if (payload.questionSetId) {
+    if (isExist.questionSetId) {
+      await QuestionSet.updateOne(
+        { _id: isExist.questionSetId },
+        { $pull: { prompts: updatedPrompt._id } }, // Remove prompt from old question set
+      )
+    }
+    await QuestionSet.updateOne(
+      { _id: payload.questionSetId },
+      { $push: { prompts: updatedPrompt._id } },
+    )
+  }
+  return updatedPrompt
 }
 
 const deletePrompt = async (id: string): Promise<IPrompt | null> => {
@@ -58,7 +84,9 @@ const hardDeletePrompt = async (id: string): Promise<IPrompt | null> => {
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Prompt not found.')
   }
-  unlinkFile(result.image!)
+  result.image && unlinkFile(result.image)
+  // make pull of those questionSets
+  await QuestionSet.updateMany({ prompts: id }, { $pull: { prompts: id } })
   return result
 }
 

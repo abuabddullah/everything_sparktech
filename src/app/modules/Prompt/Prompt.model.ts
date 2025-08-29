@@ -4,16 +4,25 @@ import { IPromptRefType } from './Prompt.enum'
 
 const PromptSchema = new Schema<IPrompt>(
   {
-    image: { type: String, required: true },
+    image: { type: String, required: false },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    refId: { type: Schema.Types.ObjectId, refPath: 'refType', required: true },
-    refType: {
-      type: String,
-      enum: Object.values(IPromptRefType),
-      required: true,
+    questionSetId: {
+      type: Schema.Types.ObjectId,
+      refPath: 'refType',
+      required: false,
+      default: null,
+    }, // initially লাগবে না কিন্তু পরে যখন এই prompt কোথাও use হবে সেই id এখানে add করতে হবে
+    promptTable: {
+      type: [
+        {
+          slNo: { type: Number, required: true },
+          properties: { type: String, required: true },
+          values: { type: String, required: true },
+        },
+      ],
+      required: false,
     },
-    promptTable: { type: [Object], required: false },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
   },

@@ -1,12 +1,15 @@
 import express from 'express'
 import { PromptController } from './Prompt.controller'
 import auth from '../../middleware/auth'
-import fileUploadHandler from '../../middleware/fileUploadHandler'
-import parseFileData from '../../middleware/parseFileData'
-import { FOLDER_NAMES } from '../../../enums/files'
+// import fileUploadHandler from '../../middleware/fileUploadHandler'
+// import parseFileData from '../../middleware/parseFileData'
+// import { FOLDER_NAMES } from '../../../enums/files'
 import validateRequest from '../../middleware/validateRequest'
 import { PromptValidation } from './Prompt.validation'
 import { USER_ROLES } from '../../../enum/user'
+import fileUploadHandler from '../../middleware/fileUploadHandler'
+import parseFileData from '../../middleware/parseFileData'
+import { FOLDER_NAMES } from '../../../enums/files'
 
 const router = express.Router()
 

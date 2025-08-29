@@ -8,11 +8,11 @@ export interface IPromptTable {
 }
 
 export interface IPrompt {
+  _id?: Types.ObjectId
   title?: string
   description?: string
   image?: string
-  refId: Types.ObjectId
-  refType: IPromptRefType
+  questionSetId?: Types.ObjectId | null // initially লাগবে না কিন্তু পরে যখন এই prompt কোথাও use হবে সেই id এখানে add করতে হবে
   promptTable?: IPromptTable[]
   createdAt: Date
   updatedAt: Date
