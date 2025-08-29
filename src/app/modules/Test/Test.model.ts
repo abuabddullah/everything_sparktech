@@ -9,7 +9,7 @@ const TestSchema = new Schema<ITest>(
       required: false,
       default: [],
     },
-    title: { type: String, required: true },
+    title: { type: String, required: true, unique: true },
     description: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },

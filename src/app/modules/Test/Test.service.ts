@@ -3,6 +3,7 @@ import AppError from '../../../errors/AppError'
 import { ITest } from './Test.interface'
 import { Test } from './Test.model'
 import QueryBuilder from '../../builder/QueryBuilder'
+import { Examination } from '../Examination/Examination.model'
 
 const createTest = async (payload: ITest): Promise<ITest> => {
   const result = await Test.create(payload)
@@ -55,6 +56,10 @@ const hardDeleteTest = async (id: string): Promise<ITest | null> => {
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Test not found.')
   }
+  // unlike examination as refid
+  // make null of those studyLessons
+  await Examination.updateMany({ test: id }, { test: null })
+
   return result
 }
 
