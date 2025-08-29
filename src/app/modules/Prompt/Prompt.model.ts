@@ -1,6 +1,5 @@
 import { Schema, model } from 'mongoose'
 import { IPrompt } from './Prompt.interface'
-import { IPromptRefType } from './Prompt.enum'
 
 const PromptSchema = new Schema<IPrompt>(
   {
@@ -9,7 +8,7 @@ const PromptSchema = new Schema<IPrompt>(
     description: { type: String, required: true },
     questionSetId: {
       type: Schema.Types.ObjectId,
-      refPath: 'refType',
+      ref: 'QuestionSet',
       required: false,
       default: null,
     }, // initially লাগবে না কিন্তু পরে যখন এই prompt কোথাও use হবে সেই id এখানে add করতে হবে
