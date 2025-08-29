@@ -5,24 +5,17 @@ export interface IUserProgressHistory {
   user: Types.ObjectId
   refId: Types.ObjectId
   refType: IUserProgressHistoryRefType
-  // if refType is StudyLesson
-  studyLessonHistory?: {
-    studyLessonQuestions: Types.ObjectId[]
-    studyLessonQuestionSetsCount: number
-    studyLessonQuestionSetsWatchedCount: number
-  }
   // if refType is Question
   questionHistory?: {
-    questions: Types.ObjectId[]
-    questionCorrectlyAnsweredCount: number
-    questionWatchedCount: number
-  }
+    question: Types.ObjectId
+    userAnswer: string // userSelected option / short answer
+    isCorrectlyAnswered: boolean
+  }[]
   // if refType is Examination
   examinationHistory?: {
-    examinations: Types.ObjectId[]
-    completedExaminations: Types.ObjectId[]
-    examinationWatchedCount: number
-  }
+    examination: Types.ObjectId
+    timeSpent: number
+  }[]
   timeSpent?: number // for userProgressHistory
   createdAt: Date
   updatedAt: Date
