@@ -78,29 +78,32 @@ const updateStudyLesson = async (
   let isExistQuestionSets = []
   if (payload.category) {
     isExistCategory = await Category.findById(payload.category)
+    if (!isExistCategory) {
+      payload.image && unlinkFile(payload.image)
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid category.')
+    }
   }
   if (payload.course) {
     isExistCourse = await Course.findById(payload.course)
+    if (!isExistCourse) {
+      payload.image && unlinkFile(payload.image)
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid course.')
+    }
   }
   if (payload.questionSets) {
     isExistQuestionSets = await QuestionSet.find({
       _id: { $in: payload.questionSets, refId: null },
     })
-  }
-  if (
-    !isExistCategory ||
-    !isExistCourse ||
-    !isExistQuestionSets?.length ||
-    isExistQuestionSets?.length !== payload.questionSets?.length
-  ) {
-    payload.image && unlinkFile(payload.image)
-    throw new AppError(
-      StatusCodes.BAD_REQUEST,
-      'Invalid category, question set, or course.',
-    )
+    if (
+      !isExistQuestionSets?.length ||
+      isExistQuestionSets?.length !== payload.questionSets?.length
+    ) {
+      payload.image && unlinkFile(payload.image)
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid question set.')
+    }
+    payload.questionSetsCount = payload.questionSets.length
   }
 
-  payload.questionSetsCount = payload.questionSets.length
   const updatedStudyLesson = await StudyLesson.findByIdAndUpdate(id, payload, {
     new: true,
   })
