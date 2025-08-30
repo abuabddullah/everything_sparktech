@@ -4,11 +4,45 @@ import { StudyLesson } from './StudyLesson.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import unlinkFile from '../../../shared/unlinkFile'
 import AppError from '../../../errors/AppError'
+import { QuestionSet } from '../QuestionSet/QuestionSet.model'
+import { Course } from '../Course/Course.model'
+import { Category } from '../category/category.model'
 
 const createStudyLesson = async (
   payload: IStudyLesson,
 ): Promise<IStudyLesson> => {
+  //category,questionSets,course
+  const isExistCategory = await Category.findById(payload.category)
+  const isExistQuestionSets = await QuestionSet.find({
+    _id: { $in: payload.questionSets },
+  })
+  const isExistCourse = await Course.findById(payload.course)
+  if (
+    !isExistCategory ||
+    !isExistCourse ||
+    !isExistQuestionSets.length ||
+    isExistQuestionSets.length !== payload.questionSets.length
+  ) {
+    payload.image && unlinkFile(payload.image)
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'Invalid category, question set, or course.',
+    )
+  }
+  payload.questionSetsCount = payload.questionSets.length
   const result = await StudyLesson.create(payload)
+  if (!result) {
+    payload.image && unlinkFile(payload.image)
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'Failed to create study lesson.',
+    )
+  }
+  // set result._id as refId of each questionSets of result.questionSets result.questionSetsCount
+  await QuestionSet.updateMany(
+    { _id: { $in: result.questionSets } },
+    { refId: result._id, questionSetsCount: result.questionSets.length },
+  )
   return result
 }
 
@@ -36,12 +70,53 @@ const updateStudyLesson = async (
 ): Promise<IStudyLesson | null> => {
   const isExist = await StudyLesson.findById(id)
   if (!isExist) {
-    unlinkFile(payload.image!)
+    payload.image && unlinkFile(payload.image!)
     throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
   }
+  // category questionSets course all exists or not
+  let isExistCourse, isExistCategory
+  let isExistQuestionSets = []
+  if (payload.category) {
+    isExistCategory = await Category.findById(payload.category)
+  }
+  if (payload.course) {
+    isExistCourse = await Course.findById(payload.course)
+  }
+  if (payload.questionSets) {
+    isExistQuestionSets = await QuestionSet.find({
+      _id: { $in: payload.questionSets, refId: null },
+    })
+  }
+  if (
+    !isExistCategory ||
+    !isExistCourse ||
+    !isExistQuestionSets?.length ||
+    isExistQuestionSets?.length !== payload.questionSets?.length
+  ) {
+    payload.image && unlinkFile(payload.image)
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'Invalid category, question set, or course.',
+    )
+  }
 
-  unlinkFile(isExist.image!) // Unlink the old image
-  return await StudyLesson.findByIdAndUpdate(id, payload, { new: true })
+  payload.questionSetsCount = payload.questionSets.length
+  const updatedStudyLesson = await StudyLesson.findByIdAndUpdate(id, payload, {
+    new: true,
+  })
+  if (!updatedStudyLesson) {
+    payload.image && unlinkFile(payload.image)
+    throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
+  }
+  payload.image && isExist.image && unlinkFile(isExist.image) // Unlink the old image
+  // now need to unlink the old questionSets
+  await QuestionSet.updateMany({ refId: id }, { refId: null })
+  // now need to link the new questionSets
+  await QuestionSet.updateMany(
+    { _id: { $in: payload.questionSets } },
+    { refId: id },
+  )
+  return updatedStudyLesson
 }
 
 const deleteStudyLesson = async (id: string): Promise<IStudyLesson | null> => {
@@ -62,7 +137,10 @@ const hardDeleteStudyLesson = async (
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
   }
-  unlinkFile(result.image!)
+  result.image && unlinkFile(result.image)
+  // also need to clean up the refId of questionsSets
+  await QuestionSet.updateMany({ refId: id }, { refId: null })
+
   return result
 }
 

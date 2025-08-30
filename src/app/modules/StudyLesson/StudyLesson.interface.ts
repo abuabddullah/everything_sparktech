@@ -3,7 +3,6 @@ import { Types } from 'mongoose'
 export interface IStudyLesson {
   course: Types.ObjectId
   image: string
-  prompt: Types.ObjectId // title, description
   questionSets: Types.ObjectId[] // *
   category: Types.ObjectId // Men, Women, Children,Adult
   questionSetsCount: number

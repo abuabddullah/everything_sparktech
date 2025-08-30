@@ -11,7 +11,6 @@ const createStudyLessonZodSchema = z.object({
     title: z.string({ required_error: 'title text is required' }),
     description: z.string({ required_error: 'description text is required' }),
     course: objectIdSchemaMendatory('course'),
-    prompt: objectIdSchemaMendatory('prompt'),
     category: objectIdSchemaMendatory('category'),
     questionSets: z
       .array(objectIdSchemaMendatory('question set'))
@@ -26,7 +25,6 @@ const updateStudyLessonZodSchema = z.object({
     title: z.string().optional(),
     description: z.string().optional(),
     course: objectIdSchemaOptional,
-    prompt: objectIdSchemaOptional,
     category: objectIdSchemaOptional,
     questionSets: z.array(z.string()).optional(),
   }),

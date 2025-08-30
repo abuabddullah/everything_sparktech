@@ -7,7 +7,6 @@ const StudyLessonSchema = new Schema<IStudyLesson>(
     title: { type: String, required: true },
     description: { type: String, required: true },
     image: { type: String, required: true },
-    prompt: { type: Schema.Types.ObjectId, ref: 'Prompt', required: true },
     questionSets: {
       type: [Schema.Types.ObjectId],
       ref: 'QuestionSet',
