@@ -5,6 +5,7 @@ import QueryBuilder from '../../builder/QueryBuilder'
 import AppError from '../../../errors/AppError'
 import { QuestionSet } from '../QuestionSet/QuestionSet.model'
 import { UserProgressHistory } from '../UserProgressHistory/UserProgressHistory.model'
+import { Examination } from '../Examination/Examination.model'
 
 const createQuestion = async (payload: IQuestion): Promise<IQuestion> => {
   const result = await Question.create(payload)
@@ -97,6 +98,7 @@ const getQuestionById = async (id: string): Promise<IQuestion | null> => {
 
 const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
   userId: string,
+  examinationId: string,
   questionId: string,
   userAnswer: number | number[],
 ) => {
@@ -107,6 +109,10 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
    * check if the question is correct or not
    * find the userProgressHistory.answeredQuestions and usert the fields "question+userAnswer+isCorrectlyAnswered"
    */
+  const isExistExamination = await Examination.findById(examinationId)
+  if (!isExistExamination) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
+  }
   const isExistQuestion = await Question.findById(questionId)
   if (!isExistQuestion) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Question not found.')
@@ -183,6 +189,7 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
       {
         $push: {
           answeredQuestions: {
+            examination: examinationId,
             question: questionId,
             userAnswer,
             isCorrectlyAnswered,

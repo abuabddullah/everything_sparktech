@@ -78,4 +78,8 @@ export const ExaminationService = {
   deleteExamination,
   hardDeleteExamination,
   getExaminationById,
+  // // upsert user progress history tracking on answering question
+  // upsertUserProgressHistoryTrackingOnAnsweringQuestion,
+  // resetExaminationHistoryByUserIdAndExaminationId, // must clear all the questions from the answeredQuestions linked to this examinationId
+  // previewExaminationHistoryByUserIdAndExaminationId, // must return the answeredQuestions linked to this examinationId
 }

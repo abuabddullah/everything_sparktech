@@ -6,6 +6,12 @@ const UserProgressHistorySchema = new Schema<IUserProgressHistory>(
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     answeredQuestions: [
       {
+        examination: {
+          type: Schema.Types.ObjectId,
+          ref: 'Examination',
+          required: true,
+          index: true,
+        },
         question: {
           type: Schema.Types.ObjectId,
           ref: 'Question',

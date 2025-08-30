@@ -5,6 +5,7 @@ const createUserProgressHistoryZodSchema = z.object({
     user: z.string({ required_error: 'User is required' }),
     answeredQuestions: z.array(
       z.object({
+        examination: z.string({ required_error: 'Examination is required' }),
         question: z.string({ required_error: 'Question is required' }),
         userAnswer: z.number({ required_error: 'User answer is required' }),
         isCorrectlyAnswered: z.boolean({
@@ -26,6 +27,7 @@ const updateUserProgressHistoryZodSchema = z.object({
     user: z.string().optional(),
     answeredQuestions: z.array(
       z.object({
+        examination: z.string().optional(),
         question: z.string().optional(),
         userAnswer: z.number().optional(),
         isCorrectlyAnswered: z.boolean().optional(),

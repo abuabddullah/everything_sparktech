@@ -3,6 +3,7 @@ import { Types } from 'mongoose'
 export interface IUserProgressHistory {
   user: Types.ObjectId
   answeredQuestions?: {
+    examination: Types.ObjectId
     question: Types.ObjectId
     userAnswer: number
     isCorrectlyAnswered: boolean
