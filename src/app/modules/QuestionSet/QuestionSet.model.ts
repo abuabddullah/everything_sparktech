@@ -19,7 +19,12 @@ const QuestionSetSchema = new Schema<IQuestionSet>(
       min: [1, 'at least one question is required'],
       default: [],
     },
-    refId: { type: Schema.Types.ObjectId, refPath: 'refType', required: true },
+    refId: {
+      type: Schema.Types.ObjectId,
+      refPath: 'refType',
+      required: false,
+      default: null,
+    },
     refType: {
       type: String,
       enum: Object.values(IQSetRefType),

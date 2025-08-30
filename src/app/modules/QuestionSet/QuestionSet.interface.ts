@@ -5,7 +5,7 @@ export interface IQuestionSet {
   description?: string
   prompts?: Types.ObjectId[] // description only | img+description | table
   questions: Types.ObjectId[] // minimum 1 question
-  refId: Types.ObjectId
+  refId?: Types.ObjectId | null // initial value will be null
   refType: IQSetRefType
   explanation?: string
   title?: string // Welcome to NCLEX ...... Exam 01

@@ -3,11 +3,54 @@ import { IQuestionSet } from './QuestionSet.interface'
 import { QuestionSet } from './QuestionSet.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import AppError from '../../../errors/AppError'
+import mongoose from 'mongoose'
+import { Prompt } from '../Prompt/Prompt.model'
+import { Question } from '../Question/Question.model'
+import cron from 'node-cron'
 
 const createQuestionSet = async (
   payload: IQuestionSet,
 ): Promise<IQuestionSet> => {
+  // we need to ensure refId,questions,prompts, already exits
+  const isExistRef = await mongoose
+    .model(payload.refType)
+    .findOne({ refId: payload.refId })
+  if (!isExistRef) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'RefId does not exist.')
+  }
+  // questions,prompts are array need to check all the elements exists in the database
+  const isExistQuestions = await Question.find({
+    _id: { $in: payload.questions },
+  })
+  if (
+    !isExistQuestions.length ||
+    isExistQuestions.length !== payload.questions.length
+  ) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Some Questions do not exist.')
+  }
+  if (payload.prompts && payload.prompts.length) {
+    const isExistPrompts = await Prompt.find({
+      _id: { $in: payload.prompts },
+    })
+    if (
+      !isExistPrompts.length ||
+      isExistPrompts.length !== payload.prompts.length
+    ) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Some Prompts do not exist.')
+    }
+  }
   const result = await QuestionSet.create(payload)
+  // put result._id as refId of each questions of result.questions and if paylaod.prompts is exist put result._id as refId of each prompts of result.prompts
+  await Question.updateMany(
+    { _id: { $in: result.questions } },
+    { questionSet: result._id },
+  )
+  if (payload.prompts && payload.prompts.length) {
+    await Prompt.updateMany(
+      { _id: { $in: payload.prompts } },
+      { questionSetId: result._id },
+    )
+  }
   return result
 }
 
@@ -32,13 +75,68 @@ const getAllUnpaginatedQuestionSets = async (): Promise<IQuestionSet[]> => {
 const updateQuestionSet = async (
   id: string,
   payload: Partial<IQuestionSet>,
-): Promise<IQuestionSet | null> => {
-  const isExist = await QuestionSet.findById(id)
-  if (!isExist) {
+) => {
+  // if want to change refId,questions,prompts then need to check if the refId,questions,prompts are exist
+  let isExistRef
+  if (payload.refId) {
+    if (!payload.refType) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'RefType is required to update refId.',
+      )
+    }
+    isExistRef = await mongoose
+      .model(payload.refType)
+      .findOne({
+        refId: payload.refId,
+      })
+      .select('_id refId refType questions prompts')
+    if (!isExistRef) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'RefId does not exist.')
+    }
+  }
+  if (payload.questions) {
+    const isExistQuestions = await Question.find({
+      _id: { $in: payload.questions },
+    })
+    if (
+      !isExistQuestions.length ||
+      isExistQuestions.length !== payload.questions.length
+    ) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Some Questions do not exist.',
+      )
+    }
+    // nullify all the questions of isExistRef
+    await Question.updateMany(
+      { _id: { $in: isExistRef?.questions } },
+      { questionSet: null },
+    )
+  }
+  if (payload.prompts) {
+    const isExistPrompts = await Prompt.find({
+      _id: { $in: payload.prompts },
+    })
+    if (
+      !isExistPrompts.length ||
+      isExistPrompts.length !== payload.prompts.length
+    ) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Some Prompts do not exist.')
+    }
+    // nullify all the prompts of isExistRef
+    await Prompt.updateMany(
+      { _id: { $in: isExistRef?.prompts } },
+      { questionSetId: null },
+    )
+  }
+  const updatedReference = await mongoose
+    .model(isExistRef?.refType)
+    .findByIdAndUpdate(isExistRef?._id, payload, { new: true })
+  if (!updatedReference) {
     throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
   }
-
-  return await QuestionSet.findByIdAndUpdate(id, payload, { new: true })
+  return updatedReference
 }
 
 const deleteQuestionSet = async (id: string): Promise<IQuestionSet | null> => {
@@ -59,6 +157,9 @@ const hardDeleteQuestionSet = async (
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
   }
+  // also need to clean up the questions and prompts
+  await Question.updateMany({ questionSet: id }, { questionSet: null })
+  await Prompt.updateMany({ questionSetId: id }, { questionSetId: null })
   return result
 }
 
@@ -68,6 +169,24 @@ const getQuestionSetById = async (id: string): Promise<IQuestionSet | null> => {
     throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
   }
   return result
+}
+
+// Function to deactivate expired coupons
+const autoDeleteUnReferencedQuestionSet = async () => {
+  try {
+    console.log('deleting un-referenced questionSet..started..')
+    // Find coupons where endDate is in the past and isActive is true
+    await QuestionSet.deleteMany({
+      refId: null,
+    })
+  } catch (error) {
+    console.error('Error deleting un-referenced questionSet:', error)
+  }
+}
+
+// Function to initialize the cron job
+export const scheduleAutoDeleteUnReferencedQuestionSet = () => {
+  cron.schedule('0 * * * *', autoDeleteUnReferencedQuestionSet)
 }
 
 export const QuestionSetService = {

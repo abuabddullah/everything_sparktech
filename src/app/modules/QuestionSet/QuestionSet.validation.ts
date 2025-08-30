@@ -13,7 +13,7 @@ const createQuestionSetZodSchema = z.object({
     questions: z
       .array(objectIdSchemaOptional)
       .min(1, 'at least one question is required'),
-    refId: objectIdSchemaMendatory('refId'),
+    refId: objectIdSchemaOptional,
     explanation: z.string().optional(),
     refType: z.nativeEnum(IQSetRefType, {
       required_error: 'Type is required',
