@@ -1,12 +1,18 @@
-import { Schema, model } from 'mongoose'
+import mongoose, { Schema, model } from 'mongoose'
 import { IQuestion } from './Question.interface'
+import { IQTypes } from './Question.enum'
 
 const QuestionSchema = new Schema<IQuestion>(
   {
+    questionType: {
+      type: String,
+      enum: Object.values(IQTypes),
+      required: true,
+    },
     questionSet: {
       type: Schema.Types.ObjectId,
       ref: 'QuestionSet',
-      required: true,
+      required: false,
     },
     query: { type: String, required: true },
     options: {
@@ -18,10 +24,10 @@ const QuestionSchema = new Schema<IQuestion>(
       ],
       required: false,
     },
-    slNoOfCorrectAnswer: { type: Number, required: false },
+    correctAnswerOption: { type: Number, required: false },
     slNoOfCorrectAnswers: { type: [Number], required: false },
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+    title: { type: String, required: false },
+    description: { type: String, required: false },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
   },
@@ -42,5 +48,7 @@ QuestionSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } })
   next()
 })
-
-export const Question = model<IQuestion>('Question', QuestionSchema)
+//
+// export const Question = model<IQuestion>('Question', QuestionSchema)
+export const Question =
+  mongoose.models.Question || mongoose.model('Question', QuestionSchema)

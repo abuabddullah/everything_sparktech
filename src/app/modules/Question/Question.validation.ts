@@ -3,11 +3,13 @@ import {
   objectIdSchemaMendatory,
   objectIdSchemaOptional,
 } from '../Reviews/Reviews.utils'
+import { IQTypes } from './Question.enum'
 
 const createQuestionZodSchema = z.object({
   body: z.object({
-    title: z.string({ required_error: 'title text is required' }),
-    description: z.string({ required_error: 'description text is required' }),
+    questionType: z.nativeEnum(IQTypes),
+    title: z.string().optional(),
+    description: z.string().optional(),
     query: z.string({ required_error: 'query text is required' }),
     options: z
       .array(
@@ -17,14 +19,15 @@ const createQuestionZodSchema = z.object({
         }),
       )
       .optional(),
-    slNoOfCorrectAnswer: z.number().optional(),
+    correctAnswerOption: z.number().optional(),
     slNoOfCorrectAnswers: z.array(z.number()).optional(),
-    questionSet: objectIdSchemaMendatory('question set'),
+    questionSet: objectIdSchemaOptional,
   }),
 })
 
 const updateQuestionZodSchema = z.object({
   body: z.object({
+    questionType: z.nativeEnum(IQTypes).optional(),
     title: z.string().optional(),
     description: z.string().optional(),
     query: z.string().optional(),
@@ -36,7 +39,7 @@ const updateQuestionZodSchema = z.object({
         }),
       )
       .optional(),
-    slNoOfCorrectAnswer: z.number().optional(),
+    correctAnswerOption: z.number().optional(),
     slNoOfCorrectAnswers: z.array(z.number()).optional(),
     questionSet: objectIdSchemaOptional,
   }),
