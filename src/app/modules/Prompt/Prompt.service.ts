@@ -4,8 +4,9 @@ import { Prompt } from './Prompt.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import unlinkFile from '../../../shared/unlinkFile'
 import AppError from '../../../errors/AppError'
-import mongoose from 'mongoose'
 import { QuestionSet } from '../QuestionSet/QuestionSet.model'
+import cron from 'node-cron'
+
 const createPrompt = async (payload: IPrompt): Promise<IPrompt> => {
   const result = await Prompt.create(payload)
   if (!result) {
@@ -96,6 +97,24 @@ const getPromptById = async (id: string): Promise<IPrompt | null> => {
     throw new AppError(StatusCodes.NOT_FOUND, 'Prompt not found.')
   }
   return result
+}
+
+// Function to deactivate expired coupons
+const autoDeleteUnReferencedPrompt = async () => {
+  try {
+    console.log('deleting un-referenced prompt..started..')
+    // Find coupons where endDate is in the past and isActive is true
+    await Prompt.deleteMany({
+      questionSetId: null,
+    })
+  } catch (error) {
+    console.error('Error deleting un-referenced prompt:', error)
+  }
+}
+
+// Function to initialize the cron job
+export const scheduleAutoDeleteUnReferencedPrompt = () => {
+  cron.schedule('0 * * * *', autoDeleteUnReferencedPrompt)
 }
 
 export const PromptService = {

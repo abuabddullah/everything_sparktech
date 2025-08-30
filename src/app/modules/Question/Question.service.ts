@@ -6,6 +6,8 @@ import AppError from '../../../errors/AppError'
 import { QuestionSet } from '../QuestionSet/QuestionSet.model'
 import { UserProgressHistory } from '../UserProgressHistory/UserProgressHistory.model'
 import { Examination } from '../Examination/Examination.model'
+import { IQTypes } from './Question.enum'
+import cron from 'node-cron'
 
 const createQuestion = async (payload: IQuestion): Promise<IQuestion> => {
   const result = await Question.create(payload)
@@ -122,34 +124,34 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
 
   // Check question types and handle user answer validation accordingly
   if (
-    isExistQuestion.questionType === 'radio' ||
-    isExistQuestion.questionType === 'true' ||
-    isExistQuestion.questionType === 'dropdown' ||
-    isExistQuestion.questionType === 'short answer'
+    isExistQuestion.questionType === IQTypes.RadioQ ||
+    isExistQuestion.questionType === IQTypes.TrueFalseQ ||
+    isExistQuestion.questionType === IQTypes.DropdownQ ||
+    isExistQuestion.questionType === IQTypes.ShortAnswerQ
   ) {
     await isExistQuestion.populate('correctAnswerOption') // Populate the correct answer
     // For these question types, userAnswer is a single value (not an array)
     isCorrectlyAnswered = isExistQuestion.correctAnswerOption === userAnswer
-  } else if (isExistQuestion.questionType === 'mcq') {
+  } else if (isExistQuestion.questionType === IQTypes.McqQ) {
     await isExistQuestion.populate('slNoOfCorrectAnswers') // Populate the correct answers for MCQ
 
     // Check if userAnswer is an array and validate that all elements are in slNoOfCorrectAnswers
     if (Array.isArray(userAnswer)) {
       isCorrectlyAnswered =
         userAnswer.every((answer: number) =>
-          isExistQuestion.slNoOfCorrectAnswers.includes(answer),
-        ) && userAnswer.length === isExistQuestion.slNoOfCorrectAnswers.length
+          isExistQuestion.slNoOfCorrectAnswers?.includes(answer),
+        ) && userAnswer.length === isExistQuestion.slNoOfCorrectAnswers?.length
     } else {
       // If userAnswer is not an array, this is an invalid case for MCQ
       isCorrectlyAnswered = false
     }
-  } else if (isExistQuestion.questionType === 'rearrange') {
+  } else if (isExistQuestion.questionType === IQTypes.RearrangeQ) {
     await isExistQuestion.populate('options') // Populate the options for rearrange question
 
     // Ensure the sequence of the options is the same as the correct answer
     if (Array.isArray(userAnswer)) {
       isCorrectlyAnswered =
-        isExistQuestion.options.map((option: any) => option.value).join('') ===
+        isExistQuestion.options?.map((option: any) => option.value).join('') ===
         userAnswer.join('')
     } else {
       // If userAnswer is not an array, this is an invalid case for rearrange
@@ -200,6 +202,24 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
       { upsert: true },
     )
   }
+}
+
+// Function to deactivate expired coupons
+const autoDeleteUnReferencedQuestion = async () => {
+  try {
+    console.log('deleting un-referenced question..started..')
+    // Find coupons where endDate is in the past and isActive is true
+    await Question.deleteMany({
+      questionSet: null,
+    })
+  } catch (error) {
+    console.error('Error deleting un-referenced question:', error)
+  }
+}
+
+// Function to initialize the cron job
+export const scheduleAutoDeleteUnReferencedQuestion = () => {
+  cron.schedule('0 * * * *', autoDeleteUnReferencedQuestion)
 }
 
 export const QuestionService = {

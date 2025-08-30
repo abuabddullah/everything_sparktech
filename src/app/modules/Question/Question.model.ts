@@ -49,6 +49,6 @@ QuestionSchema.pre('aggregate', function (next) {
   next()
 })
 //
-// export const Question = model<IQuestion>('Question', QuestionSchema)
-export const Question =
-  mongoose.models.Question || mongoose.model('Question', QuestionSchema)
+export const Question = model<IQuestion>('Question', QuestionSchema)
+// export const Question =
+//   mongoose.models.Question || mongoose.model('Question', QuestionSchema)
