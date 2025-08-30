@@ -3,11 +3,31 @@ import AppError from '../../../errors/AppError'
 import { IExamination } from './Examination.interface'
 import { Examination } from './Examination.model'
 import QueryBuilder from '../../builder/QueryBuilder'
+import { QuestionSet } from '../QuestionSet/QuestionSet.model'
+import { Test } from '../Test/Test.model'
+import { UserProgressHistory } from '../UserProgressHistory/UserProgressHistory.model'
 
 const createExamination = async (
   payload: IExamination,
 ): Promise<IExamination> => {
+  // test, questionSets exists or not
+  const isExistTest = await Test.findById(payload.test)
+  const isExistQuestionSets = await QuestionSet.find({
+    _id: { $in: payload.questionSets },
+  })
+  if (
+    !isExistTest ||
+    !isExistQuestionSets.length ||
+    isExistQuestionSets.length !== payload.questionSets.length
+  ) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid test or question set.')
+  }
   const result = await Examination.create(payload)
+  // set result._id as refId of each questionSets of result.questionSets and update result.questionSetsCount
+  await QuestionSet.updateMany(
+    { _id: { $in: result.questionSets } },
+    { refId: result._id, questionSetsCount: result.questionSets.length },
+  )
   return result
 }
 
@@ -37,8 +57,40 @@ const updateExamination = async (
   if (!isExist) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
   }
-
-  return await Examination.findByIdAndUpdate(id, payload, { new: true })
+  // test, questionSets exists or not
+  let isExistTest, isExistQuestionSets
+  if (payload.test) {
+    isExistTest = await Test.findById(payload.test)
+    if (!isExistTest) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid test.')
+    }
+  }
+  if (payload.questionSets) {
+    isExistQuestionSets = await QuestionSet.find({
+      _id: { $in: payload.questionSets, refId: null },
+    })
+    if (
+      !isExistQuestionSets.length ||
+      isExistQuestionSets.length !== payload.questionSets.length
+    ) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid question set.')
+    }
+    payload.questionSetsCount = payload.questionSets.length
+  }
+  const updatedExamination = await Examination.findByIdAndUpdate(id, payload, {
+    new: true,
+  })
+  if (!updatedExamination) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
+  }
+  // now need to unlink the old questionSets
+  await QuestionSet.updateMany({ refId: id }, { refId: null })
+  // now need to link the new questionSets
+  await QuestionSet.updateMany(
+    { _id: { $in: payload.questionSets } },
+    { refId: id },
+  )
+  return updatedExamination
 }
 
 const deleteExamination = async (id: string): Promise<IExamination | null> => {
@@ -59,6 +111,8 @@ const hardDeleteExamination = async (
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
   }
+  // also need to clean up the refId of questionsSets
+  await QuestionSet.updateMany({ refId: id }, { refId: null })
   return result
 }
 
@@ -70,6 +124,52 @@ const getExaminationById = async (id: string): Promise<IExamination | null> => {
   return result
 }
 
+const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
+  userId: string,
+  examination: string,
+  timeSpent: number,
+) => {
+  const isExistExamination = await Examination.findById(examination)
+  if (!isExistExamination) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
+  }
+  const userProgressHistory = await UserProgressHistory.findOneAndUpdate(
+    { user: userId, isDeleted: false },
+    {
+      $set: {
+        'completedExaminations.$[elem].timeSpent': timeSpent,
+        'completedExaminations.$[elem].answeredAt': new Date(),
+      },
+    },
+    {
+      new: true, // Return updated document
+      upsert: true, // Create a new document if not found
+      arrayFilters: [
+        {
+          'elem.examination': examination, // Targeting the specific question
+        },
+      ],
+    },
+  )
+
+  // If the question was not found in answeredQuestions, add it
+  if (!userProgressHistory) {
+    await UserProgressHistory.findOneAndUpdate(
+      { user: userId, isDeleted: false },
+      {
+        $push: {
+          completedExaminations: {
+            examination: examination,
+            timeSpent,
+            answeredAt: new Date(),
+          },
+        },
+      },
+      { upsert: true },
+    )
+  }
+}
+
 export const ExaminationService = {
   createExamination,
   getAllExaminations,
@@ -79,7 +179,5 @@ export const ExaminationService = {
   hardDeleteExamination,
   getExaminationById,
   // // upsert user progress history tracking on answering question
-  // upsertUserProgressHistoryTrackingOnAnsweringQuestion,
-  // resetExaminationHistoryByUserIdAndExaminationId, // must clear all the questions from the answeredQuestions linked to this examinationId
-  // previewExaminationHistoryByUserIdAndExaminationId, // must return the answeredQuestions linked to this examinationId
+  upsertUserProgressHistoryTrackingOnAnsweringQuestion,
 }

@@ -4,6 +4,7 @@ import { UserProgressHistory } from './UserProgressHistory.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import unlinkFile from '../../../shared/unlinkFile'
 import AppError from '../../../errors/AppError'
+import { Examination } from '../Examination/Examination.model'
 
 const createUserProgressHistory = async (
   payload: IUserProgressHistory,
@@ -77,6 +78,65 @@ const getUserProgressHistoryById = async (
   return result
 }
 
+const resetExaminationHistoryByUserIdAndExaminationId = async (
+  userId: string,
+  examinationId: string,
+) => {
+  // isExistExamination
+  const isExistExamination = await Examination.findById(examinationId)
+  if (!isExistExamination) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
+  }
+  const result = await UserProgressHistory.findOne({
+    user: userId,
+  }).select('answeredQuestions completedExaminations')
+  if (!result) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
+  }
+  // pull the examination from completedExaminations and pull the answeredQuestions related to this examination from answeredQuestions of result
+  // Remove the examination from completedExaminations
+  const removedExamination = await UserProgressHistory.updateOne(
+    { user: userId },
+    { $pull: { completedExaminations: { examination: examinationId } } },
+  )
+  if (!removedExamination) {
+    throw new AppError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'Failed to remove examination from completedExaminations.',
+    )
+  }
+
+  // Remove the related answers from answeredQuestions
+  if (
+    result.answeredQuestions?.length &&
+    result.answeredQuestions?.length > 0
+  ) {
+    const removedAnswers = await UserProgressHistory.updateOne(
+      { user: userId },
+      {
+        $pull: {
+          answeredQuestions: {
+            question: {
+              $in: result.answeredQuestions
+                .filter(
+                  (aq: any) => aq.examination.toString() === examinationId,
+                )
+                .map((aq: any) => aq.question),
+            },
+          },
+        },
+      },
+    )
+    if (!removedAnswers) {
+      throw new AppError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Failed to remove answers from answeredQuestions.',
+      )
+    }
+  }
+  return removedExamination
+}
+
 export const UserProgressHistoryService = {
   createUserProgressHistory,
   getAllUserProgressHistorys,
@@ -85,4 +145,5 @@ export const UserProgressHistoryService = {
   deleteUserProgressHistory,
   hardDeleteUserProgressHistory,
   getUserProgressHistoryById,
+  resetExaminationHistoryByUserIdAndExaminationId, // must clear all the questions from the answeredQuestions linked to this examinationId
 }

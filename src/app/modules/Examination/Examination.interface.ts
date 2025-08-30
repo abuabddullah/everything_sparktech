@@ -5,7 +5,6 @@ export interface IExamination {
   description: string
   test: Types.ObjectId
   questionSetsCount: number
-  rulesAndRegulation: string
   questionSets: Types.ObjectId[]
   createdAt: Date
   updatedAt: Date

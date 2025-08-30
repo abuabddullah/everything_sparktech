@@ -7,7 +7,6 @@ const ExaminationSchema = new Schema<IExamination>(
     description: { type: String, required: true },
     test: { type: Schema.Types.ObjectId, ref: 'Test', required: true },
     questionSetsCount: { type: Number, required: false, default: 0 },
-    rulesAndRegulation: { type: String, required: true },
     questionSets: {
       type: [Schema.Types.ObjectId],
       ref: 'QuestionSet',

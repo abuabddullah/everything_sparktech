@@ -214,4 +214,5 @@ export const ReviewsService = {
   deleteReviews,
   hardDeleteReviews,
   getReviewsById,
+  // reviewExaminationFromUserByExaminationId
 }

@@ -3,7 +3,12 @@ import { IUserProgressHistory } from './UserProgressHistory.interface'
 
 const UserProgressHistorySchema = new Schema<IUserProgressHistory>(
   {
-    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      unique: true,
+    },
     answeredQuestions: [
       {
         examination: {

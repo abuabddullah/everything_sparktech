@@ -1,13 +1,16 @@
 import cors from 'cors'
 import express, { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import path from 'path';
+import path from 'path'
 
 import router from './routes'
 import { Morgan } from './shared/morgan'
 import cookieParser from 'cookie-parser'
 import globalErrorHandler from './app/middleware/globalErrorHandler'
 import passport from './app/modules/auth/passport.auth/config/passport'
+import { scheduleAutoDeleteUnReferencedQuestionSet } from './app/modules/QuestionSet/QuestionSet.service'
+import { scheduleAutoDeleteUnReferencedPrompt } from './app/modules/Prompt/Prompt.service'
+import { scheduleAutoDeleteUnReferencedQuestion } from './app/modules/Question/Question.service'
 
 const app = express()
 
@@ -28,7 +31,7 @@ app.use(cookieParser())
 //file retrieve
 app.use(express.static('uploads'))
 
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')))
 
 //router
 app.use('/api/v1', router)
@@ -64,10 +67,8 @@ app.get('/', (req: Request, res: Response) => {
   `)
 })
 
-
 //global error handle
 app.use(globalErrorHandler)
-
 
 app.use((req, res) => {
   res.status(StatusCodes.NOT_FOUND).json({
@@ -76,17 +77,22 @@ app.use((req, res) => {
     errorMessages: [
       {
         path: req.originalUrl,
-        message: "Congratulations, you've reached a completely useless API endpoint 👏",
+        message:
+          "Congratulations, you've reached a completely useless API endpoint 👏",
       },
       {
         path: '/docs',
-        message: "Hint: Maybe try reading the docs next time? 📚",
+        message: 'Hint: Maybe try reading the docs next time? 📚',
       },
     ],
-    roast: "404 brain cells not found. Try harder. 🧠❌",
+    roast: '404 brain cells not found. Try harder. 🧠❌',
     timestamp: new Date().toISOString(),
-  });
-});
+  })
+})
 
+// handling cronjobs
+scheduleAutoDeleteUnReferencedQuestionSet()
+scheduleAutoDeleteUnReferencedPrompt()
+scheduleAutoDeleteUnReferencedQuestion()
 
 export default app
