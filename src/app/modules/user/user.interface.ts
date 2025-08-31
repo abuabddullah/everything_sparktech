@@ -20,7 +20,6 @@ type IAddress = {
   presentAddress?: string
 }
 
-
 export type Point = {
   type: 'Point'
   coordinates: [number, number] // [longitude, latitude]
@@ -34,7 +33,7 @@ export type IUser = {
   phone?: string
   status: string
   verified: boolean
-  address?: IAddress
+  address?: string
   location: Point
   password: string
   role: string
