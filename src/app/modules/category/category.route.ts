@@ -4,7 +4,7 @@ import { CategoryValidations } from './category.validation'
 import validateRequest from '../../middleware/validateRequest'
 import auth from '../../middleware/auth'
 import { USER_ROLES } from '../../../enum/user'
-import fileUploadHandler from '../../middleware/fileUploadHandler'
+import s3fileUploadHandler from '../../middleware/s3fileUploadHandler'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '../../../errors/ApiError'
 import { S3Helper } from '../../../helpers/image/s3helper'
@@ -19,7 +19,7 @@ router.post(
   '/',
   auth(USER_ROLES.ADMIN),
 
-  fileUploadHandler(),
+  s3fileUploadHandler(),
 
   async (req, res, next) => {
     const payload = req.body
@@ -61,7 +61,7 @@ router.patch(
   '/:id',
   auth(USER_ROLES.ADMIN),
 
-  fileUploadHandler(),
+  s3fileUploadHandler(),
 
   async (req, res, next) => {
     const payload = req.body

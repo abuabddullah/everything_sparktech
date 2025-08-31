@@ -3,6 +3,7 @@ import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
 import { IQuestion } from './Question.interface'
 import { QuestionService } from './Question.service'
+import { IJwtPayload } from '../auth/auth.interface'
 
 const createQuestion = catchAsync(async (req: Request, res: Response) => {
   const result = await QuestionService.createQuestion(req.body)
@@ -90,6 +91,22 @@ const getQuestionById = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+const validateQuestionAnswer = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await QuestionService.validateQuestionAnswer(
+      req.params.questionId,
+      req.body.userAnswer,
+    )
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Question retrieved successfully',
+      data: result.toString(),
+    })
+  },
+)
+
 export const QuestionController = {
   createQuestion,
   getAllQuestions,
@@ -98,4 +115,5 @@ export const QuestionController = {
   deleteQuestion,
   hardDeleteQuestion,
   getQuestionById,
+  validateQuestionAnswer,
 }

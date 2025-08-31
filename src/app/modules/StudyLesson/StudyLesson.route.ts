@@ -1,12 +1,12 @@
 import express from 'express'
 import { StudyLessonController } from './StudyLesson.controller'
 import auth from '../../middleware/auth'
-import fileUploadHandler from '../../middleware/fileUploadHandler'
 import parseFileData from '../../middleware/parseFileData'
 import { FOLDER_NAMES } from '../../../enums/files'
 import validateRequest from '../../middleware/validateRequest'
 import { StudyLessonValidation } from './StudyLesson.validation'
 import { USER_ROLES } from '../../../enum/user'
+import fileUploadHandler from '../../middleware/fileUploadHandler'
 
 const router = express.Router()
 /**
@@ -31,6 +31,8 @@ router.delete(
   auth(USER_ROLES.ADMIN),
   StudyLessonController.hardDeleteStudyLesson,
 )
+// get all StudyLesson by course id
+router.get('/course/:id', StudyLessonController.getStudyLessonsByCourseId)
 
 router.patch(
   '/:id',

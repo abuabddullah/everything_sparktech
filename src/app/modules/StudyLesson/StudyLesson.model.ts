@@ -5,8 +5,10 @@ const StudyLessonSchema = new Schema<IStudyLesson>(
   {
     course: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
     title: { type: String, required: true },
+    subtitle: { type: String, required: false },
+    topic: { type: String, required: false },
     description: { type: String, required: true },
-    image: { type: String, required: true },
+    image: { type: String, required: false },
     questionSets: {
       type: [Schema.Types.ObjectId],
       ref: 'QuestionSet',

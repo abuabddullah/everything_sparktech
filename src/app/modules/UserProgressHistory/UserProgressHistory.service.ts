@@ -137,6 +137,56 @@ const resetExaminationHistoryByUserIdAndExaminationId = async (
   return removedExamination
 }
 
+export const upsertUserProgressHistory = async (
+  userId: string,
+  examinationId: string,
+  questionId: string,
+  userAnswer: number | number[],
+  isCorrectlyAnswered: boolean,
+): Promise<IUserProgressHistory | null> => {
+  // Upsert user progress history (Find or create new)
+  const userProgressHistory = await UserProgressHistory.findOneAndUpdate(
+    { user: userId, isDeleted: false },
+    {
+      $set: {
+        'answeredQuestions.$[elem].userAnswer': userAnswer,
+        'answeredQuestions.$[elem].isCorrectlyAnswered': isCorrectlyAnswered,
+        'answeredQuestions.$[elem].answeredAt': new Date(),
+      },
+    },
+    {
+      new: true, // Return updated document
+      upsert: true, // Create a new document if not found
+      arrayFilters: [
+        {
+          'elem.question': questionId, // Targeting the specific question
+        },
+      ],
+    },
+  )
+
+  // If the question was not found in answeredQuestions, add it
+  if (!userProgressHistory) {
+    await UserProgressHistory.findOneAndUpdate(
+      { user: userId, isDeleted: false },
+      {
+        $push: {
+          answeredQuestions: {
+            examination: examinationId,
+            question: questionId,
+            userAnswer,
+            isCorrectlyAnswered,
+            answeredAt: new Date(),
+          },
+        },
+      },
+      { upsert: true },
+    )
+  }
+
+  return userProgressHistory
+}
+
 export const UserProgressHistoryService = {
   createUserProgressHistory,
   getAllUserProgressHistorys,

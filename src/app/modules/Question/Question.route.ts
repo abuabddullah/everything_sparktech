@@ -28,6 +28,12 @@ router.delete(
   QuestionController.hardDeleteQuestion,
 )
 
+router.post(
+  '/validate-question-answer/:questionId',
+  auth(USER_ROLES.STUDENT),
+  validateRequest(QuestionValidation.validateQuestionAnswer),
+  QuestionController.validateQuestionAnswer,
+)
 router.patch(
   '/:id',
   auth(USER_ROLES.ADMIN),

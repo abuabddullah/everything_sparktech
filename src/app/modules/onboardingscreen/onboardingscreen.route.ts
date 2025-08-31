@@ -3,10 +3,8 @@ import { OnboardingscreenController } from './onboardingscreen.controller'
 import validateRequest from '../../middleware/validateRequest'
 import auth from '../../middleware/auth'
 import { USER_ROLES } from '../../../enum/user'
-import {
-  createOnboardingSchema
-} from './onboardingscreen.validation'
-import fileUploadHandler from '../../middleware/fileUploadHandler'
+import { createOnboardingSchema } from './onboardingscreen.validation'
+import s3fileUploadHandler from '../../middleware/s3fileUploadHandler'
 import { S3Helper } from '../../../helpers/image/s3helper'
 import ApiError from '../../../errors/ApiError'
 import { StatusCodes } from 'http-status-codes'
@@ -21,7 +19,7 @@ router.post(
   '/',
   auth(USER_ROLES.ADMIN),
 
-  fileUploadHandler(),
+  s3fileUploadHandler(),
 
   async (req, res, next) => {
     const payload = req.body

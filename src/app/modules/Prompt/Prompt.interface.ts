@@ -1,5 +1,5 @@
 import { Types } from 'mongoose'
-import { IPromptRefType } from './Prompt.enum'
+import { IPromptRefType, IPromptType } from './Prompt.enum'
 
 export interface IPromptTable {
   slNo: number
@@ -14,6 +14,7 @@ export interface IPrompt {
   image?: string
   questionSetId?: Types.ObjectId | null // initially লাগবে না কিন্তু পরে যখন এই prompt কোথাও use হবে সেই id এখানে add করতে হবে
   promptTable?: IPromptTable[]
+  promptType: IPromptType
   createdAt: Date
   updatedAt: Date
   isDeleted: boolean

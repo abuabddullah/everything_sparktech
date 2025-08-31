@@ -7,27 +7,65 @@ import AppError from '../../../errors/AppError'
 import { QuestionSet } from '../QuestionSet/QuestionSet.model'
 import { Course } from '../Course/Course.model'
 import { Category } from '../category/category.model'
+import { ICourseTitle } from '../Course/Course.enum'
+import { IQSetRefType, IQSetTypes } from '../QuestionSet/QuestionSet.enum'
 
 const createStudyLesson = async (
   payload: IStudyLesson,
 ): Promise<IStudyLesson> => {
+  const isExistCourse = await Course.findById(payload.course)
+  if (!isExistCourse) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid course.')
+  }
+  // if course is next generation then only one question set is allowed that will be only radio [✅➡️]  which is handled in createQuestionSet service
+  if (isExistCourse.title == ICourseTitle.NEXT_GEN_COURSE) {
+    if (!payload.image) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Image is required for next generation course.',
+      )
+    }
+    if (payload.questionSets.length > 1) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Only one question set is allowed for next generation.',
+      )
+    }
+  }
   //category,questionSets,course
   const isExistCategory = await Category.findById(payload.category)
   const isExistQuestionSets = await QuestionSet.find({
     _id: { $in: payload.questionSets },
-  })
-  const isExistCourse = await Course.findById(payload.course)
+    refType: IQSetRefType.STUDY_LESSON,
+    questionSetType: IQSetTypes.MULTIPLE_PROMPTS_BUT_ONE_RADIO_Q,
+    refId: null,
+  }).select('questionSetType prompts')
+  console.log(
+    '🚀 ~ createStudyLesson ~ isExistQuestionSets:',
+    isExistQuestionSets,
+  )
   if (
     !isExistCategory ||
-    !isExistCourse ||
     !isExistQuestionSets.length ||
     isExistQuestionSets.length !== payload.questionSets.length
   ) {
     payload.image && unlinkFile(payload.image)
     throw new AppError(
       StatusCodes.BAD_REQUEST,
-      'Invalid category, question set, or course.',
+      'Invalid category, question set.',
     )
+  }
+  // if isExistCourse.title is case studies then ensure there must be prompt.length = 3 + question will be radio, [✅➡️] which is handled in createQuestionSet service
+  if (isExistCourse.title == ICourseTitle.CASE_STUDIES) {
+    const isExistPrompt = isExistQuestionSets.every(
+      questionSet => questionSet.prompts?.length == 3,
+    )
+    if (!isExistPrompt) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'All question set must have 3 prompts for case studies lesson.',
+      )
+    }
   }
   payload.questionSetsCount = payload.questionSets.length
   const result = await StudyLesson.create(payload)
@@ -53,8 +91,13 @@ const getAllStudyLessons = async (
   result: IStudyLesson[]
 }> => {
   const queryBuilder = new QueryBuilder(StudyLesson.find(), query)
-  const result = await queryBuilder.filter().sort().paginate().fields()
-    .modelQuery
+  const result = await queryBuilder
+    .filter()
+    .search(['category', 'course'])
+    .sort()
+    .paginate()
+    .fields()
+    .modelQuery.populate('category course questionSets')
   const meta = await queryBuilder.getPaginationInfo()
   return { meta, result }
 }
@@ -155,6 +198,16 @@ const getStudyLessonById = async (id: string): Promise<IStudyLesson | null> => {
   return result
 }
 
+const getStudyLessonsByCourseId = async (
+  id: string,
+): Promise<IStudyLesson[] | null> => {
+  const result = await StudyLesson.find({ course: id })
+  if (!result) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'StudyLessons not found.')
+  }
+  return result
+}
+
 export const StudyLessonService = {
   createStudyLesson,
   getAllStudyLessons,
@@ -163,4 +216,5 @@ export const StudyLessonService = {
   deleteStudyLesson,
   hardDeleteStudyLesson,
   getStudyLessonById,
+  getStudyLessonsByCourseId,
 }

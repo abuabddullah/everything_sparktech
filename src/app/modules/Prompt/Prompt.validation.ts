@@ -1,9 +1,6 @@
 import { z } from 'zod'
-import { IPromptRefType } from './Prompt.enum'
-import {
-  objectIdSchemaMendatory,
-  objectIdSchemaOptional,
-} from '../Reviews/Reviews.utils'
+import { IPromptType } from './Prompt.enum'
+import { objectIdSchemaOptional } from '../Reviews/Reviews.utils'
 
 const createPromptZodSchema = z.object({
   body: z.object({
@@ -20,6 +17,9 @@ const createPromptZodSchema = z.object({
         }),
       )
       .optional(),
+    promptType: z.nativeEnum(IPromptType, {
+      required_error: 'Type is required',
+    }),
   }),
 })
 
@@ -38,6 +38,9 @@ const updatePromptZodSchema = z.object({
         }),
       )
       .optional(),
+    promptType: z.nativeEnum(IPromptType, {
+      required_error: 'Type is required',
+    }),
   }),
 })
 

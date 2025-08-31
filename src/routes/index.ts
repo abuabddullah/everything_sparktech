@@ -6,13 +6,14 @@ import { PublicRoutes } from '../app/modules/public/public.route'
 import { SupportRoutes } from '../app/modules/support/support.route'
 import { OnboardingscreenRoutes } from '../app/modules/onboardingscreen/onboardingscreen.route'
 import { CommunityRoutes } from '../app/modules/community/community.route'
-import { ReviewRoutes } from '../app/modules/review0/review.route'
 import { StudyscheduleRoutes } from '../app/modules/studyschedule/studyschedule.route'
-import { ExamRoutes } from '../app/modules/exam0/exam.route'
-import { LessonRoutes } from '../app/modules/lesson0/lesson.route'
-import { StudyProgressRoutes } from '../app/modules/studyprogress/studyprogress.route'
 import { CategoryRoutes } from '../app/modules/category/category.route'
 import { MnemonicRoutes } from '../app/modules/mnemonic/mnemonic.route'
+import { CourseRoutes } from '../app/modules/Course/Course.route'
+import { StudyLessonRoutes } from '../app/modules/StudyLesson/StudyLesson.route'
+import { QuestionRoutes } from '../app/modules/Question/Question.route'
+import { QuestionSetRoutes } from '../app/modules/QuestionSet/QuestionSet.route'
+import { PromptRoutes } from '../app/modules/Prompt/Prompt.route'
 
 const router = express.Router()
 
@@ -27,15 +28,16 @@ const apiRoutes: { path: string; route: Router }[] = [
   { path: '/support', route: SupportRoutes },
   { path: '/onboardingscreen', route: OnboardingscreenRoutes },
   { path: '/community', route: CommunityRoutes },
-  { path: '/review', route: ReviewRoutes },
   { path: '/studyschedule', route: StudyscheduleRoutes },
-  { path: '/exam', route: ExamRoutes },
-  { path: '/lesson', route: LessonRoutes },
-
-  { path: '/studyprogress', route: StudyProgressRoutes },
 
   { path: '/category', route: CategoryRoutes },
   { path: '/mnemonic', route: MnemonicRoutes },
+  // asif routes
+  { path: '/course', route: CourseRoutes },
+  { path: '/studyLesson', route: StudyLessonRoutes },
+  { path: '/questions', route: QuestionRoutes },
+  { path: '/questionSet', route: QuestionSetRoutes },
+  { path: '/prompt', route: PromptRoutes },
 ]
 
 apiRoutes.forEach(route => {

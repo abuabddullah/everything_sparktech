@@ -7,6 +7,8 @@ import mongoose from 'mongoose'
 import { Prompt } from '../Prompt/Prompt.model'
 import { Question } from '../Question/Question.model'
 import cron from 'node-cron'
+import { IQSetRefType, IQSetTypes } from './QuestionSet.enum'
+import { IQTypes } from '../Question/Question.enum'
 
 const createQuestionSet = async (
   payload: IQuestionSet,
@@ -21,16 +23,40 @@ const createQuestionSet = async (
   // questions,prompts are array need to check all the elements exists in the database
   const isExistQuestions = await Question.find({
     _id: { $in: payload.questions },
-  })
+    questionSet: null,
+  }).select('questionType')
   if (
     !isExistQuestions.length ||
     isExistQuestions.length !== payload.questions.length
   ) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Some Questions do not exist.')
   }
+
+  // if refType is STUDY_LESSON then only question type allowed is RadioQ [⬅️✅]+ question set type will be either MULTIPLE_RADIO_Q or MULTIPLE_PROMPTS_BUT_ONE_RADIO_Q
+  if (payload.refType == IQSetRefType.STUDY_LESSON) {
+    if (
+      payload.questionSetType !== IQSetTypes.MULTIPLE_RADIO_Q &&
+      payload.questionSetType !== IQSetTypes.MULTIPLE_PROMPTS_BUT_ONE_RADIO_Q
+    ) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Question set type is not valid for Study Lesson. MULTIPLE RADIO Question or MULTIPLE PROMPTS BUT ONE RADIO Question is required.',
+      )
+    }
+    const isExistRadioQ = isExistQuestions.every(
+      question => question.questionType === IQTypes.RadioQ,
+    )
+    if (!isExistRadioQ) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Some Questions type is not RadioQ.',
+      )
+    }
+  }
   if (payload.prompts && payload.prompts.length) {
     const isExistPrompts = await Prompt.find({
       _id: { $in: payload.prompts },
+      questionSetId: null,
     })
     if (
       !isExistPrompts.length ||
@@ -61,8 +87,12 @@ const getAllQuestionSets = async (
   result: IQuestionSet[]
 }> => {
   const queryBuilder = new QueryBuilder(QuestionSet.find(), query)
-  const result = await queryBuilder.filter().sort().paginate().fields()
-    .modelQuery
+  const result = await queryBuilder
+    .filter()
+    .search(['refId'])
+    .sort()
+    .paginate()
+    .fields().modelQuery
   const meta = await queryBuilder.getPaginationInfo()
   return { meta, result }
 }
@@ -164,7 +194,7 @@ const hardDeleteQuestionSet = async (
 }
 
 const getQuestionSetById = async (id: string): Promise<IQuestionSet | null> => {
-  const result = await QuestionSet.findById(id)
+  const result = await QuestionSet.findById(id).populate('questions prompts')
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
   }

@@ -1,7 +1,7 @@
 import express from 'express'
 import { CourseController } from './Course.controller'
 import auth from '../../middleware/auth'
-import fileUploadHandler from '../../middleware/fileUploadHandler'
+import s3fileUploadHandler from '../../middleware/s3fileUploadHandler'
 import parseFileData from '../../middleware/parseFileData'
 import { FOLDER_NAMES } from '../../../enums/files'
 import validateRequest from '../../middleware/validateRequest'
@@ -13,7 +13,7 @@ const router = express.Router()
 router.post(
   '/',
   auth(USER_ROLES.ADMIN),
-  fileUploadHandler(),
+  s3fileUploadHandler(),
   parseFileData(FOLDER_NAMES.IMAGE),
   validateRequest(CourseValidation.createCourseZodSchema),
   CourseController.createCourse,
@@ -31,7 +31,7 @@ router.delete(
 
 router.patch(
   '/:id',
-  fileUploadHandler(),
+  s3fileUploadHandler(),
   parseFileData(FOLDER_NAMES.IMAGE),
   auth(USER_ROLES.ADMIN),
   validateRequest(CourseValidation.updateCourseZodSchema),

@@ -45,7 +45,14 @@ const updateQuestionZodSchema = z.object({
   }),
 })
 
+const validateQuestionAnswer = z.object({
+  body: z.object({
+    userAnswer: z.union([z.number(), z.array(z.number())]).optional(),
+  }),
+})
+
 export const QuestionValidation = {
   createQuestionZodSchema,
   updateQuestionZodSchema,
+  validateQuestionAnswer,
 }

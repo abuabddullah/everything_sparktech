@@ -8,7 +8,7 @@ import { fileAndBodyProcessorUsingDiskStorage } from '../../middleware/processRe
 import ApiError from '../../../errors/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { S3Helper } from '../../../helpers/image/s3helper'
-import fileUploadHandler from '../../middleware/fileUploadHandler'
+import s3fileUploadHandler from '../../middleware/s3fileUploadHandler'
 
 const router = express.Router()
 
@@ -32,7 +32,7 @@ router.patch(
     USER_ROLES.GUEST,
   ),
 
-  fileUploadHandler(),
+  s3fileUploadHandler(),
 
   async (req, res, next) => {
     const payload = req.body
