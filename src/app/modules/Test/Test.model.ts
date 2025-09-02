@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose'
 import { ITest } from './Test.interface'
+import { ITestTitle } from './Test.enum'
 
 const TestSchema = new Schema<ITest>(
   {
@@ -9,7 +10,7 @@ const TestSchema = new Schema<ITest>(
       required: false,
       default: [],
     },
-    title: { type: String, required: true, unique: true },
+    title: { type: String, enum: ITestTitle, required: true, unique: true },
     description: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },

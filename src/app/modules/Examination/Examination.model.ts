@@ -4,7 +4,7 @@ import { IExamination } from './Examination.interface'
 const ExaminationSchema = new Schema<IExamination>(
   {
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String, required: false },
     test: { type: Schema.Types.ObjectId, ref: 'Test', required: true },
     questionSetsCount: { type: Number, required: false, default: 0 },
     questionSets: {

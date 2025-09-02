@@ -77,6 +77,12 @@ const deletePrompt = async (id: string): Promise<IPrompt | null> => {
   result.isDeleted = true
   result.deletedAt = new Date()
   await result.save()
+  if (result.questionSetId) {
+    await QuestionSet.updateOne(
+      { _id: result.questionSetId },
+      { $pull: { prompts: result._id } }, // Remove prompt from old question set
+    )
+  }
   return result
 }
 
@@ -86,8 +92,12 @@ const hardDeletePrompt = async (id: string): Promise<IPrompt | null> => {
     throw new AppError(StatusCodes.NOT_FOUND, 'Prompt not found.')
   }
   result.image && unlinkFile(result.image)
-  // make pull of those questionSets
-  await QuestionSet.updateMany({ prompts: id }, { $pull: { prompts: id } })
+  if (result.questionSetId) {
+    await QuestionSet.updateOne(
+      { _id: result.questionSetId },
+      { $pull: { prompts: result._id } }, // Remove prompt from old question set
+    )
+  }
   return result
 }
 

@@ -2,7 +2,7 @@ import { Types } from 'mongoose'
 
 export interface IExamination {
   title: string
-  description: string
+  description?: string
   test: Types.ObjectId
   questionSetsCount: number
   questionSets: Types.ObjectId[]

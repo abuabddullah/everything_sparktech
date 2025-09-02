@@ -7,7 +7,7 @@ import {
 const createExaminationZodSchema = z.object({
   body: z.object({
     title: z.string({ required_error: 'title text is required' }),
-    description: z.string({ required_error: 'description text is required' }),
+    description: z.string().optional(),
     test: objectIdSchemaMendatory('test'),
     questionSets: z
       .array(objectIdSchemaMendatory('question set'))

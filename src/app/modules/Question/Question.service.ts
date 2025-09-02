@@ -73,6 +73,12 @@ const deleteQuestion = async (id: string): Promise<IQuestion | null> => {
   result.isDeleted = true
   result.deletedAt = new Date()
   await result.save()
+  if (result.questionSet) {
+    await QuestionSet.updateOne(
+      { _id: result.questionSet },
+      { $pull: { questions: result._id } }, // Remove prompt from old question set
+    )
+  }
   return result
 }
 

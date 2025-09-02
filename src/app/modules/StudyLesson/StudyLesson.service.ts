@@ -37,7 +37,12 @@ const createStudyLesson = async (
   const isExistQuestionSets = await QuestionSet.find({
     _id: { $in: payload.questionSets },
     refType: IQSetRefType.STUDY_LESSON,
-    questionSetType: IQSetTypes.MULTIPLE_PROMPTS_BUT_ONE_RADIO_Q,
+    questionSetType: {
+      $in: [
+        IQSetTypes.MULTIPLE_PROMPTS_BUT_ONE_RADIO_Q,
+        IQSetTypes.MULTIPLE_RADIO_Q,
+      ],
+    },
     refId: null,
   }).select('questionSetType prompts')
   console.log(
@@ -135,7 +140,17 @@ const updateStudyLesson = async (
   }
   if (payload.questionSets) {
     isExistQuestionSets = await QuestionSet.find({
-      _id: { $in: payload.questionSets, refId: null },
+      _id: {
+        $in: payload.questionSets,
+        refId: null,
+        refType: IQSetRefType.STUDY_LESSON,
+        questionSetType: {
+          $in: [
+            IQSetTypes.MULTIPLE_PROMPTS_BUT_ONE_RADIO_Q,
+            IQSetTypes.MULTIPLE_RADIO_Q,
+          ],
+        },
+      },
     })
     if (
       !isExistQuestionSets?.length ||

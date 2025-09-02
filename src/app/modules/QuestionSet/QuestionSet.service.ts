@@ -177,6 +177,15 @@ const deleteQuestionSet = async (id: string): Promise<IQuestionSet | null> => {
   result.isDeleted = true
   result.deletedAt = new Date()
   await result.save()
+  // also need to clean up the questions and prompts
+  await Question.updateMany({ questionSet: id }, { questionSet: null })
+  await Prompt.updateMany({ questionSetId: id }, { questionSetId: null })
+
+  if (result.refId) {
+    await mongoose
+      .model(result.refType)
+      .updateOne({ _id: result.refId }, { $pull: { questionSet: id } })
+  }
   return result
 }
 
@@ -190,6 +199,12 @@ const hardDeleteQuestionSet = async (
   // also need to clean up the questions and prompts
   await Question.updateMany({ questionSet: id }, { questionSet: null })
   await Prompt.updateMany({ questionSetId: id }, { questionSetId: null })
+
+  if (result.refId) {
+    await mongoose
+      .model(result.refType)
+      .updateOne({ _id: result.refId }, { $pull: { questionSet: id } })
+  }
   return result
 }
 

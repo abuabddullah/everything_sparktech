@@ -6,27 +6,40 @@ import QueryBuilder from '../../builder/QueryBuilder'
 import { QuestionSet } from '../QuestionSet/QuestionSet.model'
 import { Test } from '../Test/Test.model'
 import { UserProgressHistory } from '../UserProgressHistory/UserProgressHistory.model'
+import { ITestTitle } from '../Test/Test.enum'
+import { IQSetRefType, IQSetTypes } from '../QuestionSet/QuestionSet.enum'
 
 const createExamination = async (
   payload: IExamination,
 ): Promise<IExamination> => {
   // test, questionSets exists or not
   const isExistTest = await Test.findById(payload.test)
+  if (!isExistTest) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid test.')
+  }
+  if (isExistTest.title == ITestTitle.REDINESS_TEST) {
+    if (!payload.description) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Description is required.')
+    }
+  }
+
   const isExistQuestionSets = await QuestionSet.find({
     _id: { $in: payload.questionSets },
+    refType: IQSetRefType.EXAMINATION,
+    refId: null,
   })
   if (
-    !isExistTest ||
     !isExistQuestionSets.length ||
     isExistQuestionSets.length !== payload.questionSets.length
   ) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid test or question set.')
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid question set.')
   }
+  payload.questionSetsCount = payload.questionSets.length
   const result = await Examination.create(payload)
   // set result._id as refId of each questionSets of result.questionSets and update result.questionSetsCount
   await QuestionSet.updateMany(
     { _id: { $in: result.questionSets } },
-    { refId: result._id, questionSetsCount: result.questionSets.length },
+    { refId: result._id },
   )
   return result
 }
@@ -67,7 +80,9 @@ const updateExamination = async (
   }
   if (payload.questionSets) {
     isExistQuestionSets = await QuestionSet.find({
-      _id: { $in: payload.questionSets, refId: null },
+      _id: { $in: payload.questionSets },
+      refType: IQSetRefType.EXAMINATION,
+      refId: null,
     })
     if (
       !isExistQuestionSets.length ||
@@ -101,6 +116,8 @@ const deleteExamination = async (id: string): Promise<IExamination | null> => {
   result.isDeleted = true
   result.deletedAt = new Date()
   await result.save()
+  // also need to clean up the refId of questionsSets
+  await QuestionSet.updateMany({ refId: id }, { refId: null })
   return result
 }
 

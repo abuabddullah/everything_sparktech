@@ -14,7 +14,7 @@ import { StudyLessonRoutes } from '../app/modules/StudyLesson/StudyLesson.route'
 import { QuestionRoutes } from '../app/modules/Question/Question.route'
 import { QuestionSetRoutes } from '../app/modules/QuestionSet/QuestionSet.route'
 import { PromptRoutes } from '../app/modules/Prompt/Prompt.route'
-
+import { TestRoutes } from '../app/modules/Test/Test.route'
 const router = express.Router()
 
 const apiRoutes: { path: string; route: Router }[] = [
@@ -38,6 +38,7 @@ const apiRoutes: { path: string; route: Router }[] = [
   { path: '/questions', route: QuestionRoutes },
   { path: '/questionSet', route: QuestionSetRoutes },
   { path: '/prompt', route: PromptRoutes },
+  { path: '/test', route: TestRoutes },
 ]
 
 apiRoutes.forEach(route => {
