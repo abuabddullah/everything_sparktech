@@ -9,10 +9,45 @@ import { UserProgressHistory } from '../UserProgressHistory/UserProgressHistory.
 import { ITestTitle } from '../Test/Test.enum'
 import { IQSetRefType, IQSetTypes } from '../QuestionSet/QuestionSet.enum'
 
+// const createExamination = async (
+//   payload: IExamination,
+// ): Promise<IExamination> => {
+//   // test, questionSets exists or not
+//   const isExistTest = await Test.findById(payload.test)
+//   if (!isExistTest) {
+//     throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid test.')
+//   }
+//   if (isExistTest.title == ITestTitle.REDINESS_TEST) {
+//     if (!payload.description) {
+//       throw new AppError(StatusCodes.BAD_REQUEST, 'Description is required.')
+//     }
+//   }
+
+//   const isExistQuestionSets = await QuestionSet.find({
+//     _id: { $in: payload.questionSets },
+//     refType: IQSetRefType.EXAMINATION,
+//     refId: null,
+//   })
+//   if (
+//     !isExistQuestionSets.length ||
+//     isExistQuestionSets.length !== payload.questionSets.length
+//   ) {
+//     throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid question set.')
+//   }
+//   payload.questionSetsCount = payload.questionSets.length
+//   const result = await Examination.create(payload)
+//   // set result._id as refId of each questionSets of result.questionSets and update result.questionSetsCount
+//   await QuestionSet.updateMany(
+//     { _id: { $in: result.questionSets } },
+//     { refId: result._id },
+//   )
+//   return result
+// }
+
 const createExamination = async (
   payload: IExamination,
 ): Promise<IExamination> => {
-  // test, questionSets exists or not
+  // Check if the test exists
   const isExistTest = await Test.findById(payload.test)
   if (!isExistTest) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid test.')
@@ -23,24 +58,35 @@ const createExamination = async (
     }
   }
 
-  const isExistQuestionSets = await QuestionSet.find({
-    _id: { $in: payload.questionSets },
-    refType: IQSetRefType.EXAMINATION,
-    refId: null,
-  })
-  if (
-    !isExistQuestionSets.length ||
-    isExistQuestionSets.length !== payload.questionSets.length
-  ) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid question set.')
+  // Ensure all the questionSets within questionSteps are valid
+  if (payload.questionSteps && payload.questionSteps.length > 0) {
+    for (const step of payload.questionSteps) {
+      const isExistQuestionSet = await QuestionSet.find({
+        _id: step.questionSet,
+        refType: IQSetRefType.EXAMINATION,
+        refId: null,
+      })
+      if (!isExistQuestionSet.length) {
+        throw new AppError(
+          StatusCodes.BAD_REQUEST,
+          `Invalid question set for step ${step.stepNo}.`,
+        )
+      }
+    }
+    payload.questionSetsCount = payload.questionSteps.length
   }
-  payload.questionSetsCount = payload.questionSets.length
+
+  // Create the examination
   const result = await Examination.create(payload)
-  // set result._id as refId of each questionSets of result.questionSets and update result.questionSetsCount
-  await QuestionSet.updateMany(
-    { _id: { $in: result.questionSets } },
-    { refId: result._id },
-  )
+
+  // Update questionSets' refId for each step's questionSets
+  for (const step of payload.questionSteps) {
+    await QuestionSet.updateMany(
+      { _id: step.questionSet },
+      { refId: result._id },
+    )
+  }
+
   return result
 }
 
@@ -62,15 +108,62 @@ const getAllUnpaginatedExaminations = async (): Promise<IExamination[]> => {
   return result
 }
 
+// const updateExamination = async (
+//   id: string,
+//   payload: Partial<IExamination>,
+// ): Promise<IExamination | null> => {
+//   const isExist = await Examination.findById(id)
+//   if (!isExist) {
+//     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
+//   }
+//   // test, questionSets exists or not
+//   let isExistTest, isExistQuestionSets
+//   if (payload.test) {
+//     isExistTest = await Test.findById(payload.test)
+//     if (!isExistTest) {
+//       throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid test.')
+//     }
+//   }
+//   if (payload.questionSets) {
+//     isExistQuestionSets = await QuestionSet.find({
+//       _id: { $in: payload.questionSets },
+//       refType: IQSetRefType.EXAMINATION,
+//       refId: null,
+//     })
+//     if (
+//       !isExistQuestionSets.length ||
+//       isExistQuestionSets.length !== payload.questionSets.length
+//     ) {
+//       throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid question set.')
+//     }
+//     payload.questionSetsCount = payload.questionSets.length
+//   }
+//   const updatedExamination = await Examination.findByIdAndUpdate(id, payload, {
+//     new: true,
+//   })
+//   if (!updatedExamination) {
+//     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
+//   }
+//   // now need to unlink the old questionSets
+//   await QuestionSet.updateMany({ refId: id }, { refId: null })
+//   // now need to link the new questionSets
+//   await QuestionSet.updateMany(
+//     { _id: { $in: payload.questionSets } },
+//     { refId: id },
+//   )
+//   return updatedExamination
+// }
+
 const updateExamination = async (
   id: string,
   payload: Partial<IExamination>,
 ): Promise<IExamination | null> => {
-  const isExist = await Examination.findById(id)
-  if (!isExist) {
+  const isExistExamination = await Examination.findById(id)
+  if (!isExistExamination) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
   }
-  // test, questionSets exists or not
+
+  // Test and questionSets validation
   let isExistTest, isExistQuestionSets
   if (payload.test) {
     isExistTest = await Test.findById(payload.test)
@@ -78,33 +171,44 @@ const updateExamination = async (
       throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid test.')
     }
   }
-  if (payload.questionSets) {
-    isExistQuestionSets = await QuestionSet.find({
-      _id: { $in: payload.questionSets },
-      refType: IQSetRefType.EXAMINATION,
-      refId: null,
-    })
-    if (
-      !isExistQuestionSets.length ||
-      isExistQuestionSets.length !== payload.questionSets.length
-    ) {
-      throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid question set.')
+
+  // Handle questionSets validation
+  if (payload.questionSteps) {
+    for (const step of payload.questionSteps) {
+      isExistQuestionSets = await QuestionSet.find({
+        _id: step.questionSet,
+        refType: IQSetRefType.EXAMINATION,
+        refId: null,
+      })
+      if (!isExistQuestionSets.length) {
+        throw new AppError(
+          StatusCodes.BAD_REQUEST,
+          `Invalid question set for step ${step.stepNo}.`,
+        )
+      }
     }
-    payload.questionSetsCount = payload.questionSets.length
+    payload.questionSetsCount = payload.questionSteps.length
   }
+
+  // Update the examination
   const updatedExamination = await Examination.findByIdAndUpdate(id, payload, {
     new: true,
   })
+  await isExistExamination.save()
   if (!updatedExamination) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
   }
-  // now need to unlink the old questionSets
+
+  // Unlink the old questionSets
   await QuestionSet.updateMany({ refId: id }, { refId: null })
-  // now need to link the new questionSets
-  await QuestionSet.updateMany(
-    { _id: { $in: payload.questionSets } },
-    { refId: id },
-  )
+
+  // Link the new questionSets for each step
+  if (payload.questionSteps) {
+    for (const step of payload.questionSteps) {
+      await QuestionSet.updateMany({ _id: step.questionSet }, { refId: id })
+    }
+  }
+
   return updatedExamination
 }
 
@@ -187,6 +291,14 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
   }
 }
 
+const getExaminationsByTestId = async (testId: string) => {
+  const queryBuilder = new QueryBuilder(Examination.find(), { test: testId })
+  const result = await queryBuilder.filter().sort().paginate().fields()
+    .modelQuery
+  const meta = await queryBuilder.getPaginationInfo()
+  return { meta, result }
+}
+
 export const ExaminationService = {
   createExamination,
   getAllExaminations,
@@ -197,4 +309,5 @@ export const ExaminationService = {
   getExaminationById,
   // // upsert user progress history tracking on answering question
   upsertUserProgressHistoryTrackingOnAnsweringQuestion,
+  getExaminationsByTestId,
 }

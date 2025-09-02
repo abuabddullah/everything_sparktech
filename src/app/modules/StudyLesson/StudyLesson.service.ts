@@ -213,14 +213,12 @@ const getStudyLessonById = async (id: string): Promise<IStudyLesson | null> => {
   return result
 }
 
-const getStudyLessonsByCourseId = async (
-  id: string,
-): Promise<IStudyLesson[] | null> => {
-  const result = await StudyLesson.find({ course: id })
-  if (!result) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'StudyLessons not found.')
-  }
-  return result
+const getStudyLessonsByCourseId = async (id: string) => {
+  const queryBuilder = new QueryBuilder(StudyLesson.find(), { course: id })
+  const result = await queryBuilder.filter().sort().paginate().fields()
+    .modelQuery
+  const meta = await queryBuilder.getPaginationInfo()
+  return { meta, result }
 }
 
 export const StudyLessonService = {

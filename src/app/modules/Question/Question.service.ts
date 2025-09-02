@@ -108,7 +108,9 @@ export const validateQuestionAnswer = async (
   questionId: string,
   userAnswer: number | number[],
 ): Promise<boolean> => {
-  const isExistQuestion = await Question.findById(questionId)
+  const isExistQuestion = await Question.findById(questionId).select(
+    'slNoOfCorrectAnswers correctAnswerOption questionType',
+  )
   if (!isExistQuestion) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Question not found.')
   }
@@ -123,10 +125,10 @@ export const validateQuestionAnswer = async (
     isExistQuestion.questionType === IQTypes.DropdownQ ||
     isExistQuestion.questionType === IQTypes.ShortAnswerQ
   ) {
-    await isExistQuestion.populate('correctAnswerOption') // Populate the correct answer
+    // await isExistQuestion.populate('correctAnswerOption') // Populate the correct answer
     isCorrectlyAnswered = isExistQuestion.correctAnswerOption === userAnswer
   } else if (isExistQuestion.questionType === IQTypes.McqQ) {
-    await isExistQuestion.populate('slNoOfCorrectAnswers') // Populate the correct answers for MCQ
+    // await isExistQuestion.populate('slNoOfCorrectAnswers') // Populate the correct answers for MCQ
 
     // Check if userAnswer is an array and validate that all elements are in slNoOfCorrectAnswers
     if (Array.isArray(userAnswer)) {
@@ -139,13 +141,10 @@ export const validateQuestionAnswer = async (
       isCorrectlyAnswered = false
     }
   } else if (isExistQuestion.questionType === IQTypes.RearrangeQ) {
-    await isExistQuestion.populate('options') // Populate the options for rearrange question
-
     // Ensure the sequence of the options is the same as the correct answer
     if (Array.isArray(userAnswer)) {
       isCorrectlyAnswered =
-        isExistQuestion.options?.map((option: any) => option.value).join('') ===
-        userAnswer.join('')
+        isExistQuestion.slNoOfCorrectAnswers?.join('') === userAnswer.join('')
     } else {
       // If userAnswer is not an array, this is an invalid case for rearrange
       isCorrectlyAnswered = false
@@ -172,7 +171,9 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
   if (!isExistExamination) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
   }
-  const isExistQuestion = await Question.findById(questionId)
+  const isExistQuestion = await Question.findById(questionId).select(
+    'slNoOfCorrectAnswers correctAnswerOption questionType',
+  )
   if (!isExistQuestion) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Question not found.')
   }
@@ -186,11 +187,11 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
     isExistQuestion.questionType === IQTypes.DropdownQ ||
     isExistQuestion.questionType === IQTypes.ShortAnswerQ
   ) {
-    await isExistQuestion.populate('correctAnswerOption') // Populate the correct answer
+    // await isExistQuestion.populate('correctAnswerOption') // Populate the correct answer
     // For these question types, userAnswer is a single value (not an array)
     isCorrectlyAnswered = isExistQuestion.correctAnswerOption === userAnswer
   } else if (isExistQuestion.questionType === IQTypes.McqQ) {
-    await isExistQuestion.populate('slNoOfCorrectAnswers') // Populate the correct answers for MCQ
+    // await isExistQuestion.populate('slNoOfCorrectAnswers') // Populate the correct answers for MCQ
 
     // Check if userAnswer is an array and validate that all elements are in slNoOfCorrectAnswers
     if (Array.isArray(userAnswer)) {
@@ -203,13 +204,10 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
       isCorrectlyAnswered = false
     }
   } else if (isExistQuestion.questionType === IQTypes.RearrangeQ) {
-    await isExistQuestion.populate('options') // Populate the options for rearrange question
-
     // Ensure the sequence of the options is the same as the correct answer
     if (Array.isArray(userAnswer)) {
       isCorrectlyAnswered =
-        isExistQuestion.options?.map((option: any) => option.value).join('') ===
-        userAnswer.join('')
+        isExistQuestion.slNoOfCorrectAnswers?.join('') === userAnswer.join('')
     } else {
       // If userAnswer is not an array, this is an invalid case for rearrange
       isCorrectlyAnswered = false

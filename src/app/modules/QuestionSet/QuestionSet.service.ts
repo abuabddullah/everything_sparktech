@@ -14,12 +14,12 @@ const createQuestionSet = async (
   payload: IQuestionSet,
 ): Promise<IQuestionSet> => {
   // we need to ensure refId,questions,prompts, already exits
-  const isExistRef = await mongoose
-    .model(payload.refType)
-    .findOne({ refId: payload.refId })
-  if (!isExistRef) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'RefId does not exist.')
-  }
+  // const isExistRef = await mongoose
+  //   .model(payload.refType)
+  //   .findOne({ refId: payload.refId })
+  // if (!isExistRef) {
+  //   throw new AppError(StatusCodes.BAD_REQUEST, 'RefId does not exist.')
+  // }
   // questions,prompts are array need to check all the elements exists in the database
   const isExistQuestions = await Question.find({
     _id: { $in: payload.questions },
@@ -181,10 +181,23 @@ const deleteQuestionSet = async (id: string): Promise<IQuestionSet | null> => {
   await Question.updateMany({ questionSet: id }, { questionSet: null })
   await Prompt.updateMany({ questionSet: id }, { questionSet: null })
 
-  if (result.refId) {
+  if (result.refId && result.refType !== IQSetRefType.EXAMINATION) {
     await mongoose
       .model(result.refType)
-      .updateOne({ _id: result.refId }, { $pull: { questionSet: id } })
+      .updateOne(
+        { _id: result.refId },
+        { $pull: { questionSet: id }, $inc: { questionSetsCount: -1 } },
+      )
+  }
+  if (result.refId && result.refType === IQSetRefType.EXAMINATION) {
+    // pull the step in the examination.questionSteps that has this questionSet
+    await mongoose.model(result.refType).updateOne(
+      { _id: result.refId },
+      {
+        $pull: { questionSteps: { questionSets: id } },
+        $inc: { questionSetsCount: -1 },
+      },
+    )
   }
   return result
 }
@@ -200,10 +213,22 @@ const hardDeleteQuestionSet = async (
   await Question.updateMany({ questionSet: id }, { questionSet: null })
   await Prompt.updateMany({ questionSet: id }, { questionSet: null })
 
-  if (result.refId) {
+  if (result.refId && result.refType !== IQSetRefType.EXAMINATION) {
     await mongoose
       .model(result.refType)
-      .updateOne({ _id: result.refId }, { $pull: { questionSet: id } })
+      .updateOne(
+        { _id: result.refId },
+        { $pull: { questionSet: id }, $inc: { questionSetsCount: -1 } },
+      )
+  }
+  if (result.refId && result.refType === IQSetRefType.EXAMINATION) {
+    await mongoose.model(result.refType).updateOne(
+      { _id: result.refId },
+      {
+        $pull: { questionSteps: { questionSets: id } },
+        $inc: { questionSetsCount: -1 },
+      },
+    )
   }
   return result
 }

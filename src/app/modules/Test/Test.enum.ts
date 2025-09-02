@@ -1,4 +1,4 @@
 export enum ITestTitle {
-  REDINESS_TEST = 'Rediness Test',
-  STANDALONE_TEST = 'Standalone Test',
+  REDINESS_TEST = 'Rediness Exam',
+  STANDALONE_TEST = 'Standalone Exam',
 }

@@ -9,9 +9,12 @@ const createExaminationZodSchema = z.object({
     title: z.string({ required_error: 'title text is required' }),
     description: z.string().optional(),
     test: objectIdSchemaMendatory('test'),
-    questionSets: z
-      .array(objectIdSchemaMendatory('question set'))
-      .min(1, 'at least one question set is required'),
+    questionSteps: z.array(
+      z.object({
+        stepNo: z.number().min(1, 'Step number must be at least 1'),
+        questionSets: objectIdSchemaOptional,
+      }),
+    ),
   }),
 })
 
@@ -20,7 +23,14 @@ const updateExaminationZodSchema = z.object({
     title: z.string().optional(),
     description: z.string().optional(),
     test: objectIdSchemaOptional,
-    questionSets: z.array(z.string()).optional(),
+    questionSteps: z
+      .array(
+        z.object({
+          stepNo: z.number().optional(),
+          questionSet: objectIdSchemaOptional,
+        }),
+      )
+      .optional(),
   }),
 })
 

@@ -5,7 +5,10 @@ export interface IExamination {
   description?: string
   test: Types.ObjectId
   questionSetsCount: number
-  questionSets: Types.ObjectId[]
+  questionSteps: {
+    stepNo: number
+    questionSet: Types.ObjectId
+  }[]
   createdAt: Date
   updatedAt: Date
   isDeleted: boolean

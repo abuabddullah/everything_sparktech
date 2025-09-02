@@ -7,9 +7,21 @@ const ExaminationSchema = new Schema<IExamination>(
     description: { type: String, required: false },
     test: { type: Schema.Types.ObjectId, ref: 'Test', required: true },
     questionSetsCount: { type: Number, required: false, default: 0 },
-    questionSets: {
-      type: [Schema.Types.ObjectId],
-      ref: 'QuestionSet',
+    questionSteps: {
+      type: [
+        {
+          stepNo: {
+            type: Number,
+            required: true,
+            min: [1, 'Step number must be at least 1'],
+          },
+          questionSet: {
+            type: Schema.Types.ObjectId,
+            ref: 'QuestionSet',
+          },
+        },
+        { _id: false },
+      ],
       required: false,
       default: [],
     },
@@ -31,6 +43,12 @@ ExaminationSchema.pre('findOne', function (next) {
 
 ExaminationSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } })
+  next()
+})
+
+// on save make questionSteps sorted based on stepNo
+ExaminationSchema.pre('save', function (next) {
+  this.questionSteps.sort((a, b) => a.stepNo - b.stepNo)
   next()
 })
 

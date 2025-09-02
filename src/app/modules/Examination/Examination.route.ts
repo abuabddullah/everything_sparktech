@@ -29,6 +29,9 @@ router.delete(
   ExaminationController.hardDeleteExamination,
 )
 
+// get all examinations by test id
+router.get('/test/:id', ExaminationController.getExaminationsByTestId)
+
 router.patch(
   '/:id',
   auth(USER_ROLES.ADMIN),

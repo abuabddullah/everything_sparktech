@@ -35,6 +35,7 @@ const QuestionSetSchema = new Schema<IQuestionSet>(
       type: String,
       enum: Object.values(IQSetTypes),
       required: true,
+      default: IQSetTypes.MIX,
     },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },

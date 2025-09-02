@@ -15,6 +15,7 @@ export enum IQSetTypes {
   MULTIPLE_PROMPTS_MULTIPLE_SHORT_ANSWER_Q = 'multiple_prompts_multiple_short_answer_q',
   MULTIPLE_PROMPTS_MULTIPLE_DROPDOWN_Q = 'multiple_prompts_multiple_dropdown_q',
   MULTIPLE_PROMPTS_MULTIPLE_MCQ_Q = 'multiple_prompts_multiple_mcq_q',
+  MIX = 'mix',
 }
 
 export enum IQSetRefType {
