@@ -6,7 +6,7 @@ const PromptSchema = new Schema<IPrompt>(
     image: { type: String, required: false },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    questionSetId: {
+    questionSet: {
       type: Schema.Types.ObjectId,
       ref: 'QuestionSet',
       required: false,

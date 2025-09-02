@@ -12,7 +12,7 @@ export interface IPrompt {
   title?: string
   description?: string
   image?: string
-  questionSetId?: Types.ObjectId | null // initially লাগবে না কিন্তু পরে যখন এই prompt কোথাও use হবে সেই id এখানে add করতে হবে
+  questionSet?: Types.ObjectId | null // initially লাগবে না কিন্তু পরে যখন এই prompt কোথাও use হবে সেই id এখানে add করতে হবে
   promptTable?: IPromptTable[]
   promptType: IPromptType
   createdAt: Date

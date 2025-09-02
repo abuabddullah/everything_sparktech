@@ -7,7 +7,7 @@ const createPromptZodSchema = z.object({
     image: z.string().optional(),
     title: z.string({ required_error: 'title text is required' }),
     description: z.string({ required_error: 'description text is required' }),
-    questionSetId: objectIdSchemaOptional,
+    questionSet: objectIdSchemaOptional,
     promptTable: z
       .array(
         z.object({
@@ -28,7 +28,7 @@ const updatePromptZodSchema = z.object({
     image: z.string().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
-    questionSetId: objectIdSchemaOptional,
+    questionSet: objectIdSchemaOptional,
     promptTable: z
       .array(
         z.object({

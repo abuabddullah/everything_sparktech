@@ -56,7 +56,7 @@ const createQuestionSet = async (
   if (payload.prompts && payload.prompts.length) {
     const isExistPrompts = await Prompt.find({
       _id: { $in: payload.prompts },
-      questionSetId: null,
+      questionSet: null,
     })
     if (
       !isExistPrompts.length ||
@@ -74,7 +74,7 @@ const createQuestionSet = async (
   if (payload.prompts && payload.prompts.length) {
     await Prompt.updateMany(
       { _id: { $in: payload.prompts } },
-      { questionSetId: result._id },
+      { questionSet: result._id },
     )
   }
   return result
@@ -157,7 +157,7 @@ const updateQuestionSet = async (
     // nullify all the prompts of isExistRef
     await Prompt.updateMany(
       { _id: { $in: isExistRef?.prompts } },
-      { questionSetId: null },
+      { questionSet: null },
     )
   }
   const updatedReference = await mongoose
@@ -179,7 +179,7 @@ const deleteQuestionSet = async (id: string): Promise<IQuestionSet | null> => {
   await result.save()
   // also need to clean up the questions and prompts
   await Question.updateMany({ questionSet: id }, { questionSet: null })
-  await Prompt.updateMany({ questionSetId: id }, { questionSetId: null })
+  await Prompt.updateMany({ questionSet: id }, { questionSet: null })
 
   if (result.refId) {
     await mongoose
@@ -198,7 +198,7 @@ const hardDeleteQuestionSet = async (
   }
   // also need to clean up the questions and prompts
   await Question.updateMany({ questionSet: id }, { questionSet: null })
-  await Prompt.updateMany({ questionSetId: id }, { questionSetId: null })
+  await Prompt.updateMany({ questionSet: id }, { questionSet: null })
 
   if (result.refId) {
     await mongoose

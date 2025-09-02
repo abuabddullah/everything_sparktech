@@ -53,16 +53,16 @@ const updatePrompt = async (
 
   // need to remove old image if payload.image is exist
   payload.image && isExist.image && unlinkFile(isExist.image!)
-  // if payload.questionSetId is exist then make push of those questionSets and pull old one
-  if (payload.questionSetId) {
-    if (isExist.questionSetId) {
+  // if payload.questionSet is exist then make push of those questionSets and pull old one
+  if (payload.questionSet) {
+    if (isExist.questionSet) {
       await QuestionSet.updateOne(
-        { _id: isExist.questionSetId },
+        { _id: isExist.questionSet },
         { $pull: { prompts: updatedPrompt._id } }, // Remove prompt from old question set
       )
     }
     await QuestionSet.updateOne(
-      { _id: payload.questionSetId },
+      { _id: payload.questionSet },
       { $push: { prompts: updatedPrompt._id } },
     )
   }
@@ -77,9 +77,9 @@ const deletePrompt = async (id: string): Promise<IPrompt | null> => {
   result.isDeleted = true
   result.deletedAt = new Date()
   await result.save()
-  if (result.questionSetId) {
+  if (result.questionSet) {
     await QuestionSet.updateOne(
-      { _id: result.questionSetId },
+      { _id: result.questionSet },
       { $pull: { prompts: result._id } }, // Remove prompt from old question set
     )
   }
@@ -92,9 +92,9 @@ const hardDeletePrompt = async (id: string): Promise<IPrompt | null> => {
     throw new AppError(StatusCodes.NOT_FOUND, 'Prompt not found.')
   }
   result.image && unlinkFile(result.image)
-  if (result.questionSetId) {
+  if (result.questionSet) {
     await QuestionSet.updateOne(
-      { _id: result.questionSetId },
+      { _id: result.questionSet },
       { $pull: { prompts: result._id } }, // Remove prompt from old question set
     )
   }
@@ -115,7 +115,7 @@ const autoDeleteUnReferencedPrompt = async () => {
     console.log('deleting un-referenced prompt..started..')
     // Find coupons where endDate is in the past and isActive is true
     await Prompt.deleteMany({
-      questionSetId: null,
+      questionSet: null,
     })
   } catch (error) {
     console.error('Error deleting un-referenced prompt:', error)
