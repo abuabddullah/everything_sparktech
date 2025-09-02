@@ -156,86 +156,33 @@ export const validateQuestionAnswer = async (
 
 const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
   userId: string,
+  test: string,
   examinationId: string,
   questionId: string,
   userAnswer: number | number[],
+  timeSpentInSecond: number,
 ) => {
-  /**
-   * find is exist question and populate the correctAnswerOption+slNoOfCorrectAnswers+questionType
-   *  * if questionType is "radio / true / dropdown / short answer" then go for correctAnswerOption to populate
-   *  * if questionType is "mcq / rearrange" then go for slNoOfCorrectAnswers to populate
-   * check if the question is correct or not
-   * find the userProgressHistory.answeredQuestions and usert the fields "question+userAnswer+isCorrectlyAnswered"
-   */
-  const isExistExamination = await Examination.findById(examinationId)
-  if (!isExistExamination) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
-  }
-  const isExistQuestion = await Question.findById(questionId).select(
-    'slNoOfCorrectAnswers correctAnswerOption questionType',
+  const isCorrectlyAnswered = await validateQuestionAnswer(
+    questionId,
+    userAnswer,
   )
-  if (!isExistQuestion) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Question not found.')
-  }
-  // Define isCorrectlyAnswered flag
-  let isCorrectlyAnswered: boolean = false
-
-  // Check question types and handle user answer validation accordingly
-  if (
-    isExistQuestion.questionType === IQTypes.RadioQ ||
-    isExistQuestion.questionType === IQTypes.TrueFalseQ ||
-    isExistQuestion.questionType === IQTypes.DropdownQ ||
-    isExistQuestion.questionType === IQTypes.ShortAnswerQ
-  ) {
-    // await isExistQuestion.populate('correctAnswerOption') // Populate the correct answer
-    // For these question types, userAnswer is a single value (not an array)
-    isCorrectlyAnswered = isExistQuestion.correctAnswerOption === userAnswer
-  } else if (isExistQuestion.questionType === IQTypes.McqQ) {
-    // await isExistQuestion.populate('slNoOfCorrectAnswers') // Populate the correct answers for MCQ
-
-    // Check if userAnswer is an array and validate that all elements are in slNoOfCorrectAnswers
-    if (Array.isArray(userAnswer)) {
-      isCorrectlyAnswered =
-        userAnswer.every((answer: number) =>
-          isExistQuestion.slNoOfCorrectAnswers?.includes(answer),
-        ) && userAnswer.length === isExistQuestion.slNoOfCorrectAnswers?.length
-    } else {
-      // If userAnswer is not an array, this is an invalid case for MCQ
-      isCorrectlyAnswered = false
-    }
-  } else if (isExistQuestion.questionType === IQTypes.RearrangeQ) {
-    // Ensure the sequence of the options is the same as the correct answer
-    if (Array.isArray(userAnswer)) {
-      isCorrectlyAnswered =
-        isExistQuestion.slNoOfCorrectAnswers?.join('') === userAnswer.join('')
-    } else {
-      // If userAnswer is not an array, this is an invalid case for rearrange
-      isCorrectlyAnswered = false
-    }
-  }
-
   // upsert user progress history steps,
   // 1. find user progress history by user id and select the answeredQuestions only
   // 2. if user progress history is not found then create a new one
   // 3. in the answeredQuestions array filed and find the question id if found then update the userAnswer and isCorrectlyAnswered and answeredAt else push the new question to the answeredQuestions array if not found create a new document inside answeredQuestions array
   // Upsert user progress history (Find or create new)
   const userProgressHistory = await UserProgressHistory.findOneAndUpdate(
-    { user: userId, isDeleted: false },
+    { user: userId, question: questionId, isDeleted: false },
     {
       $set: {
-        'answeredQuestions.$[elem].userAnswer': userAnswer,
-        'answeredQuestions.$[elem].isCorrectlyAnswered': isCorrectlyAnswered,
-        'answeredQuestions.$[elem].answeredAt': new Date(),
+        userAnswer,
+        isCorrectlyAnswered,
+        timeSpentInSecond,
       },
     },
     {
       new: true, // Return updated document
       upsert: true, // Create a new document if not found
-      arrayFilters: [
-        {
-          'elem.question': questionId, // Targeting the specific question
-        },
-      ],
     },
   )
 
@@ -245,18 +192,18 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
       { user: userId, isDeleted: false },
       {
         $push: {
-          answeredQuestions: {
-            examination: examinationId,
-            question: questionId,
-            userAnswer,
-            isCorrectlyAnswered,
-            answeredAt: new Date(),
-          },
+          test,
+          examination: examinationId,
+          question: questionId,
+          userAnswer,
+          isCorrectlyAnswered,
+          timeSpentInSecond,
         },
       },
       { upsert: true },
     )
   }
+  return userProgressHistory
 }
 
 // Function to deactivate expired coupons

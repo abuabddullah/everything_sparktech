@@ -245,52 +245,6 @@ const getExaminationById = async (id: string): Promise<IExamination | null> => {
   return result
 }
 
-const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
-  userId: string,
-  examination: string,
-  timeSpent: number,
-) => {
-  const isExistExamination = await Examination.findById(examination)
-  if (!isExistExamination) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
-  }
-  const userProgressHistory = await UserProgressHistory.findOneAndUpdate(
-    { user: userId, isDeleted: false },
-    {
-      $set: {
-        'completedExaminations.$[elem].timeSpent': timeSpent,
-        'completedExaminations.$[elem].answeredAt': new Date(),
-      },
-    },
-    {
-      new: true, // Return updated document
-      upsert: true, // Create a new document if not found
-      arrayFilters: [
-        {
-          'elem.examination': examination, // Targeting the specific question
-        },
-      ],
-    },
-  )
-
-  // If the question was not found in answeredQuestions, add it
-  if (!userProgressHistory) {
-    await UserProgressHistory.findOneAndUpdate(
-      { user: userId, isDeleted: false },
-      {
-        $push: {
-          completedExaminations: {
-            examination: examination,
-            timeSpent,
-            answeredAt: new Date(),
-          },
-        },
-      },
-      { upsert: true },
-    )
-  }
-}
-
 const getExaminationsByTestId = async (testId: string) => {
   const queryBuilder = new QueryBuilder(Examination.find(), { test: testId })
   const result = await queryBuilder.filter().sort().paginate().fields()
@@ -307,7 +261,5 @@ export const ExaminationService = {
   deleteExamination,
   hardDeleteExamination,
   getExaminationById,
-  // // upsert user progress history tracking on answering question
-  upsertUserProgressHistoryTrackingOnAnsweringQuestion,
   getExaminationsByTestId,
 }

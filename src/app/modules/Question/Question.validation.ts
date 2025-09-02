@@ -51,8 +51,19 @@ const validateQuestionAnswer = z.object({
   }),
 })
 
+const upsertUserProgressHistoryTrackingOnAnsweringQuestion = z.object({
+  body: z.object({
+    test: z.string({ required_error: 'Test is required' }),
+    examinationId: z.string({ required_error: 'Examination id is required' }),
+    questionId: z.string({ required_error: 'Question id is required' }),
+    userAnswer: z.union([z.number(), z.array(z.number())]).optional(),
+    timeSpentInSecond: z.number().optional(),
+  }),
+})
+
 export const QuestionValidation = {
   createQuestionZodSchema,
   updateQuestionZodSchema,
   validateQuestionAnswer,
+  upsertUserProgressHistoryTrackingOnAnsweringQuestion,
 }

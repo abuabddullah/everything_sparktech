@@ -1,43 +1,77 @@
 import { Schema, model } from 'mongoose'
 import { IUserProgressHistory } from './UserProgressHistory.interface'
 
+// const UserProgressHistorySchema = new Schema<IUserProgressHistory>(
+//   {
+//     user: {
+//       type: Schema.Types.ObjectId,
+//       ref: 'User',
+//       required: true,
+//       unique: true,
+//     },
+//     answeredQuestions: [
+//       {
+//         examination: {
+//           type: Schema.Types.ObjectId,
+//           ref: 'Examination',
+//           required: true,
+//           index: true,
+//         },
+//         question: {
+//           type: Schema.Types.ObjectId,
+//           ref: 'Question',
+//           required: true,
+//           index: true,
+//         },
+//         userAnswer: Number, // userSelected option / short answer
+//         isCorrectlyAnswered: Boolean,
+//       },
+//     ],
+//     completedExaminations: [
+//       {
+//         examination: {
+//           type: Schema.Types.ObjectId,
+//           ref: 'Examination',
+//           required: true,
+//           index: true,
+//         },
+//         timeSpentInSecond: Number,
+//       },
+//     ],
+//     isDeleted: { type: Boolean, default: false },
+//     deletedAt: { type: Date },
+//   },
+//   { timestamps: true },
+// )
+
 const UserProgressHistorySchema = new Schema<IUserProgressHistory>(
   {
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
+      index: true,
+    },
+    test: {
+      type: Schema.Types.ObjectId,
+      ref: 'Test',
+      required: true,
+    },
+    examination: {
+      type: Schema.Types.ObjectId,
+      ref: 'Examination',
+      required: true,
+      index: true,
+    },
+    question: {
+      type: Schema.Types.ObjectId,
+      ref: 'Question',
+      required: true,
       unique: true,
     },
-    answeredQuestions: [
-      {
-        examination: {
-          type: Schema.Types.ObjectId,
-          ref: 'Examination',
-          required: true,
-          index: true,
-        },
-        question: {
-          type: Schema.Types.ObjectId,
-          ref: 'Question',
-          required: true,
-          index: true,
-        },
-        userAnswer: Number, // userSelected option / short answer
-        isCorrectlyAnswered: Boolean,
-      },
-    ],
-    completedExaminations: [
-      {
-        examination: {
-          type: Schema.Types.ObjectId,
-          ref: 'Examination',
-          required: true,
-          index: true,
-        },
-        timeSpent: Number,
-      },
-    ],
+    userAnswer: [Number], // userSelected option / short answer
+    isCorrectlyAnswered: Boolean,
+    timeSpentInSecond: Number,
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
   },

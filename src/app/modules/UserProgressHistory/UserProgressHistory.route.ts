@@ -15,6 +15,27 @@ const router = express.Router()
  *
  */
 
+// getTotalProgressHistory by user id {totalAttemptedQuestionsCount,correctlyAnsweredQuestionsCount,incorrectlyAnsweredQuestionsCount,correctlyAnsweredPercentage,incorrectlyAnsweredPercentage}
+router.get(
+  '/total-progress-history',
+  UserProgressHistoryController.getTotalProgressHistory,
+)
+// getUserExamHistory by user id and examination id {totalQuestionCountOfExamination, totalAttemptedQuestionCount}
+router.get(
+  '/user-exam-history/:examinationId',
+  UserProgressHistoryController.getUserExamHistory,
+)
+// getUsersQuestionHistory by user id and question id {userAnswer, isCorrectlyAnswered, timeSpentInSecond}
+router.get(
+  '/user-question-history/:questionId',
+  UserProgressHistoryController.getUsersQuestionHistory,
+)
+// reset examination progress history by user id and examination id
+router.delete(
+  '/reset-examination-progress-history/:examinationId',
+  UserProgressHistoryController.resetExaminationProgressHistory,
+)
+
 router.post(
   '/',
   auth(USER_ROLES.ADMIN),

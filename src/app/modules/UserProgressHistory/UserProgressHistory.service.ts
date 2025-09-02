@@ -78,113 +78,76 @@ const getUserProgressHistoryById = async (
   return result
 }
 
-const resetExaminationHistoryByUserIdAndExaminationId = async (
-  userId: string,
-  examinationId: string,
-) => {
-  // isExistExamination
-  const isExistExamination = await Examination.findById(examinationId)
+const getTotalProgressHistory = async (userId: string) => {
+  // {totalAttemptedQuestionsCount,correctlyAnsweredQuestionsCount,incorrectlyAnsweredQuestionsCount,correctlyAnsweredPercentage,incorrectlyAnsweredPercentage}
+  const totalAttemptedQuestionsCount = await UserProgressHistory.countDocuments(
+    { user: userId },
+  )
+  const correctlyAnsweredQuestionsCount =
+    await UserProgressHistory.countDocuments({
+      user: userId,
+      isCorrectlyAnswered: true,
+    })
+  const incorrectlyAnsweredQuestionsCount =
+    await UserProgressHistory.countDocuments({
+      user: userId,
+      isCorrectlyAnswered: false,
+    })
+  const correctlyAnsweredPercentage =
+    (correctlyAnsweredQuestionsCount / totalAttemptedQuestionsCount) * 100
+  const incorrectlyAnsweredPercentage =
+    (incorrectlyAnsweredQuestionsCount / totalAttemptedQuestionsCount) * 100
+
+  return {
+    totalAttemptedQuestionsCount,
+    correctlyAnsweredQuestionsCount,
+    incorrectlyAnsweredQuestionsCount,
+    correctlyAnsweredPercentage,
+    incorrectlyAnsweredPercentage,
+  }
+}
+
+const getUserExamHistory = async (examinationId: string, userId: string) => {
+  // {totalQuestionCountOfExamination, totalAttemptedQuestionCount}
+  const isExistExamination =
+    await Examination.findById(examinationId).select('questionSetsCount')
   if (!isExistExamination) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
   }
+
+  const totalAttemptedQuestionsCount = await UserProgressHistory.countDocuments(
+    { user: userId },
+  )
+  return {
+    totalQuestionCountOfExamination: isExistExamination.questionSetsCount,
+    totalAttemptedQuestionCount: totalAttemptedQuestionsCount,
+  }
+}
+
+const getUsersQuestionHistory = async (questionId: string, userId: string) => {
+  // {userAnswer, isCorrectlyAnswered, timeSpentInSecond}
   const result = await UserProgressHistory.findOne({
     user: userId,
-  }).select('answeredQuestions completedExaminations')
+    question: questionId,
+  })
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
   }
-  // pull the examination from completedExaminations and pull the answeredQuestions related to this examination from answeredQuestions of result
-  // Remove the examination from completedExaminations
-  const removedExamination = await UserProgressHistory.updateOne(
-    { user: userId },
-    { $pull: { completedExaminations: { examination: examinationId } } },
-  )
-  if (!removedExamination) {
-    throw new AppError(
-      StatusCodes.INTERNAL_SERVER_ERROR,
-      'Failed to remove examination from completedExaminations.',
-    )
-  }
-
-  // Remove the related answers from answeredQuestions
-  if (
-    result.answeredQuestions?.length &&
-    result.answeredQuestions?.length > 0
-  ) {
-    const removedAnswers = await UserProgressHistory.updateOne(
-      { user: userId },
-      {
-        $pull: {
-          answeredQuestions: {
-            question: {
-              $in: result.answeredQuestions
-                .filter(
-                  (aq: any) => aq.examination.toString() === examinationId,
-                )
-                .map((aq: any) => aq.question),
-            },
-          },
-        },
-      },
-    )
-    if (!removedAnswers) {
-      throw new AppError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        'Failed to remove answers from answeredQuestions.',
-      )
-    }
-  }
-  return removedExamination
+  return result
 }
 
-export const upsertUserProgressHistory = async (
-  userId: string,
+const resetExaminationProgressHistory = async (
   examinationId: string,
-  questionId: string,
-  userAnswer: number | number[],
-  isCorrectlyAnswered: boolean,
-): Promise<IUserProgressHistory | null> => {
-  // Upsert user progress history (Find or create new)
-  const userProgressHistory = await UserProgressHistory.findOneAndUpdate(
-    { user: userId, isDeleted: false },
-    {
-      $set: {
-        'answeredQuestions.$[elem].userAnswer': userAnswer,
-        'answeredQuestions.$[elem].isCorrectlyAnswered': isCorrectlyAnswered,
-        'answeredQuestions.$[elem].answeredAt': new Date(),
-      },
-    },
-    {
-      new: true, // Return updated document
-      upsert: true, // Create a new document if not found
-      arrayFilters: [
-        {
-          'elem.question': questionId, // Targeting the specific question
-        },
-      ],
-    },
-  )
-
-  // If the question was not found in answeredQuestions, add it
-  if (!userProgressHistory) {
-    await UserProgressHistory.findOneAndUpdate(
-      { user: userId, isDeleted: false },
-      {
-        $push: {
-          answeredQuestions: {
-            examination: examinationId,
-            question: questionId,
-            userAnswer,
-            isCorrectlyAnswered,
-            answeredAt: new Date(),
-          },
-        },
-      },
-      { upsert: true },
-    )
+  userId: string,
+) => {
+  const result = await UserProgressHistory.deleteMany({
+    user: userId,
+    examination: examinationId,
+  })
+  if (!result) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
   }
-
-  return userProgressHistory
+  return result
 }
 
 export const UserProgressHistoryService = {
@@ -195,5 +158,8 @@ export const UserProgressHistoryService = {
   deleteUserProgressHistory,
   hardDeleteUserProgressHistory,
   getUserProgressHistoryById,
-  resetExaminationHistoryByUserIdAndExaminationId, // must clear all the questions from the answeredQuestions linked to this examinationId
+  getTotalProgressHistory,
+  getUserExamHistory,
+  getUsersQuestionHistory,
+  resetExaminationProgressHistory,
 }
