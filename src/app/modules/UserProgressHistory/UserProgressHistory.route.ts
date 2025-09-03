@@ -39,6 +39,7 @@ router.delete(
 // complete-exam
 router.post(
   '/complete-exam/:examinationId',
+  validateRequest(UserProgressHistoryValidation.completeExamZodSchema),
   UserProgressHistoryController.completeExam,
 )
 

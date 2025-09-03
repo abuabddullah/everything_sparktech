@@ -180,9 +180,11 @@ const resetExaminationProgressHistory = catchAsync(
 
 const completeExam = catchAsync(async (req: Request, res: Response) => {
   const { examinationId } = req.params
+  const { timeSpentInSecond } = req.body
   const result = await UserProgressHistoryService.completeExam(
     examinationId,
     (req.user as any)?.authId,
+    timeSpentInSecond,
   )
 
   sendResponse(res, {

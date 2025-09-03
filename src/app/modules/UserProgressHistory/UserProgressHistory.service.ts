@@ -156,7 +156,11 @@ const resetExaminationProgressHistory = async (
   return result
 }
 
-const completeExam = async (examinationId: string, userId: string) => {
+const completeExam = async (
+  examinationId: string,
+  userId: string,
+  timeSpentInSecond: number,
+) => {
   const isExistExam =
     await Examination.findById(examinationId).select('questionSetsCount')
   if (!isExistExam) {
@@ -180,7 +184,7 @@ const completeExam = async (examinationId: string, userId: string) => {
       examination: examinationId,
       isExamCompleted: false,
     },
-    { isExamCompleted: true },
+    { isExamCompleted: true, timeSpentInSecond },
   )
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')

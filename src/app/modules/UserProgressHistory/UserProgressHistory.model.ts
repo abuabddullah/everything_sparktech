@@ -76,7 +76,7 @@ const UserProgressHistorySchema = new Schema<IUserProgressHistory>(
     },
     userAnswer: [Number], // userSelected option / short answer
     isCorrectlyAnswered: Boolean,
-    timeSpentInSecond: Number,
+    timeSpentInSecond: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
   },

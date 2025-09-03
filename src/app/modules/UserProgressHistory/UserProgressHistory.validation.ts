@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { objectIdSchemaMendatory } from '../Reviews/Reviews.utils'
 
 // const createUserProgressHistoryZodSchema = z.object({
 //   body: z.object({
@@ -26,7 +27,7 @@ const createUserProgressHistoryZodSchema = z.object({
   examination: z.string({ required_error: 'Examination is required' }),
   question: z.string({ required_error: 'Question is required' }),
   userAnswer: z.union([z.number(), z.array(z.number())]),
-  timeSpentInSecond: z.number({ required_error: 'Time spent is required' }),
+  timeSpentInSecond: z.number().optional(),
 })
 
 // const updateUserProgressHistoryZodSchema = z.object({
@@ -57,7 +58,17 @@ const updateUserProgressHistoryZodSchema = z.object({
   timeSpentInSecond: z.number().optional(),
 })
 
+const completeExamZodSchema = z.object({
+  params: z.object({
+    examinationId: objectIdSchemaMendatory('examinationId'),
+  }),
+  body: z.object({
+    timeSpentInSecond: z.number().optional(),
+  }),
+})
+
 export const UserProgressHistoryValidation = {
   createUserProgressHistoryZodSchema,
   updateUserProgressHistoryZodSchema,
+  completeExamZodSchema,
 }

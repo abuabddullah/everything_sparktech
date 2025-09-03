@@ -27,7 +27,7 @@ export interface IUserProgressHistory {
   question: Types.ObjectId
   userAnswer: number | number[]
   isCorrectlyAnswered: boolean
-  timeSpentInSecond: number
+  timeSpentInSecond?: number
   createdAt: Date
   updatedAt: Date
   isDeleted: boolean
