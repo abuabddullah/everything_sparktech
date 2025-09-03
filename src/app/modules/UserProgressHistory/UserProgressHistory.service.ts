@@ -115,12 +115,14 @@ const getUserExamHistory = async (examinationId: string, userId: string) => {
     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
   }
 
-  const totalAttemptedQuestionsCount = await UserProgressHistory.countDocuments(
-    { user: userId, examination: examinationId },
-  )
+  const totalAttemptedQuestionsCountOfExam =
+    await UserProgressHistory.countDocuments({
+      user: userId,
+      examination: examinationId,
+    })
   return {
     totalQuestionCountOfExamination: isExistExamination.questionSetsCount,
-    totalAttemptedQuestionCount: totalAttemptedQuestionsCount,
+    totalAttemptedQuestionsCountOfExam,
   }
 }
 
@@ -147,6 +149,46 @@ const resetExaminationProgressHistory = async (
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
   }
+  await Examination.updateOne(
+    { _id: examinationId },
+    { $pull: { completedBy: userId } },
+  )
+  return result
+}
+
+const completeExam = async (examinationId: string, userId: string) => {
+  const isExistExam =
+    await Examination.findById(examinationId).select('questionSetsCount')
+  if (!isExistExam) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
+  }
+  const totalAttemptedQuestionsCountOfExam =
+    await UserProgressHistory.countDocuments({
+      user: userId,
+      examination: examinationId,
+    })
+
+  if (!totalAttemptedQuestionsCountOfExam) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
+  }
+  if (totalAttemptedQuestionsCountOfExam !== isExistExam.questionSetsCount) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Exam not completed yet.')
+  }
+  const result = await UserProgressHistory.updateMany(
+    {
+      user: userId,
+      examination: examinationId,
+      isExamCompleted: false,
+    },
+    { isExamCompleted: true },
+  )
+  if (!result) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
+  }
+  await Examination.updateOne(
+    { _id: examinationId },
+    { $push: { completedBy: userId } },
+  )
   return result
 }
 
@@ -162,4 +204,5 @@ export const UserProgressHistoryService = {
   getUserExamHistory,
   getUsersQuestionHistory,
   resetExaminationProgressHistory,
+  completeExam,
 }

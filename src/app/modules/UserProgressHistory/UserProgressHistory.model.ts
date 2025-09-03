@@ -63,6 +63,11 @@ const UserProgressHistorySchema = new Schema<IUserProgressHistory>(
       required: true,
       index: true,
     },
+    isExamCompleted: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     question: {
       type: Schema.Types.ObjectId,
       ref: 'Question',

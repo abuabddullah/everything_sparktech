@@ -36,6 +36,12 @@ router.delete(
   UserProgressHistoryController.resetExaminationProgressHistory,
 )
 
+// complete-exam
+router.post(
+  '/complete-exam/:examinationId',
+  UserProgressHistoryController.completeExam,
+)
+
 router.post(
   '/',
   auth(USER_ROLES.ADMIN),

@@ -178,6 +178,21 @@ const resetExaminationProgressHistory = catchAsync(
   },
 )
 
+const completeExam = catchAsync(async (req: Request, res: Response) => {
+  const { examinationId } = req.params
+  const result = await UserProgressHistoryService.completeExam(
+    examinationId,
+    (req.user as any)?.authId,
+  )
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'UserProgressHistory retrieved successfully',
+    data: result,
+  })
+})
+
 export const UserProgressHistoryController = {
   createUserProgressHistory,
   getAllUserProgressHistorys,
@@ -190,4 +205,5 @@ export const UserProgressHistoryController = {
   getUserExamHistory,
   getUsersQuestionHistory,
   resetExaminationProgressHistory,
+  completeExam,
 }

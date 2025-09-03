@@ -23,6 +23,7 @@ export interface IUserProgressHistory {
   user: Types.ObjectId
   test: Types.ObjectId
   examination: Types.ObjectId
+  isExamCompleted: boolean
   question: Types.ObjectId
   userAnswer: number | number[]
   isCorrectlyAnswered: boolean
