@@ -14,7 +14,7 @@ const router = express.Router()
  *
  *
  */
-
+router.use(auth(USER_ROLES.STUDENT))
 // getTotalProgressHistory by user id {totalAttemptedQuestionsCount,correctlyAnsweredQuestionsCount,incorrectlyAnsweredQuestionsCount,correctlyAnsweredPercentage,incorrectlyAnsweredPercentage}
 router.get(
   '/total-progress-history',

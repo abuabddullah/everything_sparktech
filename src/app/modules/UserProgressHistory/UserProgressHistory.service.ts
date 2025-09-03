@@ -116,7 +116,7 @@ const getUserExamHistory = async (examinationId: string, userId: string) => {
   }
 
   const totalAttemptedQuestionsCount = await UserProgressHistory.countDocuments(
-    { user: userId },
+    { user: userId, examination: examinationId },
   )
   return {
     totalQuestionCountOfExamination: isExistExamination.questionSetsCount,
