@@ -116,13 +116,28 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = catchAsync(
         req.body.examinationId,
         req.body.questionId,
         req.body.userAnswer,
-        req.body.timeSpentInSecond,
       )
 
     sendResponse(res, {
       statusCode: 200,
       success: true,
       message: 'User progress history tracking updated successfully',
+      data: result,
+    })
+  },
+)
+
+const validateQuestionsAnswers = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await QuestionService.validateQuestionsAnswers(
+      req.body,
+      (req.user as any)?.authId,
+    )
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Questions answers validated successfully',
       data: result,
     })
   },
@@ -138,4 +153,5 @@ export const QuestionController = {
   getQuestionById,
   validateQuestionAnswer,
   upsertUserProgressHistoryTrackingOnAnsweringQuestion,
+  validateQuestionsAnswers,
 }

@@ -29,6 +29,13 @@ router.delete(
 )
 
 router.patch(
+  '/validate-questions-answers',
+  auth(USER_ROLES.STUDENT),
+  validateRequest(QuestionValidation.validateQuestionsAnswers),
+  QuestionController.validateQuestionsAnswers,
+)
+
+router.patch(
   '/validate-question-answer',
   auth(USER_ROLES.STUDENT),
   validateRequest(

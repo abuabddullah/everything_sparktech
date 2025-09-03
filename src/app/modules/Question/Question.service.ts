@@ -160,7 +160,6 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
   examinationId: string,
   questionId: string,
   userAnswer: number | number[],
-  timeSpentInSecond: number,
 ) => {
   const isCorrectlyAnswered = await validateQuestionAnswer(
     questionId,
@@ -177,7 +176,6 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
       $set: {
         userAnswer,
         isCorrectlyAnswered,
-        timeSpentInSecond,
       },
     },
     {
@@ -197,13 +195,38 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
           question: questionId,
           userAnswer,
           isCorrectlyAnswered,
-          timeSpentInSecond,
         },
       },
       { upsert: true },
     )
   }
   return userProgressHistory
+}
+
+const validateQuestionsAnswers = async (
+  userAnswers: {
+    questionId: string
+    userAnswer: number | number[]
+    test: string
+    examinationId: string
+  }[],
+  userId: string,
+) => {
+  // need to use validateQuestionAnswer and upsertUserProgressHistoryTrackingOnAnsweringQuestion and return the result array
+  const result = await Promise.all(
+    userAnswers.map(async answer => {
+      const userProgressHistory =
+        await upsertUserProgressHistoryTrackingOnAnsweringQuestion(
+          userId,
+          answer.test,
+          answer.examinationId,
+          answer.questionId,
+          answer.userAnswer,
+        )
+      return userProgressHistory
+    }),
+  )
+  return result
 }
 
 // Function to deactivate expired coupons
@@ -234,4 +257,5 @@ export const QuestionService = {
   getQuestionById,
   upsertUserProgressHistoryTrackingOnAnsweringQuestion,
   validateQuestionAnswer,
+  validateQuestionsAnswers,
 }

@@ -53,12 +53,22 @@ const validateQuestionAnswer = z.object({
 
 const upsertUserProgressHistoryTrackingOnAnsweringQuestion = z.object({
   body: z.object({
-    test: z.string({ required_error: 'Test is required' }),
-    examinationId: z.string({ required_error: 'Examination id is required' }),
-    questionId: z.string({ required_error: 'Question id is required' }),
+    test: objectIdSchemaMendatory('test'),
+    examinationId: objectIdSchemaMendatory('examinationId'),
+    questionId: objectIdSchemaMendatory('questionId'),
     userAnswer: z.union([z.number(), z.array(z.number())]).optional(),
-    timeSpentInSecond: z.number().optional(),
   }),
+})
+
+const validateQuestionsAnswers = z.object({
+  body: z.array(
+    z.object({
+      test: objectIdSchemaMendatory('test'),
+      examinationId: objectIdSchemaMendatory('examinationId'),
+      questionId: objectIdSchemaMendatory('questionId'),
+      userAnswer: z.union([z.number(), z.array(z.number())]).optional(),
+    }),
+  ),
 })
 
 export const QuestionValidation = {
@@ -66,4 +76,5 @@ export const QuestionValidation = {
   updateQuestionZodSchema,
   validateQuestionAnswer,
   upsertUserProgressHistoryTrackingOnAnsweringQuestion,
+  validateQuestionsAnswers,
 }
