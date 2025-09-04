@@ -120,9 +120,17 @@ const getUserExamHistory = async (examinationId: string, userId: string) => {
       user: userId,
       examination: examinationId,
     })
+
+  const totalCorrectAnsweredByUserOnExamCount =
+    await UserProgressHistory.countDocuments({
+      user: userId,
+      examination: examinationId,
+      isCorrectlyAnswered: true,
+    })
   return {
     totalQuestionCountOfExamination: isExistExamination.questionSetsCount,
     totalAttemptedQuestionsCountOfExam,
+    totalCorrectAnsweredByUserOnExamCount,
   }
 }
 
