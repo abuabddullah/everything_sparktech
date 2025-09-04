@@ -174,8 +174,12 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
     { user: userId, question: questionId, isDeleted: false },
     {
       $set: {
+        test,
+        examination: examinationId,
+        question: questionId,
         userAnswer,
         isCorrectlyAnswered,
+        user: userId,
       },
     },
     {
@@ -184,22 +188,6 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
     },
   )
 
-  // If the question was not found in answeredQuestions, add it
-  if (!userProgressHistory) {
-    await UserProgressHistory.findOneAndUpdate(
-      { user: userId, isDeleted: false },
-      {
-        $push: {
-          test,
-          examination: examinationId,
-          question: questionId,
-          userAnswer,
-          isCorrectlyAnswered,
-        },
-      },
-      { upsert: true },
-    )
-  }
   return userProgressHistory
 }
 
