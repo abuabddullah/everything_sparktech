@@ -72,7 +72,7 @@ const UserProgressHistorySchema = new Schema<IUserProgressHistory>(
       type: Schema.Types.ObjectId,
       ref: 'Question',
       required: true,
-      unique: true,
+      index: true,
     },
     userAnswer: [Number], // userSelected option / short answer
     isCorrectlyAnswered: Boolean,
