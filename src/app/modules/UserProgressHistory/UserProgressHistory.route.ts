@@ -53,6 +53,11 @@ router.post(
 // )
 
 router.get('/', UserProgressHistoryController.getAllUserProgressHistorys)
+router.get(
+  '/preview',
+  auth(USER_ROLES.STUDENT),
+  UserProgressHistoryController.previewUserExamHistorys,
+)
 
 // router.get(
 //   '/unpaginated',

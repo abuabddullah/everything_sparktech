@@ -29,6 +29,23 @@ const getAllUserProgressHistorys = async (
   return { meta, result }
 }
 
+const previewUserExamHistorys = async (
+  query: Record<string, any>,
+  userId: string,
+): Promise<{
+  meta: { total: number; page: number; limit: number }
+  result: IUserProgressHistory[]
+}> => {
+  const queryBuilder = new QueryBuilder(
+    UserProgressHistory.find({ user: userId }).populate('question'),
+    query,
+  )
+  const result = await queryBuilder.filter().sort().paginate().fields()
+    .modelQuery
+  const meta = await queryBuilder.getPaginationInfo()
+  return { meta, result }
+}
+
 const getAllUnpaginatedUserProgressHistorys = async (): Promise<
   IUserProgressHistory[]
 > => {
@@ -212,4 +229,5 @@ export const UserProgressHistoryService = {
   getUsersQuestionHistory,
   resetExaminationProgressHistory,
   completeExam,
+  previewUserExamHistorys,
 }

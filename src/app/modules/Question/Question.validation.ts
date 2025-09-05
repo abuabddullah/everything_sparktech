@@ -56,6 +56,7 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = z.object({
     test: objectIdSchemaMendatory('test'),
     examinationId: objectIdSchemaMendatory('examinationId'),
     questionId: objectIdSchemaMendatory('questionId'),
+    questionSet: objectIdSchemaMendatory('questionSet'),
     userAnswer: z.union([z.number(), z.array(z.number())]).optional(),
   }),
 })
@@ -67,6 +68,7 @@ const validateQuestionsAnswers = z.object({
       examinationId: objectIdSchemaMendatory('examinationId'),
       questionId: objectIdSchemaMendatory('questionId'),
       userAnswer: z.union([z.number(), z.array(z.number())]).optional(),
+      questionSet: objectIdSchemaMendatory('questionSet'),
     }),
   ),
 })

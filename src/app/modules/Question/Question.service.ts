@@ -159,6 +159,7 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
   test: string,
   examinationId: string,
   questionId: string,
+  questionSet: string,
   userAnswer: number | number[],
 ) => {
   const isCorrectlyAnswered = await validateQuestionAnswer(
@@ -177,6 +178,7 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
         test,
         examination: examinationId,
         question: questionId,
+        questionSet,
         userAnswer,
         isCorrectlyAnswered,
         user: userId,
@@ -194,6 +196,7 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = async (
 const validateQuestionsAnswers = async (
   userAnswers: {
     questionId: string
+    questionSet: string
     userAnswer: number | number[]
     test: string
     examinationId: string
@@ -209,6 +212,7 @@ const validateQuestionsAnswers = async (
           answer.test,
           answer.examinationId,
           answer.questionId,
+          answer.questionSet,
           answer.userAnswer,
         )
       return userProgressHistory

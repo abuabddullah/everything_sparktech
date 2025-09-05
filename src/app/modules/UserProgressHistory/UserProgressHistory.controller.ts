@@ -37,6 +37,25 @@ const getAllUserProgressHistorys = catchAsync(
   },
 )
 
+const previewUserExamHistorys = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await UserProgressHistoryService.previewUserExamHistorys(
+      req.query,
+      (req.user as any).authId,
+    )
+
+    sendResponse<{
+      meta: { total: number; page: number; limit: number }
+      result: IUserProgressHistory[]
+    }>(res, {
+      statusCode: 200,
+      success: true,
+      message: 'UserProgressHistorys retrieved successfully',
+      data: result,
+    })
+  },
+)
+
 const getAllUnpaginatedUserProgressHistorys = catchAsync(
   async (req: Request, res: Response) => {
     const result =
@@ -208,4 +227,5 @@ export const UserProgressHistoryController = {
   getUsersQuestionHistory,
   resetExaminationProgressHistory,
   completeExam,
+  previewUserExamHistorys,
 }
