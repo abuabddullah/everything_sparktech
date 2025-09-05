@@ -245,12 +245,47 @@ const getExaminationById = async (id: string): Promise<IExamination | null> => {
   return result
 }
 
-const getExaminationsByTestId = async (testId: string) => {
+// const getExaminationsByTestId = async (testId: string) => {
+//   const queryBuilder = new QueryBuilder(Examination.find(), { test: testId })
+//   const result = await queryBuilder.filter().sort().paginate().fields()
+//     .modelQuery
+//   const meta = await queryBuilder.getPaginationInfo()
+//   return { meta, result }
+// }
+
+const getExaminationsByTestId = async (testId: string, userId: string) => {
+  // Build the query using the provided testId
   const queryBuilder = new QueryBuilder(Examination.find(), { test: testId })
-  const result = await queryBuilder.filter().sort().paginate().fields()
-    .modelQuery
+
+  // Fetch the data with pagination and sorting applied
+  const result = await queryBuilder
+    .filter()
+    .sort()
+    .paginate()
+    .fields()
+    .modelQuery.lean() // Use `.lean()` to get plain JavaScript objects
+
+  // Get pagination metadata
   const meta = await queryBuilder.getPaginationInfo()
-  return { meta, result }
+
+  // Modify the result to include the `isCompleted` field based on user progress
+  const modifiedResult = await Promise.all(
+    result.map(async (examination: any) => {
+      const isCompletedExamByUser = await UserProgressHistory.findOne({
+        user: userId,
+        examination: examination._id,
+        isExamCompleted: true,
+      })
+
+      return {
+        ...examination, // Spread the examination data
+        isCompleted: !!isCompletedExamByUser, // Add isCompleted field
+      }
+    }),
+  )
+
+  // Return the modified results along with pagination metadata
+  return { meta, result: modifiedResult }
 }
 
 export const ExaminationService = {

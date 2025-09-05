@@ -43,42 +43,42 @@ router.post(
   UserProgressHistoryController.completeExam,
 )
 
-router.post(
-  '/',
-  auth(USER_ROLES.ADMIN),
-  validateRequest(
-    UserProgressHistoryValidation.createUserProgressHistoryZodSchema,
-  ),
-  UserProgressHistoryController.createUserProgressHistory,
-)
+// router.post(
+//   '/',
+//   auth(USER_ROLES.ADMIN),
+//   validateRequest(
+//     UserProgressHistoryValidation.createUserProgressHistoryZodSchema,
+//   ),
+//   UserProgressHistoryController.createUserProgressHistory,
+// )
 
 router.get('/', UserProgressHistoryController.getAllUserProgressHistorys)
 
-router.get(
-  '/unpaginated',
-  UserProgressHistoryController.getAllUnpaginatedUserProgressHistorys,
-)
+// router.get(
+//   '/unpaginated',
+//   UserProgressHistoryController.getAllUnpaginatedUserProgressHistorys,
+// )
 
-router.delete(
-  '/hard-delete/:id',
-  auth(USER_ROLES.ADMIN),
-  UserProgressHistoryController.hardDeleteUserProgressHistory,
-)
+// router.delete(
+//   '/hard-delete/:id',
+//   auth(USER_ROLES.ADMIN),
+//   UserProgressHistoryController.hardDeleteUserProgressHistory,
+// )
 
-router.patch(
-  '/:id',
-  auth(USER_ROLES.ADMIN),
-  validateRequest(
-    UserProgressHistoryValidation.updateUserProgressHistoryZodSchema,
-  ),
-  UserProgressHistoryController.updateUserProgressHistory,
-)
+// router.patch(
+//   '/:id',
+//   auth(USER_ROLES.ADMIN),
+//   validateRequest(
+//     UserProgressHistoryValidation.updateUserProgressHistoryZodSchema,
+//   ),
+//   UserProgressHistoryController.updateUserProgressHistory,
+// )
 
-router.delete(
-  '/:id',
-  auth(USER_ROLES.ADMIN),
-  UserProgressHistoryController.deleteUserProgressHistory,
-)
+// router.delete(
+//   '/:id',
+//   auth(USER_ROLES.ADMIN),
+//   UserProgressHistoryController.deleteUserProgressHistory,
+// )
 
 router.get('/:id', UserProgressHistoryController.getUserProgressHistoryById)
 

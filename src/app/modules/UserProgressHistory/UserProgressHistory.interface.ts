@@ -25,6 +25,7 @@ export interface IUserProgressHistory {
   examination: Types.ObjectId
   isExamCompleted: boolean
   question: Types.ObjectId
+  questionSet: Types.ObjectId
   userAnswer: number | number[]
   isCorrectlyAnswered: boolean
   timeSpentInSecond?: number

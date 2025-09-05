@@ -25,11 +25,6 @@ const ExaminationSchema = new Schema<IExamination>(
       required: false,
       default: [],
     },
-    completedBy: {
-      type: [Schema.Types.ObjectId],
-      ref: 'User',
-      default: [],
-    },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
   },

@@ -74,6 +74,12 @@ const UserProgressHistorySchema = new Schema<IUserProgressHistory>(
       required: true,
       index: true,
     },
+    questionSet: {
+      type: Schema.Types.ObjectId,
+      ref: 'QuestionSet',
+      required: true,
+      index: true,
+    },
     userAnswer: [Number], // userSelected option / short answer
     isCorrectlyAnswered: Boolean,
     timeSpentInSecond: { type: Number, default: 0 },

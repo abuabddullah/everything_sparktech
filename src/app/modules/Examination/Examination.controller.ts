@@ -95,7 +95,10 @@ const getExaminationById = catchAsync(async (req: Request, res: Response) => {
 const getExaminationsByTestId = catchAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params
-    const result = await ExaminationService.getExaminationsByTestId(id)
+    const result = await ExaminationService.getExaminationsByTestId(
+      id,
+      (req.user as any)?.authId,
+    )
 
     sendResponse(res, {
       statusCode: 200,

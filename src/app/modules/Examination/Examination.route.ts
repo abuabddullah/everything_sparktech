@@ -30,7 +30,11 @@ router.delete(
 )
 
 // get all examinations by test id
-router.get('/test/:id', ExaminationController.getExaminationsByTestId)
+router.get(
+  '/test/:id',
+  auth(USER_ROLES.STUDENT),
+  ExaminationController.getExaminationsByTestId,
+)
 
 router.patch(
   '/:id',

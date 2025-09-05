@@ -19,7 +19,10 @@ const getAllUserProgressHistorys = async (
   meta: { total: number; page: number; limit: number }
   result: IUserProgressHistory[]
 }> => {
-  const queryBuilder = new QueryBuilder(UserProgressHistory.find(), query)
+  const queryBuilder = new QueryBuilder(
+    UserProgressHistory.find().populate('question'),
+    query,
+  )
   const result = await queryBuilder.filter().sort().paginate().fields()
     .modelQuery
   const meta = await queryBuilder.getPaginationInfo()
@@ -157,10 +160,6 @@ const resetExaminationProgressHistory = async (
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
   }
-  await Examination.updateOne(
-    { _id: examinationId },
-    { $pull: { completedBy: userId } },
-  )
   return result
 }
 
@@ -197,10 +196,6 @@ const completeExam = async (
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
   }
-  await Examination.updateOne(
-    { _id: examinationId },
-    { $push: { completedBy: userId } },
-  )
   return result
 }
 

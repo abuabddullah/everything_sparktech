@@ -26,6 +26,7 @@ const createUserProgressHistoryZodSchema = z.object({
   test: z.string({ required_error: 'Test is required' }),
   examination: z.string({ required_error: 'Examination is required' }),
   question: z.string({ required_error: 'Question is required' }),
+  questionSet: z.string({ required_error: 'Question set is required' }),
   userAnswer: z.union([z.number(), z.array(z.number())]),
   timeSpentInSecond: z.number().optional(),
 })
@@ -54,6 +55,7 @@ const updateUserProgressHistoryZodSchema = z.object({
   test: z.string().optional(),
   examination: z.string().optional(),
   question: z.string().optional(),
+  questionSet: z.string().optional(),
   userAnswer: z.union([z.number(), z.array(z.number())]).optional(),
   timeSpentInSecond: z.number().optional(),
 })

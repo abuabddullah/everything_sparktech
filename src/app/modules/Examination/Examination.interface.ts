@@ -9,7 +9,6 @@ export interface IExamination {
     stepNo: number
     questionSet: Types.ObjectId
   }[]
-  completedBy: Types.ObjectId[]
   createdAt: Date
   updatedAt: Date
   isDeleted: boolean
