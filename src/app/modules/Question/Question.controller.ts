@@ -3,7 +3,6 @@ import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
 import { IQuestion } from './Question.interface'
 import { QuestionService } from './Question.service'
-import { IJwtPayload } from '../auth/auth.interface'
 
 const createQuestion = catchAsync(async (req: Request, res: Response) => {
   const result = await QuestionService.createQuestion(req.body)
@@ -115,6 +114,7 @@ const upsertUserProgressHistoryTrackingOnAnsweringQuestion = catchAsync(
         req.body.test,
         req.body.examinationId,
         req.body.questionId,
+        req.body.questionSet,
         req.body.userAnswer,
       )
 

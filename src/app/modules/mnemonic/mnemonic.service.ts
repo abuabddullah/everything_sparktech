@@ -1,12 +1,11 @@
 import { StatusCodes } from 'http-status-codes'
-import ApiError from '../../../errors/ApiError'
-import { IMnemonicFilterables, IMnemonic } from './mnemonic.interface'
-import { Mnemonic } from './mnemonic.model'
 import { JwtPayload } from 'jsonwebtoken'
-import { IPaginationOptions } from '../../../interfaces/pagination'
-import { paginationHelper } from '../../../helpers/paginationHelper'
-import { mnemonicSearchableFields } from './mnemonic.constants'
 import { Types } from 'mongoose'
+import ApiError from '../../../errors/ApiError'
+import QueryBuilder from '../../builder/QueryBuilder'
+import { Category } from '../category/category.model'
+import { IMnemonic } from './mnemonic.interface'
+import { Mnemonic } from './mnemonic.model'
 
 const createMnemonic = async (
   user: JwtPayload,
@@ -30,57 +29,72 @@ const createMnemonic = async (
   }
 }
 
+// const getAllMnemonics = async (
+//   user: JwtPayload,
+//   filterables: IMnemonicFilterables,
+//   pagination: IPaginationOptions,
+// ) => {
+//   const { searchTerm, ...filterData } = filterables
+//   const { page, skip, limit, sortBy, sortOrder } =
+//     paginationHelper.calculatePagination(pagination)
+
+//   const andConditions = []
+
+//   // Search functionality
+//   if (searchTerm) {
+//     andConditions.push({
+//       $or: mnemonicSearchableFields.map(field => ({
+//         [field]: {
+//           $regex: searchTerm,
+//           $options: 'i',
+//         },
+//       })),
+//     })
+//   }
+
+//   // Filter functionality
+//   if (Object.keys(filterData).length) {
+//     andConditions.push({
+//       $and: Object.entries(filterData).map(([key, value]) => ({
+//         [key]: value,
+//       })),
+//     })
+//   }
+
+//   const whereConditions = andConditions.length ? { $and: andConditions } : {}
+
+//   const [result, total] = await Promise.all([
+//     Mnemonic.find(whereConditions)
+//       .skip(skip)
+//       .limit(limit)
+//       .sort({ [sortBy]: sortOrder }),
+//     Mnemonic.countDocuments(whereConditions),
+//   ])
+
+//   return {
+//     meta: {
+//       page,
+//       limit,
+//       total,
+//       totalPages: Math.ceil(total / limit),
+//     },
+//     data: result,
+//   }
+// }
+
 const getAllMnemonics = async (
   user: JwtPayload,
-  filterables: IMnemonicFilterables,
-  pagination: IPaginationOptions,
+  query: Record<string, any>,
 ) => {
-  const { searchTerm, ...filterData } = filterables
-  const { page, skip, limit, sortBy, sortOrder } =
-    paginationHelper.calculatePagination(pagination)
-
-  const andConditions = []
-
-  // Search functionality
-  if (searchTerm) {
-    andConditions.push({
-      $or: mnemonicSearchableFields.map(field => ({
-        [field]: {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      })),
-    })
-  }
-
-  // Filter functionality
-  if (Object.keys(filterData).length) {
-    andConditions.push({
-      $and: Object.entries(filterData).map(([key, value]) => ({
-        [key]: value,
-      })),
-    })
-  }
-
-  const whereConditions = andConditions.length ? { $and: andConditions } : {}
-
-  const [result, total] = await Promise.all([
-    Mnemonic.find(whereConditions)
-      .skip(skip)
-      .limit(limit)
-      .sort({ [sortBy]: sortOrder }),
-    Mnemonic.countDocuments(whereConditions),
-  ])
-
-  return {
-    meta: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-    data: result,
-  }
+  const queryBuilder = new QueryBuilder(Mnemonic.find(), query)
+  const result = await queryBuilder
+    .filter()
+    .search(['title'])
+    .sort()
+    .paginate()
+    .fields().modelQuery
+  const meta = await queryBuilder.getPaginationInfo()
+  return { meta, result }
 }
 
 const getSingleMnemonic = async (id: string): Promise<IMnemonic> => {
@@ -101,20 +115,25 @@ const getSingleMnemonic = async (id: string): Promise<IMnemonic> => {
 
 const getMnemonicByCategoryId = async (
   categoryId: string,
-): Promise<IMnemonic[]> => {
-  if (!Types.ObjectId.isValid(categoryId)) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid Category ID')
+  query: Record<string, any>,
+) => {
+  const isExistCategory = await Category.findById(categoryId)
+  if (!isExistCategory) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Category not found.')
   }
 
-  const result = await Mnemonic.find({ category: categoryId })
-  if (!result) {
-    throw new ApiError(
-      StatusCodes.NOT_FOUND,
-      'No mnemonics found for the given category ID',
-    )
-  }
-
-  return result
+  const queryBuilder = new QueryBuilder(
+    Mnemonic.find({ category: categoryId }),
+    query,
+  )
+  const result = await queryBuilder
+    .filter()
+    .search(['title'])
+    .sort()
+    .paginate()
+    .fields().modelQuery
+  const meta = await queryBuilder.getPaginationInfo()
+  return { meta, result }
 }
 
 const deleteMnemonic = async (id: string): Promise<IMnemonic> => {

@@ -1,11 +1,8 @@
 import { Request, Response } from 'express'
-import { MnemonicServices } from './mnemonic.service'
+import { StatusCodes } from 'http-status-codes'
 import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
-import { StatusCodes } from 'http-status-codes'
-import pick from '../../../shared/pick'
-import { mnemonicFilterables } from './mnemonic.constants'
-import { paginationFields } from '../../../interfaces/pagination'
+import { MnemonicServices } from './mnemonic.service'
 
 const createMnemonic = catchAsync(async (req: Request, res: Response) => {
   const mnemonicData = req.body
@@ -33,14 +30,7 @@ const getSingleMnemonic = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getAllMnemonics = catchAsync(async (req: Request, res: Response) => {
-  const filterables = pick(req.query, mnemonicFilterables)
-  const pagination = pick(req.query, paginationFields)
-
-  const result = await MnemonicServices.getAllMnemonics(
-    req.user!,
-    filterables,
-    pagination,
-  )
+  const result = await MnemonicServices.getAllMnemonics(req.user!, req.query)
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -53,7 +43,10 @@ const getAllMnemonics = catchAsync(async (req: Request, res: Response) => {
 const getMnemonicByCategoryId = catchAsync(
   async (req: Request, res: Response) => {
     const { categoryId } = req.params
-    const result = await MnemonicServices.getMnemonicByCategoryId(categoryId)
+    const result = await MnemonicServices.getMnemonicByCategoryId(
+      categoryId,
+      req.query,
+    )
 
     sendResponse(res, {
       statusCode: StatusCodes.OK,
