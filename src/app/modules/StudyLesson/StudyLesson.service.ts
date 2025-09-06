@@ -9,6 +9,7 @@ import { Course } from '../Course/Course.model'
 import { Category } from '../category/category.model'
 import { ICourseTitle } from '../Course/Course.enum'
 import { IQSetRefType, IQSetTypes } from '../QuestionSet/QuestionSet.enum'
+import mongoose from 'mongoose'
 
 const createStudyLesson = async (
   payload: IStudyLesson,
@@ -73,20 +74,45 @@ const createStudyLesson = async (
     }
   }
   payload.questionSetsCount = payload.questionSets.length
-  const result = await StudyLesson.create(payload)
-  if (!result) {
-    payload.image && unlinkFile(payload.image)
+  // mongoose transaction
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const result = await StudyLesson.create(payload, { session })
+    if (!result) {
+      payload.image && unlinkFile(payload.image)
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'Failed to create study lesson.',
+      )
+    }
+    // set result._id as refId of each questionSets of result.questionSets result.questionSetsCount
+    const updatedQuestionSetResult = await QuestionSet.updateMany(
+      { _id: { $in: result[0].questionSets } },
+      {
+        refId: result[0]._id,
+        questionSetsCount: result[0].questionSets.length,
+      },
+      { session },
+    )
+    if (!updatedQuestionSetResult) {
+      payload.image && unlinkFile(payload.image)
+      throw new AppError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Failed to create study lesson.',
+      )
+    }
+    await session.commitTransaction()
+    session.endSession()
+    return result[0]
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
     throw new AppError(
-      StatusCodes.BAD_REQUEST,
+      StatusCodes.INTERNAL_SERVER_ERROR,
       'Failed to create study lesson.',
     )
   }
-  // set result._id as refId of each questionSets of result.questionSets result.questionSetsCount
-  await QuestionSet.updateMany(
-    { _id: { $in: result.questionSets } },
-    { refId: result._id, questionSetsCount: result.questionSets.length },
-  )
-  return result
 }
 
 const getAllStudyLessons = async (
@@ -162,22 +188,53 @@ const updateStudyLesson = async (
     payload.questionSetsCount = payload.questionSets.length
   }
 
-  const updatedStudyLesson = await StudyLesson.findByIdAndUpdate(id, payload, {
-    new: true,
-  })
-  if (!updatedStudyLesson) {
-    payload.image && unlinkFile(payload.image)
-    throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
+  // mongoose transaction
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const updatedStudyLesson = await StudyLesson.findByIdAndUpdate(
+      id,
+      payload,
+      {
+        new: true,
+        session,
+      },
+    )
+    if (!updatedStudyLesson) {
+      payload.image && unlinkFile(payload.image)
+      throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
+    }
+    payload.image && isExist.image && unlinkFile(isExist.image) // Unlink the old image
+    // now need to unlink the old questionSets
+    if (payload.questionSets) {
+      const unlinkQuestionSetResult = await QuestionSet.updateMany(
+        { refId: id },
+        { refId: null },
+        { session },
+      )
+      if (!unlinkQuestionSetResult) {
+        payload.image && unlinkFile(payload.image)
+        throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
+      }
+      // now need to link the new questionSets
+      const linkQuestionSetResult = await QuestionSet.updateMany(
+        { _id: { $in: payload.questionSets } },
+        { refId: id },
+        { session },
+      )
+      if (!linkQuestionSetResult) {
+        payload.image && unlinkFile(payload.image)
+        throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
+      }
+    }
+    await session.commitTransaction()
+    session.endSession()
+    return updatedStudyLesson
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw error
   }
-  payload.image && isExist.image && unlinkFile(isExist.image) // Unlink the old image
-  // now need to unlink the old questionSets
-  await QuestionSet.updateMany({ refId: id }, { refId: null })
-  // now need to link the new questionSets
-  await QuestionSet.updateMany(
-    { _id: { $in: payload.questionSets } },
-    { refId: id },
-  )
-  return updatedStudyLesson
 }
 
 const deleteStudyLesson = async (id: string): Promise<IStudyLesson | null> => {
@@ -185,24 +242,61 @@ const deleteStudyLesson = async (id: string): Promise<IStudyLesson | null> => {
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
   }
-  result.isDeleted = true
-  result.deletedAt = new Date()
-  await result.save()
-  return result
+  // mongoose transaction
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    result.isDeleted = true
+    result.deletedAt = new Date()
+    await result.save({ session })
+    // also need to clean up the refId of questionsSets
+    const unlinkQuestionSetResult = await QuestionSet.updateMany(
+      { refId: id },
+      { refId: null },
+      { session },
+    )
+    if (!unlinkQuestionSetResult) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
+    }
+    await session.commitTransaction()
+    session.endSession()
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw error
+  }
 }
 
 const hardDeleteStudyLesson = async (
   id: string,
 ): Promise<IStudyLesson | null> => {
-  const result = await StudyLesson.findByIdAndDelete(id)
-  if (!result) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
+  // mongoose transaction
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const result = await StudyLesson.findByIdAndDelete(id, { session })
+    if (!result) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
+    }
+    result.image && unlinkFile(result.image)
+    // also need to clean up the refId of questionsSets
+    const unlinkQuestionSetResult = await QuestionSet.updateMany(
+      { refId: id },
+      { refId: null },
+      { session },
+    )
+    if (!unlinkQuestionSetResult) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'StudyLesson not found.')
+    }
+    await session.commitTransaction()
+    session.endSession()
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw error
   }
-  result.image && unlinkFile(result.image)
-  // also need to clean up the refId of questionsSets
-  await QuestionSet.updateMany({ refId: id }, { refId: null })
-
-  return result
 }
 
 const getStudyLessonById = async (id: string): Promise<IStudyLesson | null> => {

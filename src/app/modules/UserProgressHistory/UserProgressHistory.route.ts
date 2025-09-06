@@ -1,9 +1,9 @@
 import express from 'express'
-import { UserProgressHistoryController } from './UserProgressHistory.controller'
+import { USER_ROLES } from '../../../enum/user'
 import auth from '../../middleware/auth'
 import validateRequest from '../../middleware/validateRequest'
+import { UserProgressHistoryController } from './UserProgressHistory.controller'
 import { UserProgressHistoryValidation } from './UserProgressHistory.validation'
-import { USER_ROLES } from '../../../enum/user'
 
 const router = express.Router()
 
@@ -43,26 +43,27 @@ router.post(
   UserProgressHistoryController.completeExam,
 )
 
-// router.post(
-//   '/',
-//   auth(USER_ROLES.ADMIN),
-//   validateRequest(
-//     UserProgressHistoryValidation.createUserProgressHistoryZodSchema,
-//   ),
-//   UserProgressHistoryController.createUserProgressHistory,
-// )
+router.post(
+  '/',
+  auth(USER_ROLES.ADMIN),
+  validateRequest(
+    UserProgressHistoryValidation.createUserProgressHistoryZodSchema,
+  ),
+  UserProgressHistoryController.createUserProgressHistory,
+)
 
 router.get('/', UserProgressHistoryController.getAllUserProgressHistorys)
+
 router.get(
   '/preview',
   auth(USER_ROLES.STUDENT),
   UserProgressHistoryController.previewUserExamHistorys,
 )
 
-// router.get(
-//   '/unpaginated',
-//   UserProgressHistoryController.getAllUnpaginatedUserProgressHistorys,
-// )
+router.get(
+  '/unpaginated',
+  UserProgressHistoryController.getAllUnpaginatedUserProgressHistorys,
+)
 
 // router.delete(
 //   '/hard-delete/:id',
@@ -85,6 +86,6 @@ router.get(
 //   UserProgressHistoryController.deleteUserProgressHistory,
 // )
 
-router.get('/:id', UserProgressHistoryController.getUserProgressHistoryById)
+// router.get('/:id', UserProgressHistoryController.getUserProgressHistoryById)
 
 export const UserProgressHistoryRoutes = router

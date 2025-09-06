@@ -5,6 +5,7 @@ import QueryBuilder from '../../builder/QueryBuilder'
 import unlinkFile from '../../../shared/unlinkFile'
 import AppError from '../../../errors/AppError'
 import { Examination } from '../Examination/Examination.model'
+import mongoose from 'mongoose'
 
 const createUserProgressHistory = async (
   payload: IUserProgressHistory,
@@ -177,6 +178,10 @@ const resetExaminationProgressHistory = async (
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
   }
+  await Examination.updateOne(
+    { _id: examinationId },
+    { $pull: { completedBy: userId } },
+  )
   return result
 }
 
@@ -213,6 +218,10 @@ const completeExam = async (
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'UserProgressHistory not found.')
   }
+  await Examination.updateOne(
+    { _id: examinationId },
+    { $push: { completedBy: userId } },
+  )
   return result
 }
 

@@ -4,6 +4,7 @@ import { ITest } from './Test.interface'
 import { Test } from './Test.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import { Examination } from '../Examination/Examination.model'
+import mongoose from 'mongoose'
 
 const createTest = async (payload: ITest): Promise<ITest> => {
   const result = await Test.create(payload)
@@ -45,22 +46,62 @@ const deleteTest = async (id: string): Promise<ITest | null> => {
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Test not found.')
   }
-  result.isDeleted = true
-  result.deletedAt = new Date()
-  await result.save()
-  return result
+
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    result.isDeleted = true
+    result.deletedAt = new Date()
+    await result.save({ session })
+    // make null of those studyLessons
+    const updatedExaminationsResult = await Examination.updateMany(
+      { test: id },
+      { test: null },
+      { session },
+    )
+    if (!updatedExaminationsResult) {
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Test not deleted.')
+    }
+
+    await session.commitTransaction()
+    session.endSession()
+
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Test not deleted.')
+  }
 }
 
 const hardDeleteTest = async (id: string): Promise<ITest | null> => {
-  const result = await Test.findByIdAndDelete(id)
-  if (!result) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Test not found.')
-  }
-  // unlike examination as refid
-  // make null of those studyLessons
-  await Examination.updateMany({ test: id }, { test: null })
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const result = await Test.findByIdAndDelete(id, { session })
+    if (!result) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'Test not found.')
+    }
+    // unlike examination as refid
+    // make null of those studyLessons
+    const updatedExaminationsResult = await Examination.updateMany(
+      { test: id },
+      { test: null },
+      { session },
+    )
+    if (!updatedExaminationsResult) {
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Test not deleted.')
+    }
 
-  return result
+    await session.commitTransaction()
+    session.endSession()
+
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Test not deleted.')
+  }
 }
 
 const getTestById = async (id: string): Promise<ITest | null> => {

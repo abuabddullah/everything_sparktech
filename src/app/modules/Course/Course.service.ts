@@ -5,6 +5,7 @@ import QueryBuilder from '../../builder/QueryBuilder'
 import unlinkFile from '../../../shared/unlinkFile'
 import AppError from '../../../errors/AppError'
 import { StudyLesson } from '../StudyLesson/StudyLesson.model'
+import mongoose from 'mongoose'
 
 const createCourse = async (payload: ICourse): Promise<ICourse> => {
   const result = await Course.create(payload)
@@ -52,21 +53,68 @@ const deleteCourse = async (id: string): Promise<ICourse | null> => {
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Course not found.')
   }
-  result.isDeleted = true
-  result.deletedAt = new Date()
-  await result.save()
-  return result
+
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    result.isDeleted = true
+    result.deletedAt = new Date()
+    await result.save({ session })
+    // make null of those studyLessons
+    const updatedStudyLessonsResult = await StudyLesson.updateMany(
+      { course: id },
+      { course: null },
+      { session },
+    )
+    if (!updatedStudyLessonsResult) {
+      throw new AppError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Course not deleted.',
+      )
+    }
+
+    await session.commitTransaction()
+    session.endSession()
+
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Course not deleted.')
+  }
 }
 
 const hardDeleteCourse = async (id: string): Promise<ICourse | null> => {
-  const result = await Course.findByIdAndDelete(id)
-  if (!result) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Course not found.')
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const result = await Course.findByIdAndDelete(id, { session })
+    if (!result) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'Course not found.')
+    }
+    unlinkFile(result.image!)
+    // make null of those studyLessons
+    const updatedStudyLessonsResult = await StudyLesson.updateMany(
+      { course: id },
+      { course: null },
+      { session },
+    )
+    if (!updatedStudyLessonsResult) {
+      throw new AppError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Course not deleted.',
+      )
+    }
+
+    await session.commitTransaction()
+    session.endSession()
+
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Course not deleted.')
   }
-  unlinkFile(result.image!)
-  // make null of those studyLessons
-  await StudyLesson.updateMany({ course: id }, { course: null })
-  return result
 }
 
 const getCourseById = async (id: string): Promise<ICourse | null> => {

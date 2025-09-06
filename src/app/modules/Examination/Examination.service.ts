@@ -8,6 +8,7 @@ import { Test } from '../Test/Test.model'
 import { UserProgressHistory } from '../UserProgressHistory/UserProgressHistory.model'
 import { ITestTitle } from '../Test/Test.enum'
 import { IQSetRefType, IQSetTypes } from '../QuestionSet/QuestionSet.enum'
+import mongoose from 'mongoose'
 
 // const createExamination = async (
 //   payload: IExamination,
@@ -77,17 +78,48 @@ const createExamination = async (
   }
 
   // Create the examination
-  const result = await Examination.create(payload)
 
-  // Update questionSets' refId for each step's questionSets
-  for (const step of payload.questionSteps) {
-    await QuestionSet.updateMany(
-      { _id: step.questionSet },
-      { refId: result._id },
+  // use mongoose transaction
+  const session = await mongoose.startSession()
+  session.startTransaction()
+
+  try {
+    // Create the examination
+    const [result] = await Examination.create([payload], { session })
+    if (!result) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Examination not created.')
+    }
+
+    // Update the refId for each questionSet related to the examination
+    for (const step of payload.questionSteps) {
+      const updatedQuestionSetResult = await QuestionSet.updateMany(
+        { _id: step.questionSet },
+        { refId: result._id },
+        { session },
+      )
+      if (updatedQuestionSetResult.modifiedCount === 0) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'Examination not created.',
+        )
+      }
+    }
+
+    // Commit the transaction
+    await session.commitTransaction()
+    session.endSession()
+
+    return result
+  } catch (error) {
+    // Abort the transaction on error
+    await session.abortTransaction()
+    session.endSession()
+
+    throw new AppError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'Examination not created.',
     )
   }
-
-  return result
 }
 
 const getAllExaminations = async (
@@ -107,52 +139,6 @@ const getAllUnpaginatedExaminations = async (): Promise<IExamination[]> => {
   const result = await Examination.find()
   return result
 }
-
-// const updateExamination = async (
-//   id: string,
-//   payload: Partial<IExamination>,
-// ): Promise<IExamination | null> => {
-//   const isExist = await Examination.findById(id)
-//   if (!isExist) {
-//     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
-//   }
-//   // test, questionSets exists or not
-//   let isExistTest, isExistQuestionSets
-//   if (payload.test) {
-//     isExistTest = await Test.findById(payload.test)
-//     if (!isExistTest) {
-//       throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid test.')
-//     }
-//   }
-//   if (payload.questionSets) {
-//     isExistQuestionSets = await QuestionSet.find({
-//       _id: { $in: payload.questionSets },
-//       refType: IQSetRefType.EXAMINATION,
-//       refId: null,
-//     })
-//     if (
-//       !isExistQuestionSets.length ||
-//       isExistQuestionSets.length !== payload.questionSets.length
-//     ) {
-//       throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid question set.')
-//     }
-//     payload.questionSetsCount = payload.questionSets.length
-//   }
-//   const updatedExamination = await Examination.findByIdAndUpdate(id, payload, {
-//     new: true,
-//   })
-//   if (!updatedExamination) {
-//     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
-//   }
-//   // now need to unlink the old questionSets
-//   await QuestionSet.updateMany({ refId: id }, { refId: null })
-//   // now need to link the new questionSets
-//   await QuestionSet.updateMany(
-//     { _id: { $in: payload.questionSets } },
-//     { refId: id },
-//   )
-//   return updatedExamination
-// }
 
 const updateExamination = async (
   id: string,
@@ -191,25 +177,62 @@ const updateExamination = async (
   }
 
   // Update the examination
-  const updatedExamination = await Examination.findByIdAndUpdate(id, payload, {
-    new: true,
-  })
-  await isExistExamination.save()
-  if (!updatedExamination) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
-  }
-
-  // Unlink the old questionSets
-  await QuestionSet.updateMany({ refId: id }, { refId: null })
-
-  // Link the new questionSets for each step
-  if (payload.questionSteps) {
-    for (const step of payload.questionSteps) {
-      await QuestionSet.updateMany({ _id: step.questionSet }, { refId: id })
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const updatedExamination = await Examination.findByIdAndUpdate(
+      id,
+      payload,
+      {
+        new: true,
+        session,
+      },
+    )
+    if (!updatedExamination) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
     }
-  }
 
-  return updatedExamination
+    // Link the new questionSets for each step
+    if (payload.questionSteps) {
+      // Unlink the old questionSets
+      const updatedQuestionSetsResult = await QuestionSet.updateMany(
+        { refId: id },
+        { refId: null },
+        { session },
+      )
+      if (!updatedQuestionSetsResult) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'Examination not updated.',
+        )
+      }
+      for (const step of payload.questionSteps) {
+        const updatedQuestionSetResult = await QuestionSet.findByIdAndUpdate(
+          step.questionSet,
+          { refId: id },
+          { session },
+        )
+        if (!updatedQuestionSetResult) {
+          throw new AppError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            'Examination not updated.',
+          )
+        }
+      }
+    }
+
+    await session.commitTransaction()
+    session.endSession()
+
+    return updatedExamination
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw new AppError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'Examination not updated.',
+    )
+  }
 }
 
 const deleteExamination = async (id: string): Promise<IExamination | null> => {
@@ -217,24 +240,75 @@ const deleteExamination = async (id: string): Promise<IExamination | null> => {
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
   }
-  result.isDeleted = true
-  result.deletedAt = new Date()
-  await result.save()
-  // also need to clean up the refId of questionsSets
-  await QuestionSet.updateMany({ refId: id }, { refId: null })
-  return result
+
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    result.isDeleted = true
+    result.deletedAt = new Date()
+    await result.save({ session })
+    // also need to clean up the refId of questionsSets
+    const updatedQuestionSetsResult = await QuestionSet.updateMany(
+      { refId: id },
+      { refId: null },
+      { session },
+    )
+    if (!updatedQuestionSetsResult) {
+      throw new AppError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Examination not deleted.',
+      )
+    }
+
+    await session.commitTransaction()
+    session.endSession()
+
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw new AppError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'Examination not deleted.',
+    )
+  }
 }
 
 const hardDeleteExamination = async (
   id: string,
 ): Promise<IExamination | null> => {
-  const result = await Examination.findByIdAndDelete(id)
-  if (!result) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const result = await Examination.findByIdAndDelete(id, { session })
+    if (!result) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'Examination not found.')
+    }
+    // also need to clean up the refId of questionsSets
+    const updatedQuestionSetsResult = await QuestionSet.updateMany(
+      { refId: id },
+      { refId: null },
+      { session },
+    )
+    if (!updatedQuestionSetsResult) {
+      throw new AppError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Examination not deleted.',
+      )
+    }
+
+    await session.commitTransaction()
+    session.endSession()
+
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw new AppError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'Examination not deleted.',
+    )
   }
-  // also need to clean up the refId of questionsSets
-  await QuestionSet.updateMany({ refId: id }, { refId: null })
-  return result
 }
 
 const getExaminationById = async (id: string): Promise<IExamination | null> => {

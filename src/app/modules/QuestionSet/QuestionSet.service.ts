@@ -13,14 +13,6 @@ import { IQTypes } from '../Question/Question.enum'
 const createQuestionSet = async (
   payload: IQuestionSet,
 ): Promise<IQuestionSet> => {
-  // we need to ensure refId,questions,prompts, already exits
-  // const isExistRef = await mongoose
-  //   .model(payload.refType)
-  //   .findOne({ refId: payload.refId })
-  // if (!isExistRef) {
-  //   throw new AppError(StatusCodes.BAD_REQUEST, 'RefId does not exist.')
-  // }
-  // questions,prompts are array need to check all the elements exists in the database
   const isExistQuestions = await Question.find({
     _id: { $in: payload.questions },
     questionSet: null,
@@ -65,19 +57,48 @@ const createQuestionSet = async (
       throw new AppError(StatusCodes.BAD_REQUEST, 'Some Prompts do not exist.')
     }
   }
-  const result = await QuestionSet.create(payload)
-  // put result._id as refId of each questions of result.questions and if paylaod.prompts is exist put result._id as refId of each prompts of result.prompts
-  await Question.updateMany(
-    { _id: { $in: result.questions } },
-    { questionSet: result._id },
-  )
-  if (payload.prompts && payload.prompts.length) {
-    await Prompt.updateMany(
-      { _id: { $in: payload.prompts } },
+
+  // mongoose transaction
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const result = await QuestionSet.create(payload)
+    // put result._id as refId of each questions of result.questions and if paylaod.prompts is exist put result._id as refId of each prompts of result.prompts
+    const updateQuestionResult = await Question.updateMany(
+      { _id: { $in: result.questions } },
       { questionSet: result._id },
+      { session },
+    )
+    if (!updateQuestionResult) {
+      throw new AppError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Questions not updated.',
+      )
+    }
+    if (payload.prompts && payload.prompts.length) {
+      const updatePromptResult = await Prompt.updateMany(
+        { _id: { $in: payload.prompts } },
+        { questionSet: result._id },
+        { session },
+      )
+      if (!updatePromptResult) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'Prompts not updated.',
+        )
+      }
+    }
+    await session.commitTransaction()
+    session.endSession()
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw new AppError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'QuestionSet not created.',
     )
   }
-  return result
 }
 
 const getAllQuestionSets = async (
@@ -160,13 +181,75 @@ const updateQuestionSet = async (
       { questionSet: null },
     )
   }
-  const updatedReference = await mongoose
-    .model(isExistRef?.refType)
-    .findByIdAndUpdate(isExistRef?._id, payload, { new: true })
-  if (!updatedReference) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
+
+  // mongoose transaction
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const updatedReference = await mongoose
+      .model(isExistRef?.refType)
+      .findByIdAndUpdate(isExistRef?._id, payload, { new: true, session })
+    if (!updatedReference) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
+    }
+    // update questions and prompts of updatedReference
+    if (payload.questions) {
+      // unlin old questions
+      await Question.updateMany(
+        { _id: { $in: isExistRef.questions } },
+        { questionSet: null },
+        { session },
+      )
+      // link new questions
+      const updateQuestionResult = await Question.updateMany(
+        { _id: { $in: updatedReference.questions } },
+        { questionSet: updatedReference._id },
+        { session },
+      )
+      if (!updateQuestionResult) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'Questions not updated.',
+        )
+      }
+    }
+    if (payload.prompts && payload.prompts.length) {
+      // unlin old prompts
+      const unlinkPromptResult = await Prompt.updateMany(
+        { _id: { $in: isExistRef.prompts } },
+        { questionSet: null },
+        { session },
+      )
+      if (!unlinkPromptResult) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'Prompts not updated.',
+        )
+      }
+      // link new prompts
+      const updatePromptResult = await Prompt.updateMany(
+        { _id: { $in: payload.prompts } },
+        { questionSet: updatedReference._id },
+        { session },
+      )
+      if (!updatePromptResult) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'Prompts not updated.',
+        )
+      }
+    }
+    await session.commitTransaction()
+    session.endSession()
+    return updatedReference
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw new AppError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'QuestionSet not updated.',
+    )
   }
-  return updatedReference
 }
 
 const deleteQuestionSet = async (id: string): Promise<IQuestionSet | null> => {
@@ -174,63 +257,141 @@ const deleteQuestionSet = async (id: string): Promise<IQuestionSet | null> => {
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
   }
-  result.isDeleted = true
-  result.deletedAt = new Date()
-  await result.save()
-  // also need to clean up the questions and prompts
-  await Question.updateMany({ questionSet: id }, { questionSet: null })
-  await Prompt.updateMany({ questionSet: id }, { questionSet: null })
 
-  if (result.refId && result.refType !== IQSetRefType.EXAMINATION) {
-    await mongoose
-      .model(result.refType)
-      .updateOne(
-        { _id: result.refId },
-        { $pull: { questionSet: id }, $inc: { questionSetsCount: -1 } },
-      )
-  }
-  if (result.refId && result.refType === IQSetRefType.EXAMINATION) {
-    // pull the step in the examination.questionSteps that has this questionSet
-    await mongoose.model(result.refType).updateOne(
-      { _id: result.refId },
-      {
-        $pull: { questionSteps: { questionSets: id } },
-        $inc: { questionSetsCount: -1 },
-      },
+  // mongoose transaction
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    result.isDeleted = true
+    result.deletedAt = new Date()
+    await result.save({ session })
+    // also need to clean up the questions and prompts
+    const unlinkQuestionResult = await Question.updateMany(
+      { questionSet: id },
+      { questionSet: null },
+      { session },
     )
+    if (!unlinkQuestionResult) {
+      throw new AppError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Questions not updated.',
+      )
+    }
+    const unlinkPromptResult = await Prompt.updateMany(
+      { questionSet: id },
+      { questionSet: null },
+      { session },
+    )
+    if (!unlinkPromptResult) {
+      throw new AppError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Prompts not updated.',
+      )
+    }
+    if (result.refId && result.refType !== IQSetRefType.EXAMINATION) {
+      const updateResult = await mongoose
+        .model(result.refType)
+        .updateOne(
+          { _id: result.refId },
+          { $pull: { questionSet: id }, $inc: { questionSetsCount: -1 } },
+          { session },
+        )
+      if (!updateResult) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'QuestionSet not deleted.',
+        )
+      }
+    }
+    if (result.refId && result.refType === IQSetRefType.EXAMINATION) {
+      // pull the step in the examination.questionSteps that has this questionSet
+      const updateResult = await mongoose.model(result.refType).updateOne(
+        { _id: result.refId },
+        {
+          $pull: { questionSteps: { questionSets: id } },
+          $inc: { questionSetsCount: -1 },
+        },
+        { session },
+      )
+      if (!updateResult) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'QuestionSet not deleted.',
+        )
+      }
+    }
+    await session.commitTransaction()
+    session.endSession()
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw error
   }
-  return result
 }
 
 const hardDeleteQuestionSet = async (
   id: string,
 ): Promise<IQuestionSet | null> => {
-  const result = await QuestionSet.findByIdAndDelete(id)
-  if (!result) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
-  }
-  // also need to clean up the questions and prompts
-  await Question.updateMany({ questionSet: id }, { questionSet: null })
-  await Prompt.updateMany({ questionSet: id }, { questionSet: null })
-
-  if (result.refId && result.refType !== IQSetRefType.EXAMINATION) {
-    await mongoose
-      .model(result.refType)
-      .updateOne(
-        { _id: result.refId },
-        { $pull: { questionSet: id }, $inc: { questionSetsCount: -1 } },
-      )
-  }
-  if (result.refId && result.refType === IQSetRefType.EXAMINATION) {
-    await mongoose.model(result.refType).updateOne(
-      { _id: result.refId },
-      {
-        $pull: { questionSteps: { questionSets: id } },
-        $inc: { questionSetsCount: -1 },
-      },
+  // mongoose transaction
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const result = await QuestionSet.findByIdAndDelete(id, { session })
+    if (!result) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
+    }
+    // also need to clean up the questions and prompts
+    await Question.updateMany(
+      { questionSet: id },
+      { questionSet: null },
+      { session },
     )
+    await Prompt.updateMany(
+      { questionSet: id },
+      { questionSet: null },
+      { session },
+    )
+
+    if (result.refId && result.refType !== IQSetRefType.EXAMINATION) {
+      const updateResult = await mongoose
+        .model(result.refType)
+        .updateOne(
+          { _id: result.refId },
+          { $pull: { questionSet: id }, $inc: { questionSetsCount: -1 } },
+          { session },
+        )
+      if (!updateResult) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'QuestionSet not deleted.',
+        )
+      }
+    }
+    if (result.refId && result.refType === IQSetRefType.EXAMINATION) {
+      const updateResult = await mongoose.model(result.refType).updateOne(
+        { _id: result.refId },
+        {
+          $pull: { questionSteps: { questionSets: id } },
+          $inc: { questionSetsCount: -1 },
+        },
+        { session },
+      )
+      if (!updateResult) {
+        throw new AppError(
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          'QuestionSet not deleted.',
+        )
+      }
+    }
+    await session.commitTransaction()
+    session.endSession()
+    return result
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw error
   }
-  return result
 }
 
 const getQuestionSetById = async (id: string): Promise<IQuestionSet | null> => {
