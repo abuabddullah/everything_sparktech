@@ -13,7 +13,7 @@ const router = express.Router()
 
 router.get(
   '/',
-  auth(USER_ROLES.ADMIN, USER_ROLES.STUDENT),
+  // auth(USER_ROLES.ADMIN, USER_ROLES.STUDENT),
   StudymaterialController.getAllStudymaterials,
 )
 
