@@ -35,7 +35,7 @@ const previewUserExamHistorys = async (
 ) => {
   const { questionSet } = query
   const isExistQuestionSet = await QuestionSet.findById(questionSet)
-    .select('prompts questionSetType')
+    .select('prompts questionSetType explanation')
     .populate('prompts')
   if (!isExistQuestionSet) {
     throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
