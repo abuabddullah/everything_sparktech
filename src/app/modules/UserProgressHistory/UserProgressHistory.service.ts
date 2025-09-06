@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import AppError from '../../../errors/AppError'
 import QueryBuilder from '../../builder/QueryBuilder'
 import { Examination } from '../Examination/Examination.model'
+import { QuestionSet } from '../QuestionSet/QuestionSet.model'
 import { IUserProgressHistory } from './UserProgressHistory.interface'
 import { UserProgressHistory } from './UserProgressHistory.model'
 
@@ -31,26 +32,30 @@ const getAllUserProgressHistorys = async (
 const previewUserExamHistorys = async (
   query: Record<string, any>,
   userId: string,
-): Promise<{
-  meta: { total: number; page: number; limit: number }
-  result: IUserProgressHistory[]
-}> => {
+) => {
+  const { questionSet } = query
+  const isExistQuestionSet = await QuestionSet.findById(questionSet)
+    .select('prompts')
+    .populate('prompts')
+  if (!isExistQuestionSet) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
+  }
   const queryBuilder = new QueryBuilder(
     UserProgressHistory.find({ user: userId }).populate([
       // populate top-level question
       { path: 'question' },
-      // populate questionSet and, inside it, prompts (and questions if you want)
-      {
-        path: 'questionSet',
-        populate: [{ path: 'prompts' }],
-      },
+      // // populate questionSet and, inside it, prompts (and questions if you want)
+      // {
+      //   path: 'questionSet',
+      //   populate: [{ path: 'prompts' }],
+      // },
     ]),
     query,
   )
   const result = await queryBuilder.filter().sort().paginate().fields()
     .modelQuery
   const meta = await queryBuilder.getPaginationInfo()
-  return { meta, result }
+  return { meta, prompts: isExistQuestionSet?.prompts, result }
 }
 
 const getAllUnpaginatedUserProgressHistorys = async (): Promise<

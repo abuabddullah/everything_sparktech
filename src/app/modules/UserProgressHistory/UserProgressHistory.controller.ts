@@ -44,10 +44,7 @@ const previewUserExamHistorys = catchAsync(
       (req.user as any).authId,
     )
 
-    sendResponse<{
-      meta: { total: number; page: number; limit: number }
-      result: IUserProgressHistory[]
-    }>(res, {
+    sendResponse(res, {
       statusCode: 200,
       success: true,
       message: 'UserProgressHistorys retrieved successfully',
