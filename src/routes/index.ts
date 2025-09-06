@@ -1,22 +1,23 @@
-import { UserRoutes } from '../app/modules/user/user.route'
-import { AuthRoutes } from '../app/modules/auth/auth.route'
 import express, { Router } from 'express'
-import { NotificationRoutes } from '../app/modules/notifications/notifications.route'
-import { PublicRoutes } from '../app/modules/public/public.route'
-import { SupportRoutes } from '../app/modules/support/support.route'
-import { OnboardingscreenRoutes } from '../app/modules/onboardingscreen/onboardingscreen.route'
-import { CommunityRoutes } from '../app/modules/community/community.route'
-import { StudyscheduleRoutes } from '../app/modules/studyschedule/studyschedule.route'
-import { CategoryRoutes } from '../app/modules/category/category.route'
-import { MnemonicRoutes } from '../app/modules/mnemonic/mnemonic.route'
 import { CourseRoutes } from '../app/modules/Course/Course.route'
-import { StudyLessonRoutes } from '../app/modules/StudyLesson/StudyLesson.route'
+import { ExaminationRoutes } from '../app/modules/Examination/Examination.route'
+import { PromptRoutes } from '../app/modules/Prompt/Prompt.route'
 import { QuestionRoutes } from '../app/modules/Question/Question.route'
 import { QuestionSetRoutes } from '../app/modules/QuestionSet/QuestionSet.route'
-import { PromptRoutes } from '../app/modules/Prompt/Prompt.route'
+import { StudyLessonRoutes } from '../app/modules/StudyLesson/StudyLesson.route'
 import { TestRoutes } from '../app/modules/Test/Test.route'
-import { ExaminationRoutes } from '../app/modules/Examination/Examination.route'
 import { UserProgressHistoryRoutes } from '../app/modules/UserProgressHistory/UserProgressHistory.route'
+import { AuthRoutes } from '../app/modules/auth/auth.route'
+import { CategoryRoutes } from '../app/modules/category/category.route'
+import { CommunityRoutes } from '../app/modules/community/community.route'
+import { MnemonicRoutes } from '../app/modules/mnemonic/mnemonic.route'
+import { NotificationRoutes } from '../app/modules/notifications/notifications.route'
+import { OnboardingscreenRoutes } from '../app/modules/onboardingscreen/onboardingscreen.route'
+import { PublicRoutes } from '../app/modules/public/public.route'
+import { ReviewRoutes } from '../app/modules/Reviews/review.route'
+import { StudyscheduleRoutes } from '../app/modules/studyschedule/studyschedule.route'
+import { SupportRoutes } from '../app/modules/support/support.route'
+import { UserRoutes } from '../app/modules/user/user.route'
 const router = express.Router()
 
 const apiRoutes: { path: string; route: Router }[] = [
@@ -43,6 +44,7 @@ const apiRoutes: { path: string; route: Router }[] = [
   { path: '/test', route: TestRoutes },
   { path: '/examination', route: ExaminationRoutes },
   { path: '/history', route: UserProgressHistoryRoutes },
+  { path: '/review', route: ReviewRoutes },
 ]
 
 apiRoutes.forEach(route => {

@@ -1,11 +1,9 @@
 import { StatusCodes } from 'http-status-codes'
+import AppError from '../../../errors/AppError'
+import QueryBuilder from '../../builder/QueryBuilder'
+import { Examination } from '../Examination/Examination.model'
 import { IUserProgressHistory } from './UserProgressHistory.interface'
 import { UserProgressHistory } from './UserProgressHistory.model'
-import QueryBuilder from '../../builder/QueryBuilder'
-import unlinkFile from '../../../shared/unlinkFile'
-import AppError from '../../../errors/AppError'
-import { Examination } from '../Examination/Examination.model'
-import mongoose from 'mongoose'
 
 const createUserProgressHistory = async (
   payload: IUserProgressHistory,
@@ -38,7 +36,15 @@ const previewUserExamHistorys = async (
   result: IUserProgressHistory[]
 }> => {
   const queryBuilder = new QueryBuilder(
-    UserProgressHistory.find({ user: userId }).populate('question'),
+    UserProgressHistory.find({ user: userId }).populate([
+      // populate top-level question
+      { path: 'question' },
+      // populate questionSet and, inside it, prompts (and questions if you want)
+      {
+        path: 'questionSet',
+        populate: [{ path: 'prompts' }],
+      },
+    ]),
     query,
   )
   const result = await queryBuilder.filter().sort().paginate().fields()
