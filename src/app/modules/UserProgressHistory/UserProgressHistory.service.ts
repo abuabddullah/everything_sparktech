@@ -61,6 +61,7 @@ const previewUserExamHistorys = async (
     questionSetType: isExistQuestionSet?.questionSetType,
     prompts: isExistQuestionSet?.prompts,
     result,
+    explanation: isExistQuestionSet?.explanation,
   }
 }
 
