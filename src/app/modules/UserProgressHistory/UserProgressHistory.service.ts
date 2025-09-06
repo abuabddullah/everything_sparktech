@@ -35,7 +35,7 @@ const previewUserExamHistorys = async (
 ) => {
   const { questionSet } = query
   const isExistQuestionSet = await QuestionSet.findById(questionSet)
-    .select('prompts')
+    .select('prompts questionSetType')
     .populate('prompts')
   if (!isExistQuestionSet) {
     throw new AppError(StatusCodes.NOT_FOUND, 'QuestionSet not found.')
@@ -55,7 +55,13 @@ const previewUserExamHistorys = async (
   const result = await queryBuilder.filter().sort().paginate().fields()
     .modelQuery
   const meta = await queryBuilder.getPaginationInfo()
-  return { meta, prompts: isExistQuestionSet?.prompts, result }
+  return {
+    meta,
+    questionSetId: isExistQuestionSet._id,
+    questionSetType: isExistQuestionSet?.questionSetType,
+    prompts: isExistQuestionSet?.prompts,
+    result,
+  }
 }
 
 const getAllUnpaginatedUserProgressHistorys = async (): Promise<
