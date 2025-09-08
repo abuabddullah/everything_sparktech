@@ -143,6 +143,19 @@ const validateQuestionsAnswers = catchAsync(
   },
 )
 
+const getDailyRandomQuestion = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await QuestionService.getDailyRandomQuestion()
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Daily random question retrieved successfully',
+      data: result,
+    })
+  },
+)
+
 export const QuestionController = {
   createQuestion,
   getAllQuestions,
@@ -154,4 +167,5 @@ export const QuestionController = {
   validateQuestionAnswer,
   upsertUserProgressHistoryTrackingOnAnsweringQuestion,
   validateQuestionsAnswers,
+  getDailyRandomQuestion,
 }

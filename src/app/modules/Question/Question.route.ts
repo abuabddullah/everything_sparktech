@@ -21,6 +21,8 @@ router.post(
 router.get('/', QuestionController.getAllQuestions)
 
 router.get('/unpaginated', QuestionController.getAllUnpaginatedQuestions)
+// get daily random questions
+router.get('/daily-question', QuestionController.getDailyRandomQuestion)
 
 router.delete(
   '/hard-delete/:id',

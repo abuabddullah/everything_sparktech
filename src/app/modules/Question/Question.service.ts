@@ -239,6 +239,15 @@ export const scheduleAutoDeleteUnReferencedQuestion = () => {
   cron.schedule('0 * * * *', autoDeleteUnReferencedQuestion)
 }
 
+const getDailyRandomQuestion = async (): Promise<IQuestion> => {
+  const result = await Question.aggregate([
+    {
+      $sample: { size: 1 },
+    },
+  ])
+  return result[0]
+}
+
 export const QuestionService = {
   createQuestion,
   getAllQuestions,
@@ -250,4 +259,5 @@ export const QuestionService = {
   upsertUserProgressHistoryTrackingOnAnsweringQuestion,
   validateQuestionAnswer,
   validateQuestionsAnswers,
+  getDailyRandomQuestion,
 }
