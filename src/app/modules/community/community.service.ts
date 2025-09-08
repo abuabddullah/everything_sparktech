@@ -109,14 +109,26 @@ const createCommunity = async (
 // }
 
 const getAllCommunitys = async (user: JwtPayload, query: any) => {
-  const resultQuery = new QueryBuilder(Community.find(), query)
+  const resultQuery = new QueryBuilder(
+    Community.find().populate([
+      {
+        path: 'userId',
+        select: 'name email role profile',
+      },
+      {
+        path: 'answers',
+        // select: 'comments date userId User',
+        populate: {
+          path: 'userId',
+          select: 'name email role profile',
+        },
+      },
+    ]),
+    query,
+  )
 
-  const result = await resultQuery
-    .filter()
-    .sort()
-    .paginate()
-    .fields()
-    .modelQuery.populate('userId', 'name email role profile')
+  const result = await resultQuery.filter().sort().paginate().fields()
+    .modelQuery
 
   const meta = await resultQuery.getPaginationInfo()
 
