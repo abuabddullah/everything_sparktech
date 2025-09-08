@@ -242,10 +242,13 @@ export const scheduleAutoDeleteUnReferencedQuestion = () => {
 const getDailyRandomQuestion = async (): Promise<IQuestion> => {
   const result = await Question.aggregate([
     {
+      $match: { questionType: 'RadioQ' },
+    },
+    {
       $sample: { size: 1 },
     },
   ])
-  return result[0]
+  return result[0] || null
 }
 
 export const QuestionService = {
