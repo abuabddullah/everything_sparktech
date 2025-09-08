@@ -8,6 +8,7 @@ import { IUser } from '../user/user.interface'
 import { communitySearchableFields } from './community.constants'
 import { ICommunity, ICommunityFilterables } from './community.interface'
 import { Community } from './community.model'
+import QueryBuilder from '../../builder/QueryBuilder'
 
 const createCommunity = async (
   user: JwtPayload | undefined,
@@ -40,70 +41,88 @@ const createCommunity = async (
   }
 }
 
-const getAllCommunitys = async (
-  user: JwtPayload,
-  filterables: ICommunityFilterables,
-  pagination: IPaginationOptions,
-) => {
-  const { searchTerm, ...filterData } = filterables
-  const { page, skip, limit, sortBy, sortOrder } =
-    paginationHelper.calculatePagination(pagination)
+// const getAllCommunitys = async (
+//   user: JwtPayload,
+//   filterables: ICommunityFilterables,
+//   pagination: IPaginationOptions,
+// ) => {
+//   const { searchTerm, ...filterData } = filterables
+//   const { page, skip, limit, sortBy, sortOrder } =
+//     paginationHelper.calculatePagination(pagination)
 
-  const andConditions = []
+//   const andConditions = []
 
-  // Search functionality
-  if (searchTerm) {
-    andConditions.push({
-      $or: communitySearchableFields.map(field => ({
-        [field]: {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      })),
-    })
-  }
+//   // Search functionality
+//   if (searchTerm) {
+//     andConditions.push({
+//       $or: communitySearchableFields.map(field => ({
+//         [field]: {
+//           $regex: searchTerm,
+//           $options: 'i',
+//         },
+//       })),
+//     })
+//   }
 
-  // Filter functionality
-  if (Object.keys(filterData).length) {
-    andConditions.push({
-      $and: Object.entries(filterData).map(([key, value]) => ({
-        [key]: value,
-      })),
-    })
-  }
+//   // Filter functionality
+//   if (Object.keys(filterData).length) {
+//     andConditions.push({
+//       $and: Object.entries(filterData).map(([key, value]) => ({
+//         [key]: value,
+//       })),
+//     })
+//   }
 
-  const whereConditions = andConditions.length ? { $and: andConditions } : {}
+//   const whereConditions = andConditions.length ? { $and: andConditions } : {}
 
-  const [result, total] = await Promise.all([
-    Community.find(whereConditions)
-      .skip(skip)
-      .limit(limit)
-      .sort({ [sortBy]: sortOrder })
-      .populate([
-        {
-          path: 'userId',
-          select: 'name email role profile',
-        },
-        {
-          path: 'answers',
-          // select: 'comments date userId User',
-          populate: {
-            path: 'userId',
-            select: 'name email role profile',
-          },
-        },
-      ]),
-    Community.countDocuments(whereConditions),
-  ])
+//   const [result, total] = await Promise.all([
+//     Community.find(whereConditions)
+//       .skip(skip)
+//       .limit(limit)
+//       .sort({ [sortBy]: sortOrder })
+//       .populate([
+//         {
+//           path: 'userId',
+//           select: 'name email role profile',
+//         },
+//         {
+//           path: 'answers',
+//           // select: 'comments date userId User',
+//           populate: {
+//             path: 'userId',
+//             select: 'name email role profile',
+//           },
+//         },
+//       ]),
+//     Community.countDocuments(whereConditions),
+//   ])
+
+//   return {
+//     meta: {
+//       page,
+//       limit,
+//       total,
+//       totalPages: Math.ceil(total / limit),
+//     },
+//     data: result,
+//   }
+// }
+
+const getAllCommunitys = async (user: JwtPayload, query: any) => {
+  const resultQuery = new QueryBuilder(Community.find(), query)
+
+  const result = await resultQuery
+    .filter()
+    .sort()
+    .paginate()
+    .fields()
+    .modelQuery.populate('userId', 'name email role profile')
+
+  const meta = await resultQuery.getPaginationInfo()
 
   return {
-    meta: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-    data: result,
+    meta,
+    result,
   }
 }
 
