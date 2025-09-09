@@ -6,7 +6,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import { SubscriptionValidation } from './subscription.validation';
 
 const router = express.Router();
-const rolesOfAccess = [USER_ROLES.ADMIN];
+const rolesOfAccess = [USER_ROLES.CREATOR];
 router.post(
   '/create',
   auth(...rolesOfAccess),

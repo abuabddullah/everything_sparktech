@@ -1,4 +1,5 @@
 import { Model, Types } from 'mongoose';
+import { SubscriptionStatus } from './subscription.enum';
 
 export type ISubscription = {
   email: string;
@@ -6,7 +7,7 @@ export type ISubscription = {
   package: Types.ObjectId;
   subscriptionId: string;
   trxId: string;
-  status: string;
+  status: SubscriptionStatus;
   createdAt: Date;
   updatedAt: Date;
 };

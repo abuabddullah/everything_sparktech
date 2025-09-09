@@ -3,9 +3,15 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { StatusCodes } from 'http-status-codes';
 import { SubscriptionService } from './subscription.service';
+import { IJwtPayload } from '../auth/auth.interface';
 
 const createSubscription = catchAsync(async (req: Request, res: Response) => {
-  const result = await SubscriptionService.createSubscription(req.body);
+  const {id,email} = req.user as IJwtPayload;
+  const result = await SubscriptionService.createSubscription({
+    ...req.body,
+    user:id,
+    email
+  });
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
     success: true,
