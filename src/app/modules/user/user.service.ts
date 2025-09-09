@@ -157,11 +157,13 @@ const createCreatorStripeAccount = async (
   const dob = new Date(data.dateOfBirth);
 
   // Process KYC
-  const KYCFiles = files;
+  const KYCFiles = files.KYC;
   if (!KYCFiles || KYCFiles.length < 2) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Two KYC files are required!');
   }
   const uploadsPath = path.join(__dirname, '../../../..');
+
+  
 
   // File upload to Stripe
   const frontFileId = await uploadFileToStripe(
@@ -210,10 +212,11 @@ const createCreatorStripeAccount = async (
       tos_shown_and_accepted: true,
     },
   });
+  console.log(`**********************error starts at 'Create account' **************************`)
   // Create account
   const account = await stripe.accounts.create({
     type: 'custom',
-    country: data.country,
+    country: data.address.country,
     email: data.email || isExistUser.email,
     capabilities: {
       card_payments: { requested: true },
@@ -226,18 +229,19 @@ const createCreatorStripeAccount = async (
     },
     external_account: {
       object: 'bank_account',
-      account_number: data.account_number,
-      country: data.country,
-      currency: data.currency,
-      account_holder_name: data.account_holder_name,
-      account_holder_type: data.account_holder_type,
-      routing_number: data.routing_number,
+      account_number: data.bank_info.account_number,
+      country: data.bank_info.country,
+      currency: data.bank_info.currency,
+      account_holder_name: data.bank_info.account_holder_name,
+      account_holder_type: data.bank_info.account_holder_type,
+      routing_number: data.bank_info.routing_number,
     },
     tos_acceptance: {
       date: Math.floor(Date.now() / 1000),
       ip: ip, // Replace with the user's actual IP address
     },
   });
+  
 
   // Update account with additional information
   await stripe.accounts.update(account.id, {

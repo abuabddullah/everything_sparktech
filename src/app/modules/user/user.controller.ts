@@ -66,7 +66,7 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const setUpCreatorPayment = catchAsync(async (req: Request, res: Response) => {
-  const { ...data } = req.body;
+  let { data } = req.body;
   let paths: any[] = [];
 
   // const paths: any[] = [];
@@ -76,7 +76,7 @@ const setUpCreatorPayment = catchAsync(async (req: Request, res: Response) => {
       paths.push(`/KYCs/${file.filename}`);
     }
   }
-  console.log(data);
+  data = JSON.parse(data);
   const user = req.user;
   if (!req.user.email) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
