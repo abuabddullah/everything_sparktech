@@ -3,14 +3,13 @@ import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
 import { WishlistService } from './wishlist.service'
 import { StatusCodes } from 'http-status-codes'
-import { IJwtPayload } from '../auth/auth.interface'
 
 const addToWishlist = catchAsync(async (req: Request, res: Response) => {
   const { lessonId } = req.body
 
-  const { id } = req.user as IJwtPayload
+  const { authId } = req.user as any
 
-  const result = await WishlistService.addToWishlist(id, lessonId)
+  const result = await WishlistService.addToWishlist(authId, lessonId)
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -23,9 +22,9 @@ const addToWishlist = catchAsync(async (req: Request, res: Response) => {
 const removeFromWishlist = catchAsync(async (req: Request, res: Response) => {
   const { lessonId } = req.params
 
-  const { id } = req.user as IJwtPayload
+  const { authId } = req.user as any
 
-  const result = await WishlistService.removeFromWishlist(id, lessonId)
+  const result = await WishlistService.removeFromWishlist(authId, lessonId)
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -36,9 +35,9 @@ const removeFromWishlist = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getWishlist = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.user as IJwtPayload
+  const { authId } = req.user as any
 
-  const result = await WishlistService.getWishlist(id, req.query)
+  const result = await WishlistService.getWishlist(authId, req.query)
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -52,9 +51,12 @@ const checkLessonInWishlist = catchAsync(
   async (req: Request, res: Response) => {
     const { lessonId } = req.params
 
-    const { id } = req.user as IJwtPayload
+    const { authId } = req.user as any
 
-    const isInWishlist = await WishlistService.isLessonInWishlist(id, lessonId)
+    const isInWishlist = await WishlistService.isLessonInWishlist(
+      authId,
+      lessonId,
+    )
 
     sendResponse(res, {
       statusCode: StatusCodes.OK,
