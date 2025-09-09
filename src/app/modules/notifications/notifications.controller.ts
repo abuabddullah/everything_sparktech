@@ -5,7 +5,10 @@ import { StatusCodes } from 'http-status-codes'
 import { NotificationServices } from './notifications.service'
 
 const getMyNotifications = catchAsync(async (req: Request, res: Response) => {
-  const result = await NotificationServices.getNotifications(req.user!)
+  const result = await NotificationServices.getNotifications(
+    req.user!,
+    req.query,
+  )
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -24,15 +27,17 @@ const updateNotification = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
-const updateAllNotifications = catchAsync(async (req: Request, res: Response) => {
-  const result = await NotificationServices.readAllNotifications(req.user!)
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: 'Notifications updated successfully',
-    data: result,
-  })
-})
+const updateAllNotifications = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await NotificationServices.readAllNotifications(req.user!)
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'Notifications updated successfully',
+      data: result,
+    })
+  },
+)
 
 export const NotificationController = {
   getMyNotifications,
