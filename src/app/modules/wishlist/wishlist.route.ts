@@ -8,7 +8,7 @@ const router = express.Router()
 router.post('/', auth(USER_ROLES.STUDENT), WishlistController.addToWishlist)
 
 router.delete(
-  '/:productId',
+  '/:lessonId',
   auth(USER_ROLES.STUDENT),
   WishlistController.removeFromWishlist,
 )
@@ -16,9 +16,9 @@ router.delete(
 router.get('/', auth(USER_ROLES.STUDENT), WishlistController.getWishlist)
 
 router.get(
-  '/check/:productId',
+  '/check/:lessonId',
   auth(USER_ROLES.STUDENT),
-  WishlistController.checkProductInWishlist,
+  WishlistController.checkLessonInWishlist,
 )
 
 export const WishlistRoutes = router

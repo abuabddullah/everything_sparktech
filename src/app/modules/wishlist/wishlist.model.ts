@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose'
 import { IWishlist, IWishlistModel } from './wishlist.interface'
 
 const wishlistItemSchema = new Schema({
-  product: {
+  lessonId: {
     type: Schema.Types.ObjectId,
     ref: 'StudyLesson',
     required: true,
@@ -31,14 +31,14 @@ const wishlistSchema = new Schema<IWishlist, IWishlistModel>(
   },
 )
 
-// Check if product is in user's wishlist
-wishlistSchema.statics.isProductInWishlist = async function (
+// Check if lessonId is in user's wishlist
+wishlistSchema.statics.isLessonInWishlist = async function (
   userId: string,
-  productId: string,
+  lessonId: string,
 ): Promise<boolean> {
   const wishlist = await this.findOne({
     user: userId,
-    'items.product': productId,
+    'items.lessonId': lessonId,
   })
   return !!wishlist
 }

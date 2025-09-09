@@ -7,47 +7,47 @@ import { Wishlist } from './wishlist.model'
 
 const addToWishlist = async (
   userId: string,
-  productId: string,
+  lessonId: string,
 ): Promise<IWishlist> => {
   let wishlist = await Wishlist.findOne({ user: userId })
 
   if (!wishlist) {
     wishlist = await Wishlist.create({
       user: userId,
-      items: [{ product: productId }],
+      items: [{ lessonId: lessonId }],
     })
   } else {
     const itemExists = wishlist.items.some(
-      (item: IWishlistItem) => item.product.toString() === productId,
+      (item: IWishlistItem) => item.lessonId.toString() === lessonId,
     )
 
     if (itemExists) {
-      throw new AppError(StatusCodes.BAD_REQUEST, 'Product already in wishlist')
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Lesson already in wishlist')
     }
 
-    wishlist.items.push({ product: new Types.ObjectId(productId) })
+    wishlist.items.push({ lessonId: new Types.ObjectId(lessonId) })
     await wishlist.save()
   }
 
-  return wishlist.populate('items.product')
+  return wishlist.populate('items.lessonId')
 }
 
 const removeFromWishlist = async (
   userId: string,
-  productId: string,
+  lessonId: string,
 ): Promise<IWishlist | null> => {
   const wishlist = await Wishlist.findOneAndUpdate(
     { user: userId },
-    { $pull: { items: { product: productId } } },
+    { $pull: { items: { lessonId: lessonId } } },
     { new: true },
-  ).populate('items.product')
+  ).populate('items.lessonId')
 
   return wishlist
 }
 
 const getWishlist = async (userId: string, query: any) => {
   const querBuilder = new QueryBuilder(
-    Wishlist.find({ user: userId }).populate('items.product'),
+    Wishlist.find({ user: userId }).populate('items.lessonId'),
     query,
   )
 
@@ -57,22 +57,22 @@ const getWishlist = async (userId: string, query: any) => {
     .paginate()
     .filter()
     .search([
-      'items.product.name',
-      'items.product.description',
-      'items.product.price',
+      'items.lessonId.name',
+      'items.lessonId.description',
+      'items.lessonId.price',
     ]).modelQuery // Final query model
 
   const meta = await querBuilder.getPaginationInfo()
   return { result: result[0], meta }
 }
 
-const isProductInWishlist = async (
+const isLessonInWishlist = async (
   userId: string,
-  productId: string,
+  lessonId: string,
 ): Promise<boolean> => {
-  return Wishlist.isProductInWishlist(
+  return Wishlist.isLessonInWishlist(
     new Types.ObjectId(userId),
-    new Types.ObjectId(productId),
+    new Types.ObjectId(lessonId),
   )
 }
 
@@ -80,5 +80,5 @@ export const WishlistService = {
   addToWishlist,
   removeFromWishlist,
   getWishlist,
-  isProductInWishlist,
+  isLessonInWishlist,
 }
