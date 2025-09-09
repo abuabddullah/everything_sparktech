@@ -137,6 +137,14 @@ const deleteSubscription = async (
   return result;
 };
 
+const getMySubscriptions = async (userId: string): Promise<ISubscription[]> => {
+  const result = await Subscription.find({ user: userId });
+  if (!result) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Subscription not found!');
+  }
+  return result;
+};
+
 export const SubscriptionService = {
   createSubscription,
   getAllSubscriptions,
@@ -144,4 +152,5 @@ export const SubscriptionService = {
   updateSubscription,
   deleteSubscription,
   cancelSubscription,
+  getMySubscriptions,
 };

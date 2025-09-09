@@ -14,6 +14,8 @@ router.post(
   SubscriptionController.createSubscription
 );
 router.get('/', SubscriptionController.getAllSubscriptions);
+// get-my-subscription
+router.get('/my-subscription', auth(...rolesOfAccess), SubscriptionController.getMySubscriptions);
 router.get('/:id', SubscriptionController.getSubscriptionById);
 router.patch(
   '/:id',

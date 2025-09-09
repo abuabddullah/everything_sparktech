@@ -71,10 +71,21 @@ const deleteSubscription = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMySubscriptions = catchAsync(async (req: Request, res: Response) => {
+  const result = await SubscriptionService.getMySubscriptions(req.user.id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Subscription fetched successfully',
+    data: result,
+  });
+});
+
 export const SubscriptionController = {
   createSubscription,
   getAllSubscriptions,
   getSubscriptionById,
   updateSubscription,
   deleteSubscription,
+  getMySubscriptions,
 };
