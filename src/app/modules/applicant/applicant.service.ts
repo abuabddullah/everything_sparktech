@@ -33,7 +33,7 @@ const getAllApplicants = async (
 };
 
 const getApplicantById = async (id: string): Promise<IApplicant | null> => {
-  const result = await Applicant.findById(id);
+  const result = await Applicant.findById(id).populate('user job');
   if (!result) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Applicant not found!');
   }
