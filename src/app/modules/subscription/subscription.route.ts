@@ -13,6 +13,11 @@ router.post(
   validateRequest(SubscriptionValidation.createSubscriptionZodSchema),
   SubscriptionController.createSubscription
 );
+router.post('/create-checkout-session/:id', auth(...rolesOfAccess), SubscriptionController.createCheckoutSession);
+router.get('/success', SubscriptionController.subscriptionSuccess);
+router.get('/cancel', SubscriptionController.subscriptionCancel);
+
+
 router.get('/', SubscriptionController.getAllSubscriptions);
 // get-my-subscription
 router.get('/my-subscription', auth(...rolesOfAccess), SubscriptionController.getMySubscriptions);

@@ -1,9 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../../errors/ApiError';
 import { Package } from './package.model';
-import { IPackage, PackageModel } from './package.interface';
+import { IPackage } from './package.interface';
 import { createSubscriptionPackage } from '../../../helpers/stripeHelper';
-import Stripe from 'stripe';
 
 const createPackage = async (payload: IPackage): Promise<any> => {
   const subscriptionPackage = await createSubscriptionPackage(payload);

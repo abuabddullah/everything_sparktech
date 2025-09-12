@@ -4,6 +4,7 @@ import { Subscription } from './subscription.model';
 import { ISubscription } from './subscription.interface';
 import { stripe } from '../../../config/stripe';
 import { User } from '../user/user.model';
+import { Package } from '../package/package.model';
 
 const createSubscription = async (
   payload: ISubscription
@@ -145,6 +146,53 @@ const getMySubscriptions = async (userId: string): Promise<ISubscription[]> => {
   return result;
 };
 
+const createSubscriptionCheckoutSession = async (userId: string, packageId: string) => {
+  console.log("🔄 Creating subscription checkout session for user:", userId, "and package:", packageId);
+  const isExistPackage = await Package.findById(packageId);
+  console.log("📦 Package lookup result:", isExistPackage ? isExistPackage._id : "Not found");
+  if (!isExistPackage) {
+       throw new ApiError(StatusCodes.NOT_FOUND, 'Package not found');
+  }
+  const user = await User.findById(userId).select('+stripeAccountInfo.stripeCustomerId');
+  console.log("👤 User lookup result:", user ? user._id : "Not found", "Stripe Customer ID:", user?.stripeAccountInfo?.stripeCustomerId);
+  if (!user || !user.stripeAccountInfo?.stripeCustomerId) {
+       throw new ApiError(StatusCodes.NOT_FOUND, 'User or Stripe Customer ID not found');
+  }
+
+  // Convert Mongoose String types to primitive strings
+  console.log("💳 Creating Stripe checkout session with customer:", String(user.stripeAccountInfo?.stripeCustomerId), "price:", String(isExistPackage.priceId));
+  const session = await stripe.checkout.sessions.create({
+       mode: 'subscription',
+       customer: String(user.stripeAccountInfo?.stripeCustomerId),
+       line_items: [
+            {
+                 price: String(isExistPackage.priceId),
+                 quantity: 1,
+            },
+       ],
+       metadata: {
+            userId: String(userId),
+            subscriptionId: String(isExistPackage._id),
+       },
+       // ${config.frontend_url}
+       success_url: `http://10.10.7.79:5030/api/v1/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+       cancel_url: `http://10.10.7.79:5030/subscription/cancel`,
+  });
+  console.log("✅ Stripe checkout session created:", session.id, "URL:", session.url);
+  return {
+       url: session.url,
+       sessionId: session.id,
+  };
+};
+
+
+const successMessage = async (id: string) => {
+  console.log("🔄 Retrieving checkout session:", id);
+  const session = await stripe.checkout.sessions.retrieve(id);
+  console.log("✅ Retrieved checkout session:", JSON.stringify(session, null, 2));
+  return session;
+};
+
 export const SubscriptionService = {
   createSubscription,
   getAllSubscriptions,
@@ -153,4 +201,6 @@ export const SubscriptionService = {
   deleteSubscription,
   cancelSubscription,
   getMySubscriptions,
+  createSubscriptionCheckoutSession,
+  successMessage,
 };
