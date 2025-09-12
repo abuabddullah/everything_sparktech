@@ -62,12 +62,12 @@ router.post(
 
 router.post(
   '/resend-otp',
-  tempAuth(
-    USER_ROLES.ADMIN,
-    USER_ROLES.STUDENT,
-    USER_ROLES.GUEST,
-    USER_ROLES.TEACHER,
-  ),
+  // tempAuth(
+  //   USER_ROLES.ADMIN,
+  //   USER_ROLES.STUDENT,
+  //   USER_ROLES.GUEST,
+  //   USER_ROLES.TEACHER,
+  // ),
   validateRequest(AuthValidations.resendOtpZodSchema),
   CustomAuthController.resendOtp,
 )
@@ -87,6 +87,10 @@ router.delete(
 )
 router.post('/refresh-token', CustomAuthController.getRefreshToken)
 
-router.post('/social-login', validateRequest(AuthValidations.socialLoginZodSchema), CustomAuthController.socialLogin)
+router.post(
+  '/social-login',
+  validateRequest(AuthValidations.socialLoginZodSchema),
+  CustomAuthController.socialLogin,
+)
 
 export const AuthRoutes = router
