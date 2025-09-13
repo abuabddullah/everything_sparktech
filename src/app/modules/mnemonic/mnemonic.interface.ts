@@ -1,7 +1,7 @@
 import { Model, Types } from 'mongoose'
 
 export interface IMnemonicItem {
-  _id : Types.ObjectId
+  _id: Types.ObjectId
   letter: string
   meaning: string
 }
@@ -19,6 +19,7 @@ export interface IMnemonic {
   description?: string
   category: Types.ObjectId
   items: IMnemonicItem[]
+  color: string
 }
 
 export type MnemonicModel = Model<IMnemonic, {}, {}>

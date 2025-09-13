@@ -78,7 +78,7 @@ const createStudyLesson = async (
   const session = await mongoose.startSession()
   session.startTransaction()
   try {
-    const result = await StudyLesson.create(payload, { session })
+    const result = await StudyLesson.create([payload], { session })
     if (!result) {
       payload.image && unlinkFile(payload.image)
       throw new AppError(

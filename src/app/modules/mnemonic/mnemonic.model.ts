@@ -16,6 +16,7 @@ const mnemonicSchema = new Schema<IMnemonic, MnemonicModel>(
     description: { type: String },
     category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     items: [itemsItemSchema],
+    color: { type: String },
   },
   {
     timestamps: true,

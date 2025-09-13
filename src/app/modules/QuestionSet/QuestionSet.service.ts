@@ -62,11 +62,11 @@ const createQuestionSet = async (
   const session = await mongoose.startSession()
   session.startTransaction()
   try {
-    const result = await QuestionSet.create(payload)
+    const result = await QuestionSet.create([payload], { session })
     // put result._id as refId of each questions of result.questions and if paylaod.prompts is exist put result._id as refId of each prompts of result.prompts
     const updateQuestionResult = await Question.updateMany(
-      { _id: { $in: result.questions } },
-      { questionSet: result._id },
+      { _id: { $in: result[0].questions } },
+      { questionSet: result[0]._id },
       { session },
     )
     if (!updateQuestionResult) {
@@ -78,7 +78,7 @@ const createQuestionSet = async (
     if (payload.prompts && payload.prompts.length) {
       const updatePromptResult = await Prompt.updateMany(
         { _id: { $in: payload.prompts } },
-        { questionSet: result._id },
+        { questionSet: result[0]._id },
         { session },
       )
       if (!updatePromptResult) {
@@ -90,13 +90,18 @@ const createQuestionSet = async (
     }
     await session.commitTransaction()
     session.endSession()
-    return result
+    return result[0]
   } catch (error) {
     await session.abortTransaction()
     session.endSession()
+
+    // If it's a known AppError, bubble it up as-is; otherwise include the original message
+    if (error instanceof AppError) throw error
+
+    const reason = (error as any)?.message || 'Unknown error'
     throw new AppError(
-      StatusCodes.INTERNAL_SERVER_ERROR,
-      'QuestionSet not created.',
+      StatusCodes.BAD_REQUEST, // likely a validation problem, not a server crash
+      `QuestionSet not created: ${reason}`,
     )
   }
 }

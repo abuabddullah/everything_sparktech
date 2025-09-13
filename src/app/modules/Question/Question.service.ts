@@ -228,6 +228,9 @@ const autoDeleteUnReferencedQuestion = async () => {
     // Find coupons where endDate is in the past and isActive is true
     await Question.deleteMany({
       questionSet: null,
+      questionType: {
+        $ne: IQTypes.DailyQuestion,
+      },
     })
   } catch (error) {
     console.error('Error deleting un-referenced question:', error)
@@ -242,7 +245,7 @@ export const scheduleAutoDeleteUnReferencedQuestion = () => {
 const getDailyRandomQuestion = async (): Promise<IQuestion> => {
   const result = await Question.aggregate([
     {
-      $match: { questionType: 'RadioQ' },
+      $match: { questionType: IQTypes.DailyQuestion },
     },
     {
       $sample: { size: 1 },

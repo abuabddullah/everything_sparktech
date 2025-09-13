@@ -12,6 +12,7 @@ export const MnemonicValidations = {
       description: z.string().optional(),
       category: z.string().regex(objectIdRegex, 'Invalid category ObjectId'),
       items: z.array(itemsItemSchema),
+      color: z.string(),
     }),
   }),
 
@@ -19,8 +20,12 @@ export const MnemonicValidations = {
     body: z.object({
       title: z.string().optional(),
       description: z.string().optional(),
-      category: z.string().regex(objectIdRegex, 'Invalid category ObjectId').optional(),
+      category: z
+        .string()
+        .regex(objectIdRegex, 'Invalid category ObjectId')
+        .optional(),
       items: z.array(itemsItemSchema).optional(),
+      color: z.string().optional(),
     }),
   }),
 }

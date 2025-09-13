@@ -5,4 +5,5 @@ export enum IQTypes {
   DropdownQ = 'DropdownQ',
   ShortAnswerQ = 'ShortAnswerQ',
   RearrangeQ = 'RearrangeQ',
+  DailyQuestion = 'DailyQuestion',
 }

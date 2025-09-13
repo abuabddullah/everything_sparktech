@@ -8,6 +8,7 @@ import { createStudymaterialSchema } from './studymaterial.validation'
 import ApiError from '../../../errors/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { S3Helper } from '../../../helpers/image/s3helper'
+import { StudyMaterialCategory } from '../../../enum/studyMaterial'
 
 const router = express.Router()
 
@@ -38,31 +39,36 @@ router.post(
   async (req, res, next) => {
     const payload = req.body
     try {
-      const docFiles = (req.files as any).doc as Express.Multer.File[]
-      if (!docFiles || docFiles.length === 0) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, 'No document file provided')
-      }
+      if (payload.category !== StudyMaterialCategory.QUESTION_SAMPLE) {
+        const docFiles = (req.files as any).document as Express.Multer.File[]
+        if (!docFiles || docFiles.length == 0) {
+          throw new ApiError(
+            StatusCodes.BAD_REQUEST,
+            'No document file provided3',
+          )
+        }
 
-      // Take the first file only
-      const docFile = docFiles[0]
+        // Take the first file only
+        const docFile = docFiles[0]
 
-      // Upload single doc to S3
-      const uploadedDocUrl = await S3Helper.uploadToS3(docFile, 'pdf')
+        // Upload single doc to S3
+        const uploadedDocUrl = await S3Helper.uploadToS3(docFile, 'pdf')
 
-      if (!uploadedDocUrl) {
-        throw new ApiError(
-          StatusCodes.INTERNAL_SERVER_ERROR,
-          'Failed to upload document',
-        )
-      }
-      req.body = {
-        fileUrl: uploadedDocUrl,
-        ...payload,
+        if (!uploadedDocUrl) {
+          throw new ApiError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            'Failed to upload document3',
+          )
+        }
+        req.body = {
+          fileUrl: uploadedDocUrl,
+          ...payload,
+        }
       }
       next()
     } catch (error) {
       console.log({ error })
-      res.status(400).json({ message: 'Failed to upload doc' })
+      res.status(400).json({ message: 'Failed to upload doc4' })
     }
   },
 
