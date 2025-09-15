@@ -6,14 +6,21 @@ import validateRequest from '../../middlewares/validateRequest';
 import { SubscriptionValidation } from './subscription.validation';
 
 const router = express.Router();
-const rolesOfAccess = [USER_ROLES.ADMIN];
+const rolesOfAccess = [USER_ROLES.CREATOR];
 router.post(
   '/create',
   auth(...rolesOfAccess),
   validateRequest(SubscriptionValidation.createSubscriptionZodSchema),
   SubscriptionController.createSubscription
 );
+router.post('/create-checkout-session/:id', auth(...rolesOfAccess), SubscriptionController.createCheckoutSession);
+router.get('/success', SubscriptionController.subscriptionSuccess);
+router.get('/cancel', SubscriptionController.subscriptionCancel);
+
+
 router.get('/', SubscriptionController.getAllSubscriptions);
+// get-my-subscription
+router.get('/my-subscription', auth(...rolesOfAccess), SubscriptionController.getMySubscriptions);
 router.get('/:id', SubscriptionController.getSubscriptionById);
 router.patch(
   '/:id',

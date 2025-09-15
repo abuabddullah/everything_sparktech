@@ -47,6 +47,29 @@ const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
     { $set: { authentication } }
   );
 
+  let stripeCustomer;
+  try {
+    stripeCustomer = await stripe.customers.create({
+      email: createUser.email,
+      name: createUser.name,
+    });
+    
+  } catch (error) {
+    throw new ApiError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'Failed to create Stripe customer'
+    );
+  }
+
+  await User.findOneAndUpdate(
+    { _id: createUser._id },
+    {
+      $set: {
+        stripeAccountInfo: { stripeCustomerId: stripeCustomer.id },
+      },
+    }
+  );
+
   return createUser;
 };
 

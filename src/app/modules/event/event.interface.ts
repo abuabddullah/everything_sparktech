@@ -1,4 +1,5 @@
 import { Model, Types } from 'mongoose';
+import { EVENT_TYPE } from './event.enum';
 
 export type IEvent = {
   thumbnailImage: string;
@@ -14,7 +15,7 @@ export type IEvent = {
   price: number;
   creator: Types.ObjectId;
   address: string;
-  type: 'adult' | 'kids' | 'family';
+  type: EVENT_TYPE;
   coordinate: Array<number>;
 };
 

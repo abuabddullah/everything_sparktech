@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { IEvent, EventModel } from './event.interface';
+import { EVENT_TYPE } from './event.enum';
 
 const eventSchema = new Schema<IEvent, EventModel>(
   {
@@ -15,7 +16,7 @@ const eventSchema = new Schema<IEvent, EventModel>(
       ref: 'User',
       required: true,
     },
-    type: { type: String, enum: ['adult', 'child', 'family'], required: true },
+    type: { type: String, enum: EVENT_TYPE, required: true },
     address: { type: String, required: true },
     coordinate: { type: [Number], required: true },
   },

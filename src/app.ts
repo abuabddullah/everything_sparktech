@@ -9,7 +9,7 @@ const app = express();
 // stripe webhook
 
 app.post(
-  '/api/stripe/webhook',
+  '/api/v1/stripe/webhook',
   express.raw({ type: 'application/json' }),
   handleStripeWebhook
 );

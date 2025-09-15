@@ -16,6 +16,7 @@ import { TermsAndConditionsRoutes } from '../app/modules/termsAndConditions/term
 import { ReviewRoutes } from '../app/modules/review/review.route';
 import { NotificationRoutes } from '../app/modules/notification/notification.route';
 import { SellRoutes } from '../app/modules/sell/sell.route';
+import stripeAccountRoutes from '../app/modules/stripeAccount/stripeAccount.route';
 
 const router = express.Router();
 
@@ -87,6 +88,10 @@ const apiRoutes = [
   {
     path: '/notification',
     route: NotificationRoutes,
+  },
+  {
+    path: '/stripe',
+    route: stripeAccountRoutes,
   },
 ];
 
