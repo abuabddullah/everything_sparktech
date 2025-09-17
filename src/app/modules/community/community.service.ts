@@ -9,6 +9,7 @@ import { communitySearchableFields } from './community.constants'
 import { ICommunity, ICommunityFilterables } from './community.interface'
 import { Community } from './community.model'
 import QueryBuilder from '../../builder/QueryBuilder'
+import { USER_ROLES } from '../../../enum/user'
 
 const createCommunity = async (
   user: JwtPayload | undefined,
@@ -179,7 +180,7 @@ const updateCommunity = async (
   if (user.email !== (community?.userId as IUser | undefined)?.email) {
     throw new ApiError(
       StatusCodes.FORBIDDEN,
-      'You are not allowed to delete this community',
+      'You are not allowed to update this community',
     )
   }
 
@@ -223,11 +224,13 @@ const deleteCommunity = async (
     email: user.email,
     userId: community?.userId as IUser | undefined,
   })
-  if (user.email !== (community?.userId as IUser | undefined)?.email) {
-    throw new ApiError(
-      StatusCodes.FORBIDDEN,
-      'You are not allowed to delete this community',
-    )
+  if (user.role !== USER_ROLES.ADMIN) {
+    if (user.email !== (community?.userId as IUser | undefined)?.email) {
+      throw new ApiError(
+        StatusCodes.FORBIDDEN,
+        'You are not allowed to delete others community',
+      )
+    }
   }
 
   const result = await Community.findByIdAndDelete(id)
