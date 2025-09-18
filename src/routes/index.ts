@@ -20,6 +20,7 @@ import { SupportRoutes } from '../app/modules/support/support.route'
 import { UserRoutes } from '../app/modules/user/user.route'
 import { StudymaterialRoutes } from '../app/modules/studymaterial/studymaterial.route'
 import { WishlistRoutes } from '../app/modules/wishlist/wishlist.route'
+import { DashboardRoutes } from '../app/modules/dashboard/dashboard.route'
 const router = express.Router()
 
 const apiRoutes: { path: string; route: Router }[] = [
@@ -49,6 +50,7 @@ const apiRoutes: { path: string; route: Router }[] = [
   { path: '/review', route: ReviewRoutes },
   { path: '/studymaterial', route: StudymaterialRoutes },
   { path: '/wishlist', route: WishlistRoutes },
+  { path: '/dashboard', route: DashboardRoutes },
 ]
 
 apiRoutes.forEach(route => {
