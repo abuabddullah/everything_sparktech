@@ -16,14 +16,17 @@ const createStudymaterial = catchAsync(async (req: Request, res: Response) => {
   const { name, category } = studymaterialData
 
   if (!name || !category) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'All fields are required')
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'name, category fields are required',
+    )
   }
 
   let result
   if (category !== StudyMaterialCategory.QUESTION_SAMPLE) {
     const docFiles = (req.files as any).document as Express.Multer.File[]
     if (!docFiles || docFiles.length === 0) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, 'No document file provided2')
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'No document file provided')
     }
 
     // Take the first file only
@@ -35,7 +38,7 @@ const createStudymaterial = catchAsync(async (req: Request, res: Response) => {
     if (!uploadedDocUrl) {
       throw new ApiError(
         StatusCodes.INTERNAL_SERVER_ERROR,
-        'Failed to upload document2',
+        'Failed to upload document',
       )
     }
     result = await StudymaterialServices.createStudymaterial(req.user!, {
@@ -46,6 +49,59 @@ const createStudymaterial = catchAsync(async (req: Request, res: Response) => {
   } else {
     result = await StudymaterialServices.createStudymaterial(req.user!, {
       ...studymaterialData,
+    })
+  }
+
+  sendResponse(res, {
+    statusCode: StatusCodes.CREATED,
+    success: true,
+    message: 'Document uploaded successfully',
+    data: result,
+  })
+})
+
+const updateStudymaterial = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+  const studymaterialData = req.body
+
+  const { category } = studymaterialData
+
+  if (!category) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'category field is required')
+  }
+
+  let result
+  if (
+    studymaterialData.category &&
+    studymaterialData.category !== StudyMaterialCategory.QUESTION_SAMPLE
+  ) {
+    const docFiles = (req.files as any).document as Express.Multer.File[]
+    if (!docFiles || docFiles.length === 0) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'No document file provided')
+    }
+
+    // Take the first file only
+    const docFile = docFiles[0]
+
+    // Upload single doc to S3
+    const uploadedDocUrl = await S3Helper.uploadToS3(docFile, 'pdf')
+
+    if (!uploadedDocUrl) {
+      throw new ApiError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'Failed to upload document',
+      )
+    }
+    result = await StudymaterialServices.updateStudymaterial(req.user!, {
+      ...studymaterialData,
+      fileUrl: uploadedDocUrl,
+      size: docFile.size,
+      _id: id,
+    })
+  } else {
+    result = await StudymaterialServices.updateStudymaterial(req.user!, {
+      ...studymaterialData,
+      _id: id,
     })
   }
 
@@ -128,4 +184,5 @@ export const StudymaterialController = {
   getAllStudymaterials,
   deleteStudymaterial,
   getAllStudyGuides,
+  updateStudymaterial,
 }

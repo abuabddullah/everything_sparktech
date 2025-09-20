@@ -22,5 +22,6 @@ router.post(
 )
 
 router.delete('/:id', auth(USER_ROLES.ADMIN), MnemonicController.deleteMnemonic)
+router.patch('/:id', auth(USER_ROLES.ADMIN), MnemonicController.updateMnemonic)
 
 export const MnemonicRoutes = router

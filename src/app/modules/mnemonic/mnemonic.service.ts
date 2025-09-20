@@ -152,10 +152,26 @@ const deleteMnemonic = async (id: string): Promise<IMnemonic> => {
   return result
 }
 
+const updateMnemonic = async (
+  id: string,
+  payload: IMnemonic,
+): Promise<IMnemonic> => {
+  const result = await Mnemonic.findByIdAndUpdate(id, payload, { new: true })
+  if (!result) {
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      'Something went wrong while updating mnemonic, please try again with valid id.',
+    )
+  }
+
+  return result
+}
+
 export const MnemonicServices = {
   createMnemonic,
   getAllMnemonics,
   getSingleMnemonic,
   deleteMnemonic,
   getMnemonicByCategoryId,
+  updateMnemonic,
 }

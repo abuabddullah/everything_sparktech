@@ -37,6 +37,32 @@ const createStudymaterial = async (
   }
 }
 
+const updateStudymaterial = async (
+  user: JwtPayload,
+  payload: IStudymaterial,
+): Promise<IStudymaterial> => {
+  try {
+    const data = { ...payload, uploadedBy: user.authId }
+
+    const result = await Studymaterial.findByIdAndUpdate(payload._id, data, {
+      new: true,
+    })
+    if (!result) {
+      throw new ApiError(
+        StatusCodes.BAD_REQUEST,
+        'Failed to update Studymaterial, please try again with valid data.',
+      )
+    }
+
+    return result
+  } catch (error: any) {
+    if (error.code === 11000) {
+      throw new ApiError(StatusCodes.CONFLICT, 'Duplicate entry found')
+    }
+    throw error
+  }
+}
+
 const getAllStudymaterials = async (
   user: JwtPayload,
   filterables: IStudymaterialFilterables,
@@ -207,4 +233,5 @@ export const StudymaterialServices = {
   getSingleStudymaterial,
   deleteStudymaterial,
   getAllStudyGuides,
+  updateStudymaterial,
 }
