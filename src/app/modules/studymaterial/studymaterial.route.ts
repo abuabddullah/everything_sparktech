@@ -93,8 +93,12 @@ router.patch(
 
   async (req, res, next) => {
     const payload = req.body
+    console.log('🚀 ~ payload:', payload, (req.files as any).document)
     try {
-      if (payload.category !== StudyMaterialCategory.QUESTION_SAMPLE) {
+      if (
+        payload.category !== StudyMaterialCategory.QUESTION_SAMPLE &&
+        (req.files as any).document !== undefined
+      ) {
         const docFiles = (req.files as any).document as Express.Multer.File[]
         if (!docFiles || docFiles.length == 0) {
           throw new ApiError(

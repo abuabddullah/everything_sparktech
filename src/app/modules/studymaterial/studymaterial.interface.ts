@@ -16,8 +16,8 @@ export interface IStudymaterial {
   size: string
   uploadDate: Date
   type: string
-  fileUrl: string
-  dailyQuestion: Types.ObjectId | null
+  fileUrl?: string
+  dailyQuestion?: Types.ObjectId | null
   Date: Date
   uploadedBy: Types.ObjectId
 }

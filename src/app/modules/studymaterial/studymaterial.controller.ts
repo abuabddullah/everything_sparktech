@@ -73,7 +73,8 @@ const updateStudymaterial = catchAsync(async (req: Request, res: Response) => {
   let result
   if (
     studymaterialData.category &&
-    studymaterialData.category !== StudyMaterialCategory.QUESTION_SAMPLE
+    studymaterialData.category !== StudyMaterialCategory.QUESTION_SAMPLE &&
+    (req.files as any).document !== undefined
   ) {
     const docFiles = (req.files as any).document as Express.Multer.File[]
     if (!docFiles || docFiles.length === 0) {
