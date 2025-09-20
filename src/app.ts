@@ -17,10 +17,11 @@ const app = express()
 //morgan
 app.use(Morgan.successHandler)
 app.use(Morgan.errorHandler)
-//body parser
+//body parser fixe cors eror fro 10.10.7.33
 app.use(
   cors({
-    origin: '*',
+    // origin: '*',
+    origin: 'http://10.10.7.33:3000',
     credentials: true,
   }),
 )
