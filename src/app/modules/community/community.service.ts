@@ -10,6 +10,9 @@ import { ICommunity, ICommunityFilterables } from './community.interface'
 import { Community } from './community.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import { USER_ROLES } from '../../../enum/user'
+import { notificationQueue } from '../../../helpers/bull-mq-producer'
+import { User } from '../user/user.model'
+import { logger } from '../../../shared/logger'
 
 const createCommunity = async (
   user: JwtPayload | undefined,
@@ -30,6 +33,47 @@ const createCommunity = async (
       throw new ApiError(
         StatusCodes.BAD_REQUEST,
         'Failed to create Community, please try again with valid data.',
+      )
+    }
+
+    // Send notifications only if notification queue is available
+    if (notificationQueue) {
+      try {
+        // Get user details for notification
+        const creatorUser = await User.findById(user.authId).select(
+          'name email deviceToken',
+        )
+
+        // Get all admin users to notify them about new community creation
+        const adminUsers = await User.find({
+          role: USER_ROLES.ADMIN,
+          status: 'active',
+        }).select('_id name email deviceToken')
+
+        // Send notifications to all admin users
+        for (const admin of adminUsers) {
+          if (admin._id.toString() !== user.authId) {
+            // Don't notify the creator
+            await notificationQueue.add('notifications', {
+              from: user.authId,
+              to: admin._id.toString(),
+              title: 'New Community Created',
+              body: `${creatorUser?.name || 'A user'} has created a new community"`,
+              deviceToken: admin.deviceToken,
+            })
+          }
+        }
+        logger.info('Community creation notifications sent successfully')
+      } catch (notificationError) {
+        logger.error(
+          'Failed to send community creation notifications:',
+          notificationError,
+        )
+        // Don't throw error - community creation should succeed even if notifications fail
+      }
+    } else {
+      logger.warn(
+        'Notification queue not available - skipping community creation notifications',
       )
     }
 

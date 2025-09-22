@@ -1,6 +1,6 @@
 import { Notification } from '../app/modules/notifications/notifications.model'
 import { logger } from '../shared/logger'
-import { socket } from '../utils/socket'
+// import { socket } from '../utils/socket'
 import { sendPushNotification } from './pushnotificationHelper'
 
 export const sendNotification = async (
@@ -25,10 +25,10 @@ export const sendNotification = async (
       await result.populate('from', { profile: 1, name: 1 })
     ).populate('to', { profile: 1, name: 1 })
 
-    socket.emit('notification', populatedResult)
+    io.emit(`notification::${to}`, result, populatedResult)
 
-    if(deviceToken){
-     await sendPushNotification(deviceToken, title, body, { from, to })
+    if (deviceToken) {
+      await sendPushNotification(deviceToken, title, body, { from, to })
     }
   } catch (err) {
     //@ts-ignore

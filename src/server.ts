@@ -7,9 +7,9 @@ import config from './config'
 import { errorLogger, logger } from './shared/logger'
 import { socketHelper } from './helpers/socketHelper'
 import { UserServices } from './app/modules/user/user.service'
-// import { redisClient } from './helpers/redis'
-// import { createAdapter } from "@socket.io/redis-adapter";
-// import { emailWorker, notificationWorker } from './helpers/bull-mq-worker'
+import { redisClient } from './helpers/redis'
+import { createAdapter } from '@socket.io/redis-adapter'
+import { notificationWorker } from './helpers/bull-mq-worker'
 //uncaught exception
 process.on('uncaughtException', error => {
   errorLogger.error('UnhandledException Detected', error)
@@ -46,18 +46,16 @@ async function main() {
     //bull mq notification worker!!!!!
     // notificationWorker
     // emailWorker
-    
-    // const pubClient = redisClient
-    // const subClient = pubClient.duplicate()
-    
+
+    const pubClient = redisClient
+    const subClient = pubClient.duplicate()
 
     logger.info(colors.green('🍁 Redis connected successfully'))
 
-    // io.adapter(createAdapter(pubClient, subClient))
+    io.adapter(createAdapter(pubClient, subClient))
     socketHelper.socket(io)
     //@ts-ignore
     global.io = io
-
   } catch (error) {
     errorLogger.error(colors.red('🤢 Failed to connect Database'))
     config.node_env === 'development' && console.log(error)
@@ -80,7 +78,7 @@ main()
 
 //SIGTERM
 process.on('SIGTERM', async () => {
-  // await notificationWorker.close();
+  await notificationWorker.close()
   // await emailWorker.close();
   logger.info('SIGTERM IS RECEIVE')
   if (server) {
