@@ -1,96 +1,110 @@
-import { Request, Response } from 'express';
-import catchAsync from '../../../shared/catchAsync';
-import sendResponse from '../../../shared/sendResponse';
-import { ITest } from './Test.interface';
-import { TestService } from './Test.service';
+import { Request, Response } from 'express'
+import catchAsync from '../../../shared/catchAsync'
+import sendResponse from '../../../shared/sendResponse'
+import { ITest } from './Test.interface'
+import { TestService } from './Test.service'
+import { getOrSetRedisCache } from '../../../helpers/getOrSetRedisCache'
 
 const createTest = catchAsync(async (req: Request, res: Response) => {
-     const result = await TestService.createTest(req.body);
+  const result = await TestService.createTest(req.body)
 
-     sendResponse<ITest>(res, {
-          statusCode: 200,
-          success: true,
-          message: 'Test created successfully',
-          data: result,
-     });
-});
+  sendResponse<ITest>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Test created successfully',
+    data: result,
+  })
+})
 
 const getAllTests = catchAsync(async (req: Request, res: Response) => {
-     const result = await TestService.getAllTests(req.query);
+  const result = await getOrSetRedisCache(
+    'all-tests',
+    async () => await TestService.getAllTests(req.query),
+    3600,
+  )
 
-     sendResponse<{ meta: { total: number; page: number; limit: number; }; result: ITest[]; }>(res, {
-          statusCode: 200,
-          success: true,
-          message: 'Tests retrieved successfully',
-          data: result,
-     });
-});
+  sendResponse<{
+    meta: { total: number; page: number; limit: number }
+    result: ITest[]
+  }>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Tests retrieved successfully',
+    data: result,
+  })
+})
 
-const getAllUnpaginatedTests = catchAsync(async (req: Request, res: Response) => {
-     const result = await TestService.getAllUnpaginatedTests();
+const getAllUnpaginatedTests = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await getOrSetRedisCache(
+      'all-unpaginated-tests',
+      async () => await TestService.getAllUnpaginatedTests(),
+      3600,
+    )
 
-     sendResponse<ITest[]>(res, {
-          statusCode: 200,
-          success: true,
-          message: 'Tests retrieved successfully',
-          data: result,
-     });
-});
+    sendResponse<ITest[]>(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Tests retrieved successfully',
+      data: result,
+    })
+  },
+)
 
 const updateTest = catchAsync(async (req: Request, res: Response) => {
-     const { id } = req.params;
-     const result = await TestService.updateTest(id, req.body);
+  const { id } = req.params
+  const result = await TestService.updateTest(id, req.body)
 
-     sendResponse<ITest>(res, {
-          statusCode: 200,
-          success: true,
-          message: 'Test updated successfully',
-          data: result || undefined,
-     });
-});
+  sendResponse<ITest>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Test updated successfully',
+    data: result || undefined,
+  })
+})
 
 const deleteTest = catchAsync(async (req: Request, res: Response) => {
-     const { id } = req.params;
-     const result = await TestService.deleteTest(id);
+  const { id } = req.params
+  const result = await TestService.deleteTest(id)
 
-     sendResponse<ITest>(res, {
-          statusCode: 200,
-          success: true,
-          message: 'Test deleted successfully',
-          data: result || undefined,
-     });
-});
+  sendResponse<ITest>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Test deleted successfully',
+    data: result || undefined,
+  })
+})
 
 const hardDeleteTest = catchAsync(async (req: Request, res: Response) => {
-     const { id } = req.params;
-     const result = await TestService.hardDeleteTest(id);
+  const { id } = req.params
+  const result = await TestService.hardDeleteTest(id)
 
-     sendResponse<ITest>(res, {
-          statusCode: 200,
-          success: true,
-          message: 'Test deleted successfully',
-          data: result || undefined,
-     });
-});
+  sendResponse<ITest>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Test deleted successfully',
+    data: result || undefined,
+  })
+})
 
 const getTestById = catchAsync(async (req: Request, res: Response) => {
-     const { id } = req.params;
-     const result = await TestService.getTestById(id);
+  const { id } = req.params
+  const result = await TestService.getTestById(id)
 
-     sendResponse<ITest>(res, {
-          statusCode: 200,
-          success: true,
-          message: 'Test retrieved successfully',
-          data: result || undefined,
-     });
-});
+  sendResponse<ITest>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Test retrieved successfully',
+    data: result || undefined,
+  })
+})
 
 export const TestController = {
-     createTest,
-     getAllTests,
-     getAllUnpaginatedTests,
-     updateTest,
-     deleteTest,
-     hardDeleteTest,
-     getTestById
-};
+  createTest,
+  getAllTests,
+  getAllUnpaginatedTests,
+  updateTest,
+  deleteTest,
+  hardDeleteTest,
+  getTestById,
+}
