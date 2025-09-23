@@ -20,6 +20,8 @@ export default {
     stripe_secret_key: process.env.STRIPE_SECRET_KEY,
     stripe_publishable_key: process.env.STRIPE_PUBLISHABLE_KEY,
     stripe_webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
+    success_url: process.env.STRIPE_SUCCESS_URL,
+    cancel_url: process.env.STRIPE_CANCEL_URL,
   },
   email: {
     from: process.env.EMAIL_FROM,

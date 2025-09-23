@@ -66,8 +66,19 @@ const getMyGroup = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// const createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
+//   const result = await GroupService.createPaymentIntent(req.body);
+//   sendResponse(res, {
+//     statusCode: StatusCodes.OK,
+//     success: true,
+//     message: 'Payment intent created successfully',
+//     data: result,
+//   });
+// });
+
+
 const createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
-  const result = await GroupService.createPaymentIntent(req.body);
+  const result = await GroupService.createPaymentIntent(req.params.event, req.user.id);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -76,9 +87,20 @@ const createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// const joinGroup = catchAsync(async (req: Request, res: Response) => {
+//   const user = req.user.id;
+//   const result = await GroupService.joinGroup(req.body, user);
+//   sendResponse(res, {
+//     statusCode: StatusCodes.OK,
+//     success: true,
+//     message: 'Group joined successfully',
+//     data: result,
+//   });
+// });
+
 const joinGroup = catchAsync(async (req: Request, res: Response) => {
   const user = req.user.id;
-  const result = await GroupService.joinGroup(req.body, user);
+  const result = await GroupService.joinGroup(user, req.params.event);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

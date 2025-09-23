@@ -18,12 +18,12 @@ export type IUser = {
   allowedJobPost: number;
   accountInformation?: {
     bankAccountNumber?: string;
-    stripeAccountId?: string;
+    stripeAccountId?: string; // for creators
     externalAccountId?: string;
     status?: string;
   };
   stripeAccountInfo?: {
-    stripeCustomerId?: string;
+    stripeCustomerId?: string; // for users
     loginUrl?: string;
   } | null;
   authentication?: {

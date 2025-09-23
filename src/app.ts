@@ -5,9 +5,13 @@ import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import router from './routes';
 import { Morgan } from './shared/morgen';
 import handleStripeWebhook from './webhook/handleStripeWebhook';
+import path from 'path';
 const app = express();
-// stripe webhook
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// stripe webhook
 app.post(
   '/api/v1/stripe/webhook',
   express.raw({ type: 'application/json' }),
