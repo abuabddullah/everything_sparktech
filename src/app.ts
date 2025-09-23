@@ -21,8 +21,13 @@ app.use(Morgan.errorHandler)
 app.use(
   cors({
     // origin: '*',
-    origin: 'http://10.10.7.33:3000',
+    origin: [
+      'http://10.10.7.33:3000',
+      'https://nursing-exam-dashboard-one.vercel.app',
+    ],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   }),
 )
 app.use(express.json())
