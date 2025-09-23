@@ -9,6 +9,14 @@ router.get(
   auth(USER_ROLES.STUDENT, USER_ROLES.ADMIN),
   NotificationController.getMyNotifications,
 )
-router.get('/:id', auth(USER_ROLES.STUDENT, USER_ROLES.ADMIN), NotificationController.updateNotification)
-router.get('/all', auth(USER_ROLES.STUDENT, USER_ROLES.ADMIN), NotificationController.updateAllNotifications)
+router.get(
+  '/all',
+  auth(USER_ROLES.STUDENT, USER_ROLES.ADMIN),
+  NotificationController.updateAllNotifications,
+)
+router.get(
+  '/:id',
+  auth(USER_ROLES.STUDENT, USER_ROLES.ADMIN),
+  NotificationController.updateNotification,
+)
 export const NotificationRoutes = router
